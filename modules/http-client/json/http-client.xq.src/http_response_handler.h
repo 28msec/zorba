@@ -112,7 +112,7 @@ namespace http_client {
     virtual bool isHeadRequest() const { return false; }
     virtual void parseMultipartBody(Item& aItem, const std::string& aBoundary);
     virtual void getline(std::istream& aStream, std::string& aString);
-    virtual void parseHeader(const std::string& aHeader);
+    virtual void parseHeader(const std::string& aHeader, std::string& aContentType, std::string& aCharset);
   };
 }} //namespace zorba, namespace http_client
 

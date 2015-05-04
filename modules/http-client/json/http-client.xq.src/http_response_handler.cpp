@@ -15,6 +15,7 @@
  */
 
 #include <zorba/xquery_exception.h>
+#include <zorba/xquery_functions.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
 #include <zorba/zorba_string.h>
@@ -201,7 +202,7 @@ namespace zorba { namespace http_client {
     if (aString[aString.length() - 1] == '\r')
       aString.erase(aString.length() - 1, 1);
   }
-  void HttpResponseHandler::parseHeader(const std::string& aHeader)
+  void HttpResponseHandler::parseHeader(const std::string& aHeader, std::string& aContentType, std::string& aCharset)
   {
     std::string::size_type lSeparator = aHeader.find(':');
     std::string::size_type lNameEnd = aHeader.find_last_not_of(" \t", lSeparator);
@@ -210,6 +211,11 @@ namespace zorba { namespace http_client {
     std::string::size_type lValueStart = aHeader.find_first_not_of(" \t", lSeparator + 1);
     std::string lValue = aHeader.substr( lValueStart );
     std::cout << lName << ":" << lValue << std::endl;
+
+    String lNameS = fn::lower_case( lName );
+    if (lNameS == "content-type")
+      parse_content_type(lValue, &aContentType, &aCharset);
+
     header(lName, lValue);
   }
 
@@ -218,10 +224,12 @@ namespace zorba { namespace http_client {
     std::cout << "H::parseMultipartBody()" << std::endl;
     std::istream& lStream = aItem.getStream();
 
+    std::string lMediaType;
+    std::string lCharset;
+
     std::string lLine;
     std::stringstream lBody;
     ParseState lState = START;
-    std::string lCharset = "UTF-8";
     char * buffer = new char [aBoundary.length() + 4];
     while (lState != END)
     {
@@ -246,6 +254,8 @@ namespace zorba { namespace http_client {
 
         case HEADERS:
           std::cout << "HEADERS" << std::endl;
+          lMediaType.clear();
+          lCharset.clear();
           do
           {
             getline(lStream, lLine);
@@ -253,14 +263,14 @@ namespace zorba { namespace http_client {
             if (lLine.empty())
               break;
             else
-              parseHeader(lLine);
+              parseHeader(lLine, lMediaType, lCharset);
           }
           while(true);
           lState=BODY;
           break;
         case BODY:
           std::cout << "BODY" << std::endl;
-          beginBody("text/TODO", "", NULL);
+          beginBody(lMediaType, "", NULL);
           lBody.str("");
           lBody.clear();
           while (true)
