@@ -195,9 +195,106 @@ namespace zorba { namespace http_client {
       lBodyPairs.push_back(std::pair<Item,Item>(lContentName,aItem));
   }
 
-  void HttpResponseHandler::parseMultipartBody(const Item& aItem)
+  void HttpResponseHandler::getline(std::istream& aStream, std::string& aString)
+  {
+    std::getline(aStream, aString);
+    if (aString[aString.length() - 1] == '\r')
+      aString.erase(aString.length() - 1, 1);
+  }
+  void HttpResponseHandler::parseHeader(const std::string& aHeader)
+  {
+    std::string::size_type lSeparator = aHeader.find(':');
+    std::string::size_type lNameEnd = aHeader.find_last_not_of(" \t", lSeparator);
+    std::string::size_type lNameStart = aHeader.find_first_not_of(" \t");
+    std::string lName = aHeader.substr( lNameStart, lNameEnd - lNameStart );
+    std::string::size_type lValueStart = aHeader.find_first_not_of(" \t", lSeparator + 1);
+    std::string lValue = aHeader.substr( lValueStart );
+    std::cout << lName << ":" << lValue << std::endl;
+    header(lName, lValue);
+  }
+
+  void HttpResponseHandler::parseMultipartBody(Item& aItem, const std::string& aBoundary)
   {
     std::cout << "H::parseMultipartBody()" << std::endl;
+    std::istream& lStream = aItem.getStream();
+
+    std::string lLine;
+    std::stringstream lBody;
+    ParseState lState = START;
+    std::string lCharset = "UTF-8";
+    char * buffer = new char [aBoundary.length() + 4];
+    while (lState != END)
+    {
+      switch (lState)
+      {
+        case START:
+          std::cout << "START" << std::endl;
+          lStream.read(buffer, aBoundary.length() + 2);
+          if (buffer[0] != '-' ||
+              buffer[1] != '-' ||
+              strncmp(buffer+2, aBoundary.c_str(), aBoundary.length() != 0))
+          {
+            std::cout << "Cannot parse multipart, invalid start boundary" <<std::endl;
+          }
+          getline(lStream, lLine);
+          if (!lLine.empty())
+          {
+            std::cout << "Cannot parse multipart, invalid start boundary" <<std::endl;
+          }
+          lState=HEADERS;
+          break;
+
+        case HEADERS:
+          std::cout << "HEADERS" << std::endl;
+          do
+          {
+            getline(lStream, lLine);
+            std::cout << "RAW:" << lLine << std::endl;
+            if (lLine.empty())
+              break;
+            else
+              parseHeader(lLine);
+          }
+          while(true);
+          lState=BODY;
+          break;
+        case BODY:
+          std::cout << "BODY" << std::endl;
+          beginBody("text/TODO", "", NULL);
+          lBody.str("");
+          lBody.clear();
+          while (true)
+          {
+            std::getline(lStream, lLine);
+            std::cout << "Read: " << lLine << std::endl;
+            if (lLine.compare("--" + aBoundary + "\r") == 0 ||
+                lLine.compare("--" + aBoundary) == 0)
+            {
+              any(theFactory->createString(lBody.str()), lCharset);
+              endBody();
+              //end of this body
+              lState=HEADERS;
+              break;
+            }
+            else if (lLine.compare("--" + aBoundary + "--\r") == 0 ||
+                lLine.compare("--" + aBoundary + "--") == 0)
+            {
+              any(theFactory->createString(lBody.str()), lCharset);
+              endBody();
+              lState=END;
+              break;
+              //end of multipart
+            }
+            else
+            {
+              lBody << lLine << "\n";
+            }
+          }
+          break;
+      }
+    }
+
+/*
 
     Item lTestBody = theFactory->createString("dummy");
     header("h1", "v1");
@@ -214,7 +311,7 @@ namespace zorba { namespace http_client {
     beginBody("text/test2", "", NULL);
     any(lTestBody2, lCharset2);
     endBody();
-
+*/
   }
 
   void HttpResponseHandler::endBody()

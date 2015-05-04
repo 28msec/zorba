@@ -68,6 +68,8 @@ namespace http_client {
 
   class HttpResponseHandler
   {
+    enum ParseState { START, HEADERS, BODY, END };
+
   private:
     HttpResponseIterator* theResult;
     std::vector<std::pair<Item, Item> > theResponsePairs;
@@ -108,7 +110,9 @@ namespace http_client {
     virtual void endMultipart();
     virtual void end();
     virtual bool isHeadRequest() const { return false; }
-    virtual void parseMultipartBody(const Item& aItem);
+    virtual void parseMultipartBody(Item& aItem, const std::string& aBoundary);
+    virtual void getline(std::istream& aStream, std::string& aString);
+    virtual void parseHeader(const std::string& aHeader);
   };
 }} //namespace zorba, namespace http_client
 

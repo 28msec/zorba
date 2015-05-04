@@ -225,7 +225,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       theHandler.any(lBody, empty);
     }
     else
-      theHandler.parseMultipartBody(lBody);
+      theHandler.parseMultipartBody(lBody, theBoundary);
 
     theHandler.endMultipart();
     theHandler.endResponse();
