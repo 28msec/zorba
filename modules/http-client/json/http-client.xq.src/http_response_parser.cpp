@@ -261,9 +261,6 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       std::istream& lStream = aItem.getStream();
       ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
 
-      std::string lMediaType;
-      std::string lCharset;
-
       std::string lLine;
       std::stringstream lBody;
       ParseState lState = START;
@@ -291,8 +288,8 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
 
           case HEADERS:
             std::cout << "HEADERS" << std::endl;
-            lMediaType.clear();
-            lCharset.clear();
+            theCurrentContentType.clear();
+            theCurrentCharset.clear();
             do
             {
               getline(lStream, lLine);
@@ -300,14 +297,14 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
               if (lLine.empty())
                 break;
               else
-                parseHeader(lLine, lMediaType, lCharset);
+                parseHeader(lLine, theCurrentContentType, theCurrentCharset);
             }
             while(true);
             lState=BODY;
             break;
           case BODY:
             std::cout << "BODY" << std::endl;
-            theHandler.beginBody(lMediaType, "", NULL);
+            theHandler.beginBody(theCurrentContentType, "", NULL);
             lBody.str("");
             lBody.clear();
             while (true)
@@ -317,7 +314,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
               if (lLine.compare("--" + aBoundary + "\r") == 0 ||
                   lLine.compare("--" + aBoundary) == 0)
               {
-                theHandler.any(lFactory->createString(lBody.str()), lCharset);
+                theHandler.any(lFactory->createString(lBody.str()), theCurrentCharset);
                 theHandler.endBody();
                 //end of this body
                 lState=HEADERS;
@@ -326,7 +323,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
               else if (lLine.compare("--" + aBoundary + "--\r") == 0 ||
                   lLine.compare("--" + aBoundary + "--") == 0)
               {
-                theHandler.any(lFactory->createString(lBody.str()), lCharset);
+                theHandler.any(lFactory->createString(lBody.str()), theCurrentCharset);
                 theHandler.endBody();
                 lState=END;
                 break;
