@@ -325,6 +325,12 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     if (theStatus < 100) {
       theErrorThrower.raiseException("HTTP", "An HTTP error occurred. The returned status is: " + lStatus);
     }
+    /*
+     * rfc1945 and rfc2616 mandate that the HTTP line must be the first line of an HTTP 1.0/1.1 response,
+     * thus we can safely clear the response headers here to avoid having duplicate headers in case of
+     * redirection
+     */
+     theHeaders.clear();
   }
 
   static void streamReleaser(std::istream* aStream)
