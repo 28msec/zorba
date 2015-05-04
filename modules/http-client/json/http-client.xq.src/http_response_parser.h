@@ -29,6 +29,8 @@ class Item;
 
 namespace http_client
 {
+  enum ParseState { START, HEADERS, BODY, END };
+
   void parse_content_type( std::string const &s, std::string *mime_type, std::string *charset,
                            bool *is_multipart = 0, std::string *boundary = 0);
 
@@ -66,6 +68,10 @@ namespace http_client
     virtual ~HttpResponseParser();
     CURLcode parse();
     void parseMultipart(std::unique_ptr<std::istream>& aStream);
+    void parseMultipartBody(Item& aItem, const std::string& aBoundary);
+    void getline(std::istream& aStream, std::string& aString);
+    void parseHeader(const std::string& aHeader, std::string& aContentType, std::string& aCharset);
+
     void parseNonMultipart(std::unique_ptr<std::istream>& aStream);
     int getStatus() { return theStatus; }
 

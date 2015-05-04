@@ -40,10 +40,10 @@ namespace http_client {
     public:
       InternalIterator(HttpResponseIterator *item_sequence);
 
-      virtual void open();
-      virtual bool next(Item& aItem);
-      virtual void close();
-      virtual bool isOpen() const;
+      void open();
+      bool next(Item& aItem);
+      void close();
+      bool isOpen() const;
     };
   private:
     std::vector<Item> theItems;
@@ -53,7 +53,7 @@ namespace http_client {
     virtual ~HttpResponseIterator();
 
   public:
-    virtual Iterator_t getIterator();
+    Iterator_t getIterator();
 
   public: //Implementation specific functions
     void addItem(const Item& aItem);
@@ -68,8 +68,6 @@ namespace http_client {
 
   class HttpResponseHandler
   {
-    enum ParseState { START, HEADERS, BODY, END };
-
   private:
     HttpResponseIterator* theResult;
     std::vector<std::pair<Item, Item> > theResponsePairs;
@@ -96,23 +94,20 @@ namespace http_client {
     HttpResponseIterator* getResult();
     HttpResponseIterator* releaseResult();
   public: //Interface implementation
-    virtual void begin();
-    virtual void beginResponse(int aStatus, String aMessage);
-    virtual void endResponse();
-    virtual void header(String aName, String aValue);
-    virtual void beginBody(
+    void begin();
+    void beginResponse(int aStatus, String aMessage);
+    void endResponse();
+    void header(String aName, String aValue);
+    void beginBody(
       String aContentType,
       String aSrc,
       ItemSequence* aSerializerOptions);
-    virtual void any(Item aItem, std::string& charset);
-    virtual void endBody();
-    virtual void beginMultipart(String aContentType, String aBoundary);
-    virtual void endMultipart();
-    virtual void end();
-    virtual bool isHeadRequest() const { return false; }
-    virtual void parseMultipartBody(Item& aItem, const std::string& aBoundary);
-    virtual void getline(std::istream& aStream, std::string& aString);
-    virtual void parseHeader(const std::string& aHeader, std::string& aContentType, std::string& aCharset);
+    void any(Item aItem, std::string& charset);
+    void endBody();
+    void beginMultipart(String aContentType, String aBoundary);
+    void endMultipart();
+    void end();
+    bool isHeadRequest() const { return false; }
   };
 }} //namespace zorba, namespace http_client
 

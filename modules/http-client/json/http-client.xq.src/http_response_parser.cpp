@@ -225,12 +225,124 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       theHandler.any(lBody, empty);
     }
     else
-      theHandler.parseMultipartBody(lBody, theBoundary);
+      parseMultipartBody(lBody, theBoundary);
 
     theHandler.endMultipart();
     theHandler.endResponse();
     theHandler.end();
   }
+
+  void HttpResponseParser::getline(std::istream& aStream, std::string& aString)
+    {
+      std::getline(aStream, aString);
+      if (aString[aString.length() - 1] == '\r')
+        aString.erase(aString.length() - 1, 1);
+    }
+    void HttpResponseParser::parseHeader(const std::string& aHeader, std::string& aContentType, std::string& aCharset)
+    {
+      std::string::size_type lSeparator = aHeader.find(':');
+      std::string::size_type lNameEnd = aHeader.find_last_not_of(" \t", lSeparator);
+      std::string::size_type lNameStart = aHeader.find_first_not_of(" \t");
+      std::string lName = aHeader.substr( lNameStart, lNameEnd - lNameStart );
+      std::string::size_type lValueStart = aHeader.find_first_not_of(" \t", lSeparator + 1);
+      std::string lValue = aHeader.substr( lValueStart );
+      std::cout << lName << ":" << lValue << std::endl;
+
+      String lNameS = fn::lower_case( lName );
+      if (lNameS == "content-type")
+        parse_content_type(lValue, &aContentType, &aCharset);
+
+      theHandler.header(lName, lValue);
+    }
+
+    void HttpResponseParser::parseMultipartBody(Item& aItem, const std::string& aBoundary)
+    {
+      std::cout << "H::parseMultipartBody()" << std::endl;
+      std::istream& lStream = aItem.getStream();
+      ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
+
+      std::string lMediaType;
+      std::string lCharset;
+
+      std::string lLine;
+      std::stringstream lBody;
+      ParseState lState = START;
+      char * buffer = new char [aBoundary.length() + 4];
+      while (lState != END)
+      {
+        switch (lState)
+        {
+          case START:
+            std::cout << "START" << std::endl;
+            lStream.read(buffer, aBoundary.length() + 2);
+            if (buffer[0] != '-' ||
+                buffer[1] != '-' ||
+                strncmp(buffer+2, aBoundary.c_str(), aBoundary.length() != 0))
+            {
+              std::cout << "Cannot parse multipart, invalid start boundary" <<std::endl;
+            }
+            getline(lStream, lLine);
+            if (!lLine.empty())
+            {
+              std::cout << "Cannot parse multipart, invalid start boundary" <<std::endl;
+            }
+            lState=HEADERS;
+            break;
+
+          case HEADERS:
+            std::cout << "HEADERS" << std::endl;
+            lMediaType.clear();
+            lCharset.clear();
+            do
+            {
+              getline(lStream, lLine);
+              std::cout << "RAW:" << lLine << std::endl;
+              if (lLine.empty())
+                break;
+              else
+                parseHeader(lLine, lMediaType, lCharset);
+            }
+            while(true);
+            lState=BODY;
+            break;
+          case BODY:
+            std::cout << "BODY" << std::endl;
+            theHandler.beginBody(lMediaType, "", NULL);
+            lBody.str("");
+            lBody.clear();
+            while (true)
+            {
+              std::getline(lStream, lLine);
+              std::cout << "Read: " << lLine << std::endl;
+              if (lLine.compare("--" + aBoundary + "\r") == 0 ||
+                  lLine.compare("--" + aBoundary) == 0)
+              {
+                theHandler.any(lFactory->createString(lBody.str()), lCharset);
+                theHandler.endBody();
+                //end of this body
+                lState=HEADERS;
+                break;
+              }
+              else if (lLine.compare("--" + aBoundary + "--\r") == 0 ||
+                  lLine.compare("--" + aBoundary + "--") == 0)
+              {
+                theHandler.any(lFactory->createString(lBody.str()), lCharset);
+                theHandler.endBody();
+                lState=END;
+                break;
+                //end of multipart
+              }
+              else
+              {
+                lBody << lLine << "\n";
+              }
+            }
+            break;
+        }
+      }
+  }
+
+
 
   void HttpResponseParser::parseNonMultipart(std::unique_ptr<std::istream>& aStream)
   {
