@@ -53,12 +53,8 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
   std::string::size_type end = media_type.find( ';' );
   *mime_type = media_type.substr( start, end - start );
 
-  std::cout << "mime type:" << mime_type->c_str() << std::endl;
   if ( is_multipart && std::strncmp( mime_type->c_str(), "multipart/", 10 ) == 0 )
-  {
-    std::cout << "Setting is multipart" << std::endl;
     *is_multipart = true;
-  }
 
   if ( std::strncmp( mime_type->c_str(), "text/", 5 ) == 0 ) {
     //
@@ -216,7 +212,6 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
 
   void HttpResponseParser::parseMultipart(std::unique_ptr<std::istream>& aStream)
   {
-    std::cout << "Parsing as multipart" << std::endl;
     Item lBody = createTextItem(aStream.release());
 
     if (lBody.isNull())
@@ -234,7 +229,6 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
 
     void HttpResponseParser::parseMultipartBody(Item& aItem, const std::string& aBoundary)
     {
-      std::cout << "H::parseMultipartBody()" << std::endl;
       std::istream& lStream = aItem.getStream();
 
       std::string lLine;
@@ -288,7 +282,6 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     std::string::size_type lValueStart = aHeader.find_first_not_of(" \t", lSeparator + 1);
     std::string::size_type lValueEnd = aHeader.find_last_not_of(" \t\r");
     std::string lValue = aHeader.substr( lValueStart, lValueEnd + 1 - lValueStart );
-    std::cout << lName << ":" << lValue << std::endl;
 
     String lNameS = fn::lower_case( lName );
     if (lNameS == "content-type")
@@ -363,7 +356,6 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
 
   void HttpResponseParser::parseNonMultipart(std::unique_ptr<std::istream>& aStream)
   {
-    std::cout << "Parsing as non multipart" << std::endl;
     bool lStatusAndMesssageParsed = false;
 
     Item lItem;
@@ -412,11 +404,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     for ( headers_type::const_iterator
           lIter = theHeaders.begin(); lIter != theHeaders.end(); ++lIter) {
       theHandler.header(lIter->first, lIter->second);
-      std::cout << lIter->first << ":" << lIter->second << std::endl;
     }
-
-    //std::cout << "isMultipart?: " << theIsMultipart << std::endl;
-    //std::cout << "boundary?: " << theBoundary << std::endl;
 
     if (!theStatusOnly)
     {
