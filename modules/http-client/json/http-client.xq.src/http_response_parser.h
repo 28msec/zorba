@@ -68,9 +68,13 @@ namespace http_client
     virtual ~HttpResponseParser();
     CURLcode parse();
     void parseMultipart(std::unique_ptr<std::istream>& aStream);
+
     void parseMultipartBody(Item& aItem, const std::string& aBoundary);
-    void getline(std::istream& aStream, std::string& aString);
-    void parseHeader(const std::string& aHeader, std::string& aContentType, std::string& aCharset);
+    void parseStartBoundary(std::istream& aStream, const std::string& aBoundary);
+    void parseHeaders(std::istream& aStream);
+    void parseHeader(const std::string& aHeader);
+    bool parseBody(std::istream& aStream, const std::string& aBoundary);
+    bool isTextualBody();
 
     void parseNonMultipart(std::unique_ptr<std::istream>& aStream);
     int getStatus() { return theStatus; }
