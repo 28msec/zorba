@@ -15,7 +15,6 @@
  */
 
 #include <zorba/xquery_exception.h>
-#include <zorba/xquery_functions.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
 #include <zorba/zorba_string.h>
@@ -105,7 +104,6 @@ namespace zorba { namespace http_client {
   theResult(new HttpResponseIterator(aHeaderList)),
   theFactory(aFactory),
   theIsInsideMultipart(false),
-  theIsMultipartBody(false),
   theDeleteResponse(true)
   {
     theUntypedQName = theFactory->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
@@ -186,8 +184,8 @@ namespace zorba { namespace http_client {
   {
     std::vector<std::pair<Item, Item> >& lBodyPairs =
           theIsInsideMultipart ? theMultipartBodyPairs : theBodyPairs;
-      Item lContentName = theFactory->createString("content");
-      lBodyPairs.push_back(std::pair<Item,Item>(lContentName,aItem));
+    Item lContentName = theFactory->createString("content");
+    lBodyPairs.push_back(std::pair<Item,Item>(lContentName,aItem));
   }
 
   void HttpResponseHandler::endBody()
@@ -236,7 +234,6 @@ namespace zorba { namespace http_client {
   void HttpResponseHandler::beginMultipart(String aContentType, String aBoundary)
   {
     theIsInsideMultipart = true;
-    theIsMultipartBody = true;
 
     Item lContentTypeName = theFactory->createString("content-type");
     Item lContentTypeValue = theFactory->createString(aContentType);

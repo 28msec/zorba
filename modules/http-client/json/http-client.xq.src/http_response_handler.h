@@ -84,7 +84,6 @@ namespace http_client {
 
     ItemFactory* theFactory;
     bool theIsInsideMultipart;
-    bool theIsMultipartBody;
     bool theDeleteResponse;
     Item theUntypedQName;
   public:
