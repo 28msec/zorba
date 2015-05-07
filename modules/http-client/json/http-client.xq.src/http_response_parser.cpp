@@ -46,11 +46,15 @@ namespace zorba {
 namespace http_client {
 
 void parse_content_type( std::string const &media_type, std::string *mime_type,
-                                std::string *charset )
+                         std::string *charset, bool *is_multipart,
+                         std::string *boundary )
 {
   std::string::size_type start = 0;
   std::string::size_type end = media_type.find( ';' );
   *mime_type = media_type.substr( start, end - start );
+
+  if ( is_multipart && std::strncmp( mime_type->c_str(), "multipart/", 10 ) == 0 )
+    *is_multipart = true;
 
   if ( std::strncmp( mime_type->c_str(), "text/", 5 ) == 0 ) {
     //
@@ -87,11 +91,13 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
   for (;it!=fields.end();++it)
   {
     std::string& field =*it;
-    std::transform(field.begin(), field.end(), field.begin(), ::tolower);
     field.erase(remove_if(field.begin(), field.end(), ::isspace), field.end());
-    if ((start = field.find("charset=")) != std::string::npos)
+    std::string lowercaseField(field);
+    std::transform(lowercaseField.begin(), lowercaseField.end(), lowercaseField.begin(), ::tolower);
+
+    if ((start = lowercaseField.find("charset=")) != std::string::npos)
     {
-      std::string t = field.substr(start + 8);
+      std::string t = lowercaseField.substr(start + 8);
       if (!t.empty())
       {
         if (t[0] == '"' && t[t.length()-1] == '"')
@@ -100,6 +106,19 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
           t.erase(t.length() -1, 1);    
         }
         *charset = t;
+      }
+    }
+    else if (boundary && (start = lowercaseField.find("boundary=")) != std::string::npos)
+    {
+      std::string t = field.substr(start + 9);
+      if (!t.empty())
+      {
+        if (t[0] == '"' && t[t.length()-1] == '"')
+        {
+          t.erase( 0, 1 );
+          t.erase(t.length() -1, 1);
+        }
+         *boundary = t;
       }
     }
   }
@@ -117,7 +136,8 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
   theInsideRead(false),
   theOverridenContentType(aOverridenContentType),
   theStatusOnly(aStatusOnly),
-  theSelfContained(true)
+  theSelfContained(true),
+  theIsMultipart(false)
   {
     registerHandler();
     theStreamBuffer = new zorba::curl::streambuf(theCurl);
@@ -132,17 +152,33 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
   {
     theStreamBuffer->set_listener(this);
     theHandler.begin();
-    bool lStatusAndMesssageParsed = false;
     CURLcode lCurlCode = theStreamBuffer->curl_multi_info_read(false);
     if (lCurlCode)
       return lCurlCode;
 
-    if (!theStatusOnly)
+    if (theStatusOnly)
+    {
+      if (!theInsideRead)
+      {
+        theHandler.beginResponse(theStatus, theMessage);
+
+        for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
+             i != theHeaders.end(); ++i)
+        {
+           theHandler.header(i->first, i->second);
+        }
+      }
+
+      theHandler.endResponse();
+      theHandler.end();
+    }
+    else
     {
       if (!theOverridenContentType.empty())
       {
         parse_content_type(
-          theOverridenContentType, &theCurrentContentType, &theCurrentCharset
+          theOverridenContentType, &theCurrentContentType, &theCurrentCharset,
+          &theIsMultipart, &theBoundary
         );
       }
 
@@ -150,12 +186,12 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       try
       {
         if ( !theCurrentCharset.empty() &&
-             transcode::is_necessary( theCurrentCharset.c_str() ) )
+            transcode::is_necessary( theCurrentCharset.c_str() ) )
         {
           lStream.reset(
-            new transcode::stream<std::istream>(
-              theCurrentCharset.c_str(), theStreamBuffer
-            )
+              new transcode::stream<std::istream>(
+                  theCurrentCharset.c_str(), theStreamBuffer
+              )
           );
         }
         else
@@ -166,57 +202,196 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
         theErrorThrower.raiseException("http://www.zorba-xquery.com/errors", "ZXQP0006", e.what());
       }
 
-      Item lItem;
-      if (theCurrentContentType == "application/xml" ||
-          theCurrentContentType == "application/xml-external-parsed-entity" ||
-          theCurrentContentType == "application/json" ||
-          theCurrentContentType == "application/x-javascript" ||
-          theCurrentContentType == "text/javascript" ||
-          theCurrentContentType == "text/x-javascript" ||
-          theCurrentContentType == "text/x-json" ||
-          (
-            theCurrentContentType.length() > 5 &&
-              (theCurrentContentType.find("+xml") == theCurrentContentType.size()-4 ||
-              theCurrentContentType.find("+json") == theCurrentContentType.size()-5)
-          ) ||
-          theCurrentContentType.find("text/") == 0)
-      {
-        lItem = createTextItem(lStream.release());
-      }
+      if (theIsMultipart)
+        parseMultipart(lStream);
       else
+        parseNonMultipart(lStream);
+    }
+    return lCurlCode;
+  }
+
+  void HttpResponseParser::parseMultipart(std::unique_ptr<std::istream>& aStream)
+  {
+    Item lBody = createTextItem(aStream.release());
+
+    if (lBody.isNull())
+    {
+      std::string empty;
+      theHandler.any(lBody, empty);
+    }
+    else
+      parseMultipartBody(lBody, theBoundary);
+
+    theHandler.endMultipart();
+    theHandler.endResponse();
+    theHandler.end();
+  }
+
+    void HttpResponseParser::parseMultipartBody(Item& aItem, const std::string& aBoundary)
+    {
+      std::istream& lStream = aItem.getStream();
+
+      std::string lLine;
+      std::stringstream lBody;
+
+      parseStartBoundary(lStream, aBoundary);
+
+      while (lStream.good())
       {
-        lItem = createBase64Item(*lStream.get());
+        parseHeaders(lStream);
+        if (parseBody(lStream, aBoundary))
+          return;
+      }
+  }
+
+  void HttpResponseParser::parseStartBoundary(std::istream& aStream, const std::string& aBoundary)
+  {
+    std::string lLine;
+    getline(aStream, lLine);
+    if (lLine.compare("--" + aBoundary + "\r") != 0 &&
+        lLine.compare("--" + aBoundary) != 0)
+    {
+      theErrorThrower.raiseException("HTTP", "An HTTP error occurred. The returned multipart response "
+                                             "is malformed, invalid start boundary.");
+    }
+  }
+
+  void HttpResponseParser::parseHeaders(std::istream& aStream)
+  {
+    std::string lLine;
+    theCurrentContentType.clear();
+    theCurrentCharset.clear();
+    while (aStream.good())
+    {
+      std::getline(aStream, lLine);
+      if (lLine.empty() || lLine.compare("\r") == 0)
+        return;
+      else
+        parseHeader(lLine);
+    }
+    if (!aStream.good())
+      theErrorThrower.raiseException("HTTP", "An HTTP error occurred reading the multipart response headers.");
+  }
+
+  void HttpResponseParser::parseHeader(const std::string& aHeader)
+  {
+    std::string::size_type lSeparator = aHeader.find(':');
+    std::string::size_type lNameEnd = aHeader.find_last_not_of(" \t", lSeparator);
+    std::string::size_type lNameStart = aHeader.find_first_not_of(" \t");
+    std::string lName = aHeader.substr( lNameStart, lNameEnd - lNameStart );
+    std::string::size_type lValueStart = aHeader.find_first_not_of(" \t", lSeparator + 1);
+    std::string::size_type lValueEnd = aHeader.find_last_not_of(" \t\r");
+    std::string lValue = aHeader.substr( lValueStart, lValueEnd + 1 - lValueStart );
+
+    String lNameS = fn::lower_case( lName );
+    if (lNameS == "content-type")
+      parse_content_type(lValue, &theCurrentContentType, &theCurrentCharset);
+
+    theHandler.header(lName, lValue);
+  }
+
+  bool HttpResponseParser::parseBody(std::istream& aStream, const std::string& aBoundary)
+  {
+    std::string lLine;
+    std::stringstream lBody;
+    zorba::Item lItem;
+    bool bodyEnd = false;
+    bool responseEnd = false;
+    ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
+    theHandler.beginBody(theCurrentContentType, "", NULL);
+
+    while (aStream.good())
+    {
+      std::getline(aStream, lLine);
+
+      if (lLine.compare("--" + aBoundary + "\r") == 0 ||
+          lLine.compare("--" + aBoundary) == 0)
+        bodyEnd = true;
+      else if (lLine.compare("--" + aBoundary + "--\r") == 0 ||
+               lLine.compare("--" + aBoundary + "--") == 0)
+      {
+        bodyEnd = true;
+        responseEnd = true;
       }
 
-      if (!lItem.isNull())
+      if (bodyEnd)
       {
-        std::string empty;
-        theHandler.any(lItem, empty);
-      }
-
-      if (!theInsideRead)
-      {
-        theHandler.beginResponse(theStatus, theMessage);
-        lStatusAndMesssageParsed = true;
-      }
-      else
+        if (isTextualBody())
+          lItem = lFactory->createString(lBody.str());
+        else
+          lItem = createBase64Item(lBody);
+        theHandler.any(lItem, theCurrentCharset);
         theHandler.endBody();
+        return responseEnd;
+      }
+      else
+        lBody << lLine << "\n";
+    }
+    if (!aStream.good())
+      theErrorThrower.raiseException("HTTP", "An HTTP error occurred reading the multipart response bodies.");
+    return false;
+  }
+
+  bool HttpResponseParser::isTextualBody()
+  {
+    return (
+             theCurrentContentType == "application/xml" ||
+             theCurrentContentType == "application/xml-external-parsed-entity" ||
+             theCurrentContentType == "application/json" ||
+             theCurrentContentType == "application/x-javascript" ||
+             theCurrentContentType == "text/javascript" ||
+             theCurrentContentType == "text/x-javascript" ||
+             theCurrentContentType == "text/x-json" ||
+             (
+               theCurrentContentType.length() > 5 &&
+               (
+                 theCurrentContentType.find("+xml") == theCurrentContentType.size()-4 ||
+                 theCurrentContentType.find("+json") == theCurrentContentType.size()-5
+               )
+             ) ||
+             theCurrentContentType.find("text/") == 0 ||
+             theCurrentContentType.find("multipart/") == 0
+           );
+  }
+
+  void HttpResponseParser::parseNonMultipart(std::unique_ptr<std::istream>& aStream)
+  {
+    bool lStatusAndMesssageParsed = false;
+
+    Item lItem;
+    if (isTextualBody())
+      lItem = createTextItem(aStream.release());
+    else
+      lItem = createBase64Item(*aStream.get());
+
+    if (!lItem.isNull())
+    {
+      std::string empty;
+      theHandler.any(lItem, empty);
     }
 
     if (!theInsideRead)
     {
-      if (!lStatusAndMesssageParsed)
-        theHandler.beginResponse(theStatus, theMessage);
-
-      for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
-          i != theHeaders.end(); ++i) {
-        theHandler.header(i->first, i->second);
-      }
+      theHandler.beginResponse(theStatus, theMessage);
+      lStatusAndMesssageParsed = true;
     }
+    else
+      theHandler.endBody();
 
-    theHandler.endResponse();
-    theHandler.end();
-    return lCurlCode;
+
+  if (!theInsideRead)
+  {
+    if (!lStatusAndMesssageParsed)
+      theHandler.beginResponse(theStatus, theMessage);
+
+    for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
+        i != theHeaders.end(); ++i) {
+      theHandler.header(i->first, i->second);
+    }
+  }
+
+  theHandler.endResponse();
+  theHandler.end();
   }
 
   void HttpResponseParser::curl_read(void*,size_t)
@@ -230,8 +405,14 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
           lIter = theHeaders.begin(); lIter != theHeaders.end(); ++lIter) {
       theHandler.header(lIter->first, lIter->second);
     }
+
     if (!theStatusOnly)
-      theHandler.beginBody(theCurrentContentType, "", NULL);
+    {
+      if (!theIsMultipart)
+        theHandler.beginBody(theCurrentContentType, "", NULL);
+      else
+        theHandler.beginMultipart(theCurrentContentType, theBoundary);
+    }
   }
 
   void HttpResponseParser::registerHandler()
@@ -287,7 +468,8 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     String lNameS = fn::lower_case( lName );
     if (lNameS == "content-type") {
       parse_content_type(
-        lValue, &lParser->theCurrentContentType, &lParser->theCurrentCharset
+        lValue, &lParser->theCurrentContentType, &lParser->theCurrentCharset,
+        &lParser->theIsMultipart, &lParser->theBoundary
       );
     } else if (lNameS == "content-id") {
       lParser->theId = lValue;

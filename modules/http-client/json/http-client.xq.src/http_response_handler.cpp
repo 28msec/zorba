@@ -156,26 +156,6 @@ namespace zorba { namespace http_client {
     theResult->setResponseItem(lResponse);
   }
 
-  // Since this class is only used to handle responses, beginRequest and
-  // endRequest are not implemented.
-  void HttpResponseHandler::beginRequest(String aMethod,
-                                         String href,
-                                         bool aStatusOnly,
-                                         String aUsername,
-                                         String aPassword,
-                                         String aAuthMethod,
-                                         bool aSendAuthorization,
-                                         String aOverrideContentType,
-                                         bool aFollowRedirect,
-                                         String aUserAgent,
-                                         int aTimeout /*= -1*/)
-  {
-  }
-
-  void HttpResponseHandler::endRequest()
-  {
-  }
-
   void HttpResponseHandler::header(String aName, String aValue)
   {
     std::map<String, String>& lHeaderMap =
@@ -242,6 +222,7 @@ namespace zorba { namespace http_client {
       lPartsPairs.push_back(std::pair<Item,Item>(lBodyName,lBody));
       Item lPart = theFactory->createJSONObject(lPartsPairs);
       theMultipartBodyVector.push_back(lPart);
+      theMultipartBodyPairs.clear();
     }
     else
     {
@@ -271,10 +252,11 @@ namespace zorba { namespace http_client {
     Item lBodyName = theFactory->createString("parts");
     Item lBodyArray = theFactory->createJSONArray(theMultipartBodyVector);
 
-    theMultipartPairs.push_back(std::pair<Item,Item>(lBodyName,lBodyArray));
+    theMultipartPairs.push_back(std::pair<Item,Item>(lBodyName, lBodyArray));
+
     Item lName = theFactory->createString("multipart");
-    Item lMultipart = theFactory->createJSONObject(theMultipartBodyPairs);
-    theResponsePairs.push_back(std::pair<Item,Item>(lName,lMultipart));
+    Item lMultipart = theFactory->createJSONObject(theMultipartPairs);
+    theResponsePairs.push_back(std::pair<Item,Item>(lName, lMultipart));
   }
 
   void HttpResponseHandler::end()
