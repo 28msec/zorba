@@ -3,8 +3,52 @@ Zorba - The XQuery Processor
 version 3.1
 
 New Features:
+  * Add query profiling feature.
   * The json-xml module now supports the "object form" of JsonML.
+  * Fixed bugs in the json-xml module.
+  * Added public introspection API for external variable annotations.
+  * Added non deterministic functions to the JDBC module.
+  * Added introspection API for external variable annotations.
+  * setVariable() now supports casting sequence elements.
+  * zorba command now supports converting multiple values for the same variable into a sequence, e.g.: zorba -e x:=1 -e x:=2 -q 'declare variable $x as xs:integer+ external; $x'
+  * The function caching mechanism of Zorba has been completely revamped. New annotations have been introduced for function caching.
+    -  `%an:deterministic`: disables caching (previously %an:no-cache).
+    - `%an:strictlydeterministic`: enables caching for deterministic and non-deterministic functions. Cache is only within the same snapshot.
+    - `%an:cache` enables caching for deterministic, non-deterministic and sequential functions. Caches is across snapshots.
+    - `%an:exclude-from-cache-key(n)` specifies that a function argument has to be ignored when computing the cache key.
+    - `%an:compare-with-deep-equal(n)` specifies that a function argument has to be compared with deep-equal semantics.
+  * New sleep module.
+  * Substancial improvements to the http client module.
+  * Added JSON Data Manager to expose json parsing through the C++ api.
+  * Iterator tree printing as XML or JSON.
+  * New FTP client.
+  * New Jsound validator.
+  
+Optimizations:
+  * Improved json serialization performance.
+  * Improvements in the lexer and parser.
 
+Bug Fixes/Other Changes:
+  * Fixed permission of files in the archive (better compatibility with archive extractors (exp. mac).
+  * Fixed CSV parser bugs.
+  * Fixed transform iterator.
+  * Fixed many to many equality.
+  * Fixed time comparison.
+  * Fixed internal snapshot when using eval.
+  * Fixed ref-counting assertions.
+  * Fixed debug mode compilation and behaviour.
+  * Fixed libxml error handling.
+  * Fixed pattern validation.
+  * Fixed castable implementation.
+  * Fixed null validation in jsound.
+  * Fixed function item partial application.
+  * Fixed -DZORBA_NO_FULL_TEXT=ON -DZORBA_NO_XMLSCHEMA=ON build flags.
+  * Fixed external function and udf profiling.
+  * Fixed function cache hashing.
+  * Fixed references in query plans.
+  * Fixed db:edit and fn:parse-xml segfaults.
+  * Fixed simple type cast.
+  
 version 3.0
 
 New Naming:
