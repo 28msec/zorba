@@ -3,8 +3,7 @@ Zorba - The XQuery Processor
 version 3.1
 
 New Features:
-  * The json-xml module now supports the "object form" of JsonML (even though
-    there really isn't such a thing).
+  * The json-xml module now supports the "object form" of JsonML.
 
 version 3.0
 
