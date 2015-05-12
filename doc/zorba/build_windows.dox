@@ -77,7 +77,18 @@ LibXml2
    nmake /f Makefile.msvc install
 - Copy the <LIBRARIES_SOURCE>/libxml2-2.9.2/Release_x64 folder to the <LIBRARIES> and rename it libxml2
    
-
+LibICU
+ - Download the source LibICU archive from http://site.icu-project.org/download/, for instance
+   http://download.icu-project.org/files/icu4c/55.1/icu4c-55_1-src.zip
+- Extract the archive to the <LIBRARIES_SOURCE> folder
+- Open the solution <LIBRARIES_SOURCE>\icu4c-55_1-src\icu\source\allinone\allinone.sln
+- Switch the Active solution platform to x64 from the configuration manager
+- Switch to the Release build
+- Build the solution
+- Create a folder <LIBRARIES>\libicu
+- Copy the <LIBRARIES_SOURCE>\icu4c-55_1-src\icu\bin64 folder to <LIBRARIES>\libicu folder and rename it bin
+- Copy the <LIBRARIES_SOURCE>\icu4c-55_1-src\icu\lib64 folder to <LIBRARIES>\libicu folder and rename it lib
+- Copy the <LIBRARIES_SOURCE>\icu4c-55_1-src\icu\include folder to <LIBRARIES>\libicu folder
 
 
 \section windows_nmake Building Zorba using a NMake Project
