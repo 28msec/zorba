@@ -19,8 +19,8 @@ New Features:
       call. This is the default behavior from the W3C specifications.
     - `%an:strictlydeterministic`: Declares and enforces that a function is deterministic. Several calls with the same paramaters always
       return the exact same results (also same identity) within a snapshot. The optimizer guarantees this by caching within a snapshot.
-    - For a function that only has atomics in its signature is `%an:strictlydeterministic` `%an:deterministic` have no semantic
-      difference. All these functions are by default automatically cached by the optimizer.
+    - For a function that only has atomics in its signature, `%an:strictlydeterministic` and `%an:deterministic` are semantically
+      equivalent. These functions are by default automatically cached by the optimizer.
     - `%an:cache` (use with care): forces caching across snapshots.
     - `%an:exclude-from-cache-key(n)` specifies that a function argument has to be ignored when computing the cache key.
     - `%an:compare-with-deep-equal(n)` specifies that a function argument has to be compared with deep-equal semantics.
