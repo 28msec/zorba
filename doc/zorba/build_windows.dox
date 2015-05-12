@@ -90,7 +90,18 @@ LibICU
 - Copy the <LIBRARIES_SOURCE>\icu4c-55_1-src\icu\lib64 folder to <LIBRARIES>\libicu folder and rename it lib
 - Copy the <LIBRARIES_SOURCE>\icu4c-55_1-src\icu\include folder to <LIBRARIES>\libicu folder
 
-
+LibXerces
+- Download the source LibXerces archive from http://xerces.apache.org/xerces-c/download.cgi, for instance
+  http://ftp.wayne.edu/apache//xerces/c/3/sources/xerces-c-3.1.2.zip
+- Extract the archive to the <LIBRARIES_SOURCE> folder
+- Open the solution <LIBRARIES_SOURCE>\xerces-c-3.1.2\projects\Win32\VC12\xerces-all\xerces-all.sln
+- Switch the Active solution platform to x64 from the configuration manager
+- Switch to the Release build
+- Build the solution (or just the XercesLib project)
+- Create the folder <LIBRARIES>\libxerces, <LIBRARIES>\libxerces\include
+- Copy the folder <LIBRARIES_SOURCE>\xerces-c-3.1.2\src\xercesc to <LIBRARIES>\libxerces\include
+- Copy the folder <LIBRARIES_SOURCE>\xerces-c-3.1.2\Build\Win64\VC12\Release\xerces-c_3.lib to <LIBRARIES>\libxerces\lib
+- Copy the folder <LIBRARIES_SOURCE>\xerces-c-3.1.2\Build\Win64\VC12\Release\xerces-c_3_1.dll to <LIBRARIES>\libxerces\bin
 \section windows_nmake Building Zorba using a NMake Project
 -# Start a Visual Studio Command Line.
 -# Change the current working directory to the \c {ZORBABUILD} directory (as described in \ref create_build_dir).
@@ -99,6 +110,7 @@ LibICU
 cmake -G "NMake Makefiles" {ZORBASRC}
 \endcode
 -# Now you are ready to call \"\c nmake\" from the \c {ZORBABUILD} directory.
+
 
 \section windows_visualstudio Building Zorba using a Visual Studio Project
 -# Start Visual Studio Command Line
