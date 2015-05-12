@@ -2,19 +2,13 @@
 
 \section windows_requirements Requirements for Windows Builds
 - In order to compile Zorba on Windows,
-  you need a working Visual Studio (Express) installation (2008, 2010).
+  you need a working Visual Studio (Express) installation (2008, 2010, 2012, 2013). 
+  This page will focus on Visual Studio 2013, as it is the latest version at the time of writing
 - If you want to compile Zorba using Visual Studio 2008,
   you will need to install the
   <a href="http://www.microsoft.com/downloads/en/details.aspx?FamilyId=D466226B-8DAB-445F-A7B4-448B326C48E7" target="_blank">Visual C++ 2008 Feature Pack Release</a>.
 - Make sure that the libraries required for Zorba
   are built with the same version of Visual Studio that you use.
-- The Windows version of some required packages
-  are distributed by other web sites
-  (all of them are pointed to from the main package web sites
-  indicated in the \ref third_party_libs section):
-  - Libxml2 and Iconv: http://www.zlatkovic.com/libxml.en.html
-  - CURL: http://curl.haxx.se/download.html
-  - Libxslt: http://www.zlatkovic.com/pub/libxml/
 
 \section windows_autodll Zorba's Automatic DLL Detection Mechanism
 
@@ -48,6 +42,43 @@ requirements installed in unusual locations, you should use the CMake
 configuration parameter \c ZORBA_THIRD_PARTY_REQUIREMENTS instead of
 \c CMAKE_PREFIX_PATH to specify those locations when configuring
 Zorba.
+
+\section windows_preparation Preparation of required libraries for building core Zorba
+
+We we will use two folders:
+ <LIBRARIES_SOURCE>, where we will keep the source code of libraries that require a complex compilation, and
+ <LIBRARIES>, where we will keep the libraries includes and binaries for compiling zorba
+
+LibIconv
+ - Download the source LibIconv archive from https://www.gnu.org/software/libiconv/, for instance
+   http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
+ - Extract the archive to the <LIBRARIES_SOURCE> folder
+ - Follow the instructions at http://www.codeproject.com/Articles/302012/How-to-Build-libiconv-with-Microsoft-Visual-Studio, but:
+   - name the solution/project iconv rather than libiconv
+   - create the project in <LIBRARIES_SOURCE>/libiconv
+ - From the Configuration Manager, add a new Solution Platform (x64) copying the settings from Win32 and make sure x64 is 
+   the active platform
+ - Build the solution
+ - Create a folder <LIBRARIES>/libiconv
+ - Copy the <LIBRARIES_SOURCE>/libiconv/include folder to <LIBRARIES>/libiconv
+ - Copy the <LIBRARIES_SOURCE>/libiconv/Release_x64 folder to <LIBRARIES>/libiconv and rename it bin
+ 
+LibXml2
+ - Download the source LibXml archive from http://www.xmlsoft.org/downloads.html, for instance
+   ftp://xmlsoft.org/libxml2/libxml2-2.9.2.tar.gz
+ - Extract the archive to the <LIBRARIES_SOURCE> folder
+ - Edit the file win32/configure.js, replace 
+ var configFile = srcDirXml + "\\configure.in"; 
+ with 
+ var configFile = srcDirXml + "\\configure.ac";
+ - Run from a VS2013 x64 Native Command Line Tools Command prompt: 
+   <LIBRARIES_SOURCE>\libxml2-2.9.2\win32>cscript configure.js compiler=msvc include=<LIBRARIES_SOURCE>\libiconv\include lib=<LIBRARIES_SOURCE>\libiconv\Release_x64 debug=no prefix=<LIBRARIES_SOURCE>\libxml2-2.9.2\Release_x64
+   nmake /f Makefile.msvc 
+   nmake /f Makefile.msvc install
+- Copy the <LIBRARIES_SOURCE>/libxml2-2.9.2/Release_x64 folder to the <LIBRARIES> and rename it libxml2
+   
+
+
 
 \section windows_nmake Building Zorba using a NMake Project
 -# Start a Visual Studio Command Line.
