@@ -3,8 +3,59 @@ Zorba - The XQuery Processor
 version 3.1
 
 New Features:
+  * Add query profiling feature.
   * The json-xml module now supports the "object form" of JsonML.
+  * Fixed bugs in the json-xml module.
+  * Added public introspection API for external variable annotations.
+  * Added non deterministic functions to the JDBC module.
+  * Added introspection API for external variable annotations.
+  * setVariable() now supports casting sequence elements.
+  * zorba command now supports converting multiple values for the same variable into a sequence, e.g.: zorba -e x:=1 -e x:=2 -q 'declare variable $x as xs:integer+ external; $x'
+  * The function caching mechanism of Zorba has been completely revamped. New annotations have been introduced for function caching.
+    - `%an:nondeterministic`: Declares that the function is non-deterministic. Several calls with the same paramaters may
+      return different results. The optimizer is not allowed to cache anything.
+    - `%an:deterministic` (default): Declares that the function is deterministic. Several calls with the same paramaters always
+      return the same results in the same snapshot, except that newly constructed nodes will have a different identity on each
+      call. This is the default behavior from the W3C specifications.
+    - `%an:strictlydeterministic`: Declares and enforces that a function is deterministic. Several calls with the same paramaters always
+      return the exact same results (also same identity) within a snapshot. The optimizer guarantees this by caching within a snapshot.
+    - For a function that only has atomics in its signature, `%an:strictlydeterministic` and `%an:deterministic` are semantically
+      equivalent. These functions are by default automatically cached by the optimizer.
+    - `%an:cache` (use with care): forces caching across snapshots.
+    - `%an:exclude-from-cache-key(n)` specifies that a function argument has to be ignored when computing the cache key.
+    - `%an:compare-with-deep-equal(n)` specifies that a function argument has to be compared with deep-equal semantics.
+  * New sleep module.
+  * Substancial improvements to the http client module.
+  * Added JSON Data Manager to expose json parsing through the C++ api.
+  * Iterator tree printing as XML or JSON.
+  * New FTP client.
+  * New Jsound validator.
+  
+Optimizations:
+  * Improved json serialization performance.
+  * Improvements in the lexer and parser.
 
+Bug Fixes/Other Changes:
+  * Fixed permission of files in the archive (better compatibility with archive extractors (exp. mac).
+  * Fixed CSV parser bugs.
+  * Fixed transform iterator.
+  * Fixed many to many equality.
+  * Fixed time comparison.
+  * Fixed internal snapshot when using eval.
+  * Fixed ref-counting assertions.
+  * Fixed debug mode compilation and behaviour.
+  * Fixed libxml error handling.
+  * Fixed pattern validation.
+  * Fixed castable implementation.
+  * Fixed null validation in jsound.
+  * Fixed function item partial application.
+  * Fixed -DZORBA_NO_FULL_TEXT=ON -DZORBA_NO_XMLSCHEMA=ON build flags.
+  * Fixed external function and udf profiling.
+  * Fixed function cache hashing.
+  * Fixed references in query plans.
+  * Fixed db:edit and fn:parse-xml segfaults.
+  * Fixed simple type cast.
+  
 version 3.0
 
 New Naming:
