@@ -13,7 +13,7 @@
 # limitations under the License.
 
 DECLARE_ZORBA_SCHEMA(FILE sample.jsd
-  URI http://zorba-tests.28msec.us/jsound-schema TEST_ONLY)
+  URI http://zorba-tests.28.io/jsound-schema TEST_ONLY)
 
 DECLARE_ZORBA_SCHEMA(FILE invalid.jsd
-  URI http://zorba-tests.28msec.us/invalid-jsound-schema TEST_ONLY)
+  URI http://zorba-tests.28.io/invalid-jsound-schema TEST_ONLY)
