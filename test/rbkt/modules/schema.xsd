@@ -1,5 +1,5 @@
-<xs:schema targetNamespace="http://zorba-tests.28msec.us/modules/theschema"
-           xmlns:t = "http://zorba-tests.28msec.us/modules/theschema"
+<xs:schema targetNamespace="http://zorba-tests.28.io/modules/theschema"
+           xmlns:t = "http://zorba-tests.28.io/modules/theschema"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified">
 

@@ -15,35 +15,35 @@
 # Build and install any test modules.  (Parameters are scrambled about
 # as a test for DECLARE_ZORBA_MODULE parsing them.)
 DECLARE_ZORBA_MODULE(FILE "ver2.xq"
-  URI "http://zorba-tests.28msec.us/modules/ver" VERSION 2.3 TEST_ONLY)
-DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28msec.us/modules/ver" VERSION 1.4
+  URI "http://zorba-tests.28.io/modules/ver" VERSION 2.3 TEST_ONLY)
+DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28.io/modules/ver" VERSION 1.4
   FILE "${CMAKE_CURRENT_SOURCE_DIR}/ver.xq" TEST_ONLY)
 
-DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28msec.us/modules/bad-ver"
+DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28.io/modules/bad-ver"
   FILE "bad-ver.xq" VERSION 1.4 TEST_ONLY)
 
-DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28msec.us/modules/A" VERSION 1.0
+DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28.io/modules/A" VERSION 1.0
   FILE "module-A.xq" TEST_ONLY)
-DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28msec.us/modules/B" VERSION 1.0
+DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28.io/modules/B" VERSION 1.0
   FILE "${CMAKE_CURRENT_SOURCE_DIR}/module-B.xq" TEST_ONLY)
 
 # This one also has a CONFIG_FILE
-DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28msec.us/modules/ext"
+DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28.io/modules/ext"
   VERSION 2.0 FILE "ext2.xq" TEST_ONLY CONFIG_FILES ext2_config.txt.in)
-DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28msec.us/modules/ext"
+DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28.io/modules/ext"
   VERSION 1.0 FILE "ext.xq" TEST_ONLY)
 
 ADD_SUBDIRECTORY(ourlib)
 
 # For the moment, this test module depends on Xerces
 IF (NOT ZORBA_NO_XMLSCHEMA)
-  DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28msec.us/modules/link"
+  DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28.io/modules/link"
     VERSION 1.0 LINK_LIBRARIES "ourlib" FILE "link.xq" TEST_ONLY)
 ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 
-DECLARE_ZORBA_SCHEMA(URI "http://zorba-tests.28msec.us/modules/theschema"
+DECLARE_ZORBA_SCHEMA(URI "http://zorba-tests.28.io/modules/theschema"
   FILE "schema.xsd" TEST_ONLY)
-DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28msec.us/modules/myschema"
+DECLARE_ZORBA_MODULE(URI "http://zorba-tests.28.io/modules/myschema"
   VERSION 1.0 FILE "schema.xq" TEST_ONLY)
 
 DECLARE_ZORBA_SCHEMA(URI "http://zorba.io/manifest"
@@ -58,6 +58,6 @@ ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 
 # This is as good a place as any to test this feature
 DECLARE_ZORBA_URI_FILE(FILE "random-file.txt"
-  URI "http://zorba-tests.28msec.us/random-file" TEST_ONLY)
+  URI "http://zorba-tests.28.io/random-file" TEST_ONLY)
 
 ADD_SUBDIRECTORY(java)

@@ -1,6 +1,6 @@
 xquery version "3.0";
 
-module namespace vm = "http://zorba-tests.28msec.us/modules/ver";
+module namespace vm = "http://zorba-tests.28.io/modules/ver";
 
 declare namespace ver = "http://zorba.io/options/versioning";
 declare option ver:module-version "1.4.5";
