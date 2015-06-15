@@ -13,9 +13,9 @@ machine:
     - sudo dpkg -i libbison-dev_3.0.2.dfsg-2_amd64.deb bison_3.0.2.dfsg-2_amd64.deb
     - sudo sed -i.bak s/STARTDISTCC=\"false\"/STARTDISTCC=\"true\"/g /etc/default/distcc
     - sudo /etc/init.d/distcc start
-#    - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/libfl-dev_2.5.39-8_amd64.deb
-#    - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/flex_2.5.39-8_amd64.deb
-#    - sudo dpkg -i libfl-dev_2.5.39-8_amd64.deb flex_2.5.39-8_amd64.deb
+    - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/libfl-dev_2.5.39-8_amd64.deb
+    - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/flex_2.5.39-8_amd64.deb
+    - sudo dpkg -i libfl-dev_2.5.39-8_amd64.deb flex_2.5.39-8_amd64.deb
   environment:
     ZORBA_SRC_DIR: /home/ubuntu/zorba
     ZORBA_BUILD_DIR: /home/ubuntu/zorba/build
