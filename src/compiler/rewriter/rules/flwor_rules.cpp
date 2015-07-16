@@ -533,12 +533,12 @@ bool EliminateUnusedLetVars::should_fold_var(int numRefs, expr* domExpr)
   return false;
   int clones = theRefs.size() - 1;
 
-  if (expr_tools::estimate_expression_size(domExpr, FOLD_SIZE_INCREASE_LIMIT/clones) >= 
-      FOLD_SIZE_INCREASE_LIMIT/clones)
+  int sizeIncrease = expr_tools::estimate_expression_size(domExpr, FOLD_SIZE_INCREASE_LIMIT/clones);
+  if (sizeIncrease >= FOLD_SIZE_INCREASE_LIMIT/clones)
     return false;
   
-  if (expr_tools::estimate_expression_size(theFlwor, FOLD_FLWOR_SIZE_LIMIT) >= 
-      FOLD_FLWOR_SIZE_LIMIT)
+  int flworSize = expr_tools::estimate_expression_size(theFlwor, FOLD_FLWOR_SIZE_LIMIT);
+  if (flworSize >= FOLD_FLWOR_SIZE_LIMIT)
     return false;
 
   return true;

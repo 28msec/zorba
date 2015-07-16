@@ -67,7 +67,7 @@ protected:
   
   /*
    * The maximum size (1+subexpressions) a FLWR expression is allowed to be
-   * as an effect of a variable folding.
+   * before variable folding.
    */
   static const int       FOLD_FLWOR_SIZE_LIMIT = 2048;
 

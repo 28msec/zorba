@@ -884,12 +884,10 @@ bool estimate_expression_size_rec(
     int limit,
     int& count)
 {
-  if (limit > 0 && count >= limit)
-  {
-    return false;
-  }
-
   ++count;
+
+  if (limit > 0 && count >= limit)
+    return false;
 
   ExprIterator iter(e);
   while (!iter.done())
