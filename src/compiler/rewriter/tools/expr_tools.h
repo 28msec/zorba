@@ -50,6 +50,8 @@ bool match_exact(expr* query, expr* ast, expr::substitution_t& subst);
 
 int count_variable_uses(expr* root, var_expr* v, int limit, std::vector<expr**>* path);
 
+int estimate_expression_size(expr* root, int limit);
+
 
 /*******************************************************************************
 

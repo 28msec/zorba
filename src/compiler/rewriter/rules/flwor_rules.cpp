@@ -16,6 +16,7 @@
 #include "stdafx.h"
 
 #include "functions/function.h"
+#include "functions/udf.h"
 #include "functions/library.h"
 
 #include "compiler/rewriter/rules/ruleset.h"
@@ -343,7 +344,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       expr* domExpr = lc->get_expr();
       var = lc->get_var();
 
-      if (safe_to_fold_var(i, numRefs))
+      if (
+            safe_to_fold_var(i, numRefs) &&
+            should_fold_var(numRefs, domExpr)
+         )
       {
         if (numRefs != 0)
           subst_vars(rCtx, var, domExpr, numRefs);
@@ -514,6 +518,31 @@ RULE_REWRITE_POST(EliminateUnusedLetVars)
   return NULL;
 }
 
+/*****************************************************************************
+
+******************************************************************************/
+bool EliminateUnusedLetVars::should_fold_var(int numRefs, expr* domExpr)
+{
+  if (numRefs !=1 || theRefs.size() <=1)
+  {
+    /*
+     * The expression will not be folded or it will be clone-folded only once
+     */
+    return true;
+  }
+  return false;
+  int clones = theRefs.size() - 1;
+
+  if (expr_tools::estimate_expression_size(domExpr, FOLD_SIZE_INCREASE_LIMIT/clones) >= 
+      FOLD_SIZE_INCREASE_LIMIT/clones)
+    return false;
+  
+  if (expr_tools::estimate_expression_size(theFlwor, FOLD_FLWOR_SIZE_LIMIT) >= 
+      FOLD_FLWOR_SIZE_LIMIT)
+    return false;
+
+  return true;
+}
 
 /*****************************************************************************
 

@@ -59,6 +59,18 @@ protected:
   flwor_expr           * theFlwor;
   std::vector<expr**>    theRefs;
 
+  /*
+   * The maximum size (1+subexpressions) a FLWR expression is allowed to increase
+   * as an effect of a variable folding.
+   */
+  static const int       FOLD_SIZE_INCREASE_LIMIT = 512;
+  
+  /*
+   * The maximum size (1+subexpressions) a FLWR expression is allowed to be
+   * as an effect of a variable folding.
+   */
+  static const int       FOLD_FLWOR_SIZE_LIMIT = 2048;
+
 public:
   EliminateUnusedLetVars()
     :
@@ -82,6 +94,8 @@ protected:
       bool unsafe,
       bool isSafeVar,
       int& numRefs);
+
+  bool should_fold_var(int numRefs, expr* domExpr);
 
   void subst_vars(
       const RewriterContext& rCtx,
