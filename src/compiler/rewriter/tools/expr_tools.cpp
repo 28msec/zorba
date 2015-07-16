@@ -876,6 +876,45 @@ int count_variable_uses(
   return count;
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+bool estimate_expression_size_rec(
+    expr* e,
+    int limit,
+    int& count)
+{
+  ++count;
+
+  if (limit > 0 && count >= limit)
+    return false;
+
+  ExprIterator iter(e);
+  while (!iter.done())
+  {
+    bool done = !estimate_expression_size_rec(**iter, limit, count);
+
+    if (done)
+      return false;
+
+    iter.next();
+  }
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+int estimate_expression_size(expr* root, int limit)
+{
+  int count = 0;
+
+  estimate_expression_size_rec(root, limit, count);
+
+  return count;
+}
+
 
 /*******************************************************************************
   copy annotations when wrapping an expression in a new one
