@@ -530,7 +530,7 @@ bool EliminateUnusedLetVars::should_fold_var(int numRefs, expr* domExpr)
      */
     return true;
   }
-  return false;
+
   int clones = theRefs.size() - 1;
 
   int sizeIncrease = expr_tools::estimate_expression_size(domExpr, FOLD_SIZE_INCREASE_LIMIT/clones);
