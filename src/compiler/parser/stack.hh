@@ -31,18 +31,18 @@
 // version 2.2 of Bison.
 
 /**
- ** \file /home/vagrant/zorba/build/src/compiler/parser/stack.hh
+ ** \file /home/federico/zorba/build/src/compiler/parser/stack.hh
  ** Define the zorba::stack class.
  */
 
-#ifndef YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_STACK_HH_INCLUDED
-# define YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_STACK_HH_INCLUDED
+#ifndef YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_STACK_HH_INCLUDED
+# define YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_STACK_HH_INCLUDED
 
 # include <vector>
 
 
 namespace zorba {
-#line 46 "/home/vagrant/zorba/build/src/compiler/parser/stack.hh" // stack.hh:133
+#line 46 "/home/federico/zorba/build/src/compiler/parser/stack.hh" // stack.hh:133
   template <class T, class S = std::vector<T> >
   class stack
   {
@@ -153,6 +153,6 @@ namespace zorba {
 
 
 } // zorba
-#line 157 "/home/vagrant/zorba/build/src/compiler/parser/stack.hh" // stack.hh:133
+#line 157 "/home/federico/zorba/build/src/compiler/parser/stack.hh" // stack.hh:133
 
-#endif // !YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_STACK_HH_INCLUDED
+#endif // !YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_STACK_HH_INCLUDED

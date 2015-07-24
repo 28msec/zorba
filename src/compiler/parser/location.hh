@@ -31,18 +31,18 @@
 // version 2.2 of Bison.
 
 /**
- ** \file /home/vagrant/zorba/build/src/compiler/parser/location.hh
+ ** \file /home/federico/zorba/build/src/compiler/parser/location.hh
  ** Define the zorba::location class.
  */
 
-#ifndef YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_LOCATION_HH_INCLUDED
-# define YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_LOCATION_HH_INCLUDED
+#ifndef YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_LOCATION_HH_INCLUDED
+# define YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_LOCATION_HH_INCLUDED
 
 # include "position.hh"
 
 
 namespace zorba {
-#line 46 "/home/vagrant/zorba/build/src/compiler/parser/location.hh" // location.cc:291
+#line 46 "/home/federico/zorba/build/src/compiler/parser/location.hh" // location.cc:291
   /// Abstract a location.
   class location
   {
@@ -183,5 +183,5 @@ namespace zorba {
 
 
 } // zorba
-#line 187 "/home/vagrant/zorba/build/src/compiler/parser/location.hh" // location.cc:291
-#endif // !YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_LOCATION_HH_INCLUDED
+#line 187 "/home/federico/zorba/build/src/compiler/parser/location.hh" // location.cc:291
+#endif // !YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_LOCATION_HH_INCLUDED

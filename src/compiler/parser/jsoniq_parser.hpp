@@ -31,16 +31,16 @@
 // version 2.2 of Bison.
 
 /**
- ** \file /home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.hpp
+ ** \file /home/federico/zorba/build/src/compiler/parser/jsoniq_parser.hpp
  ** Define the zorba::parser class.
  */
 
 // C++ LALR(1) parser skeleton written by Akim Demaille.
 
-#ifndef YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED
-# define YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED
+#ifndef YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED
+# define YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED
 // //                    "%code requires" blocks.
-#line 5 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:372
+#line 5 "/home/federico/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:372
 
 
 /*
@@ -85,7 +85,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 
-#line 89 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.hpp" // lalr1.cc:372
+#line 89 "/home/federico/zorba/build/src/compiler/parser/jsoniq_parser.hpp" // lalr1.cc:372
 
 
 # include <vector>
@@ -156,7 +156,7 @@ typedef std::pair<zorba::zstring,zorba::zstring> string_pair_t;
 
 
 namespace zorba {
-#line 160 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.hpp" // lalr1.cc:372
+#line 160 "/home/federico/zorba/build/src/compiler/parser/jsoniq_parser.hpp" // lalr1.cc:372
 
 
 
@@ -170,7 +170,7 @@ namespace zorba {
     /// Symbol semantic values.
     union semantic_type
     {
-    #line 132 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:372
+    #line 132 "/home/federico/zorba/build/src/compiler/parser/jsoniq_parser.y" // lalr1.cc:372
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -191,7 +191,7 @@ namespace zorba {
     FTThesaurusOption::thesaurus_id_list_t *thesaurus_id_list;
     ft_anyall_mode::type ft_anyall_value;
 
-#line 195 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.hpp" // lalr1.cc:372
+#line 195 "/home/federico/zorba/build/src/compiler/parser/jsoniq_parser.hpp" // lalr1.cc:372
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -854,9 +854,9 @@ namespace zorba {
 
 
 } // zorba
-#line 858 "/home/vagrant/zorba/build/src/compiler/parser/jsoniq_parser.hpp" // lalr1.cc:372
+#line 858 "/home/federico/zorba/build/src/compiler/parser/jsoniq_parser.hpp" // lalr1.cc:372
 
 
 
 
-#endif // !YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED
+#endif // !YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_JSONIQ_PARSER_HPP_INCLUDED

@@ -1032,6 +1032,9 @@ DEFAULT_END_VISIT (ReverseAxis);
         case ParseConstants::op_val_ge:
           os << "ge";
           break;
+        case ParseConstants::op_val_not:
+          os << "not";
+          break;
       }
       return 0;
     }

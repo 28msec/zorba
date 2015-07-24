@@ -53,7 +53,7 @@ example_1(Zorba* aZorba)
     std::cerr << lSize << " array members returned, expecting 3" << std::endl;
     return false;
   }
-  for(int i = 1; i <= lSize; ++i)
+  for(uint64_t i = 1; i <= lSize; ++i)
   {
     Item lMember = lItem.getArrayValue(i);
     // This will throw an exception if the item isn't an integer

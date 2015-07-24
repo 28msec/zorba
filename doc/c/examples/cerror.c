@@ -85,7 +85,7 @@ cerror_example_1(XQC_Implementation* impl)
   free(lErrorHandler);
   lCtx->free(lCtx);
 
-  return gError == XQC_STATIC_ERROR ? 1 : 0;
+  return (gError == XQC_STATIC_ERROR && lError == XQC_STATIC_ERROR) ? 1 : 0;
 }
 
 /**
@@ -153,7 +153,7 @@ cerror_example_3(XQC_Implementation* impl)
   lExpr->free(lExpr);
   lCtx->free(lCtx);
 
-  return gError == XQC_DYNAMIC_ERROR ? 1 : 0;
+  return (gError == XQC_DYNAMIC_ERROR && lError == XQC_NO_ERROR) ? 1 : 0;
 }
 
 int
