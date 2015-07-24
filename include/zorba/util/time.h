@@ -19,6 +19,25 @@
 
 #include <zorba/config.h>
 
+#if defined(ZORBA_HAVE_CLOCKGETTIME) && defined(_POSIX_CPUTIME)
+#include <time.h>
+#elif defined(ZORBA_HAVE_GETRUSAGE)
+#include <sys/time.h>
+#include <sys/resource.h>
+#else /* no rusage, no clock_gettime */
+#include <time.h>
+#endif /* ZORBA_HAVE_CLOCKGETTIME */
+
+#if defined(ZORBA_HAVE_CLOCKGETTIME)
+#include <time.h>
+#elif defined(WIN32)
+#include <sys/timeb.h>
+#else /* not Windows, and no clock_gettime() */
+#include <time.h>
+#include <sys/time.h>
+#endif /* ZORBA_HAVE_CLOCKGETTIME */
+
+
 /**
  * This header includes utility functions for certain timing-related
  * operations, namely getting current wall-clock time and current
@@ -69,8 +88,6 @@ typedef long msec_type;
 
 #if defined(ZORBA_HAVE_CLOCKGETTIME) && defined(_POSIX_CPUTIME)
 
-#include <time.h>
-
 typedef struct timespec cputime;
 
 inline double get_cputime_elapsed( cputime const &t0, cputime const &t1 ) {
@@ -83,9 +100,6 @@ inline void get_current_cputime( cputime &t ) {
 }
 
 #elif defined(ZORBA_HAVE_GETRUSAGE)
-
-#include <sys/time.h>
-#include <sys/resource.h>
 
 typedef struct timeval cputime;
 
@@ -101,8 +115,6 @@ inline void get_current_cputime( cputime &t ) {
 }
 
 #else /* no rusage, no clock_gettime */
-
-#include <time.h>
 
 typedef clock_t cputime;
 
@@ -125,8 +137,6 @@ inline void get_current_cputime( cputime &t ) {
 //
 
 #if defined(ZORBA_HAVE_CLOCKGETTIME)
-
-#include <time.h>
 
 typedef struct timespec walltime;
 
@@ -154,8 +164,6 @@ inline msec_type get_walltime_in_millis( walltime const &t ) {
 // don't know enough about any of these alternatives to choose
 // one. See http://msdn.microsoft.com/en-us/magazine/cc163996.aspx .
 
-#include <sys/timeb.h>
-
 #ifdef WINCE
 typedef struct timeb walltime;
 #else
@@ -179,9 +187,6 @@ inline msec_type get_walltime_in_millis( walltime const &t ) {
 }
 
 #else /* not Windows, and no clock_gettime() */
-
-#include <time.h>
-#include <sys/time.h>
 
 typedef struct timeval walltime;
 
