@@ -698,7 +698,9 @@ bool list_iterator::next( Item &result ) {
 #ifdef WIN32
 	  tm = gmtime( &ftp_file.mtime );
 #else
-      gmtime_r( &ftp_file.mtime, tm );
+	  struct tm tm_struct;
+	  tm = &tm_struct;
+	  gmtime_r( &ftp_file.mtime, tm );
 #endif
       int const year = tm->tm_year + 1900;
       switch ( ftp_file.mtimetype ) {

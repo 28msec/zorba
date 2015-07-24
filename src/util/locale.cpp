@@ -745,7 +745,7 @@ type get_default( iso639_1::type lang ) {
 char const* str( type t ) {
   DEF_LENGTH( string_of );
   int const i = static_cast<int>( t );
-  return i >= 0 && i < length ? string_of[ i ] : "UNKNOWN";
+  return i >= 0 && i < static_cast<int>(length) ? string_of[ i ] : "UNKNOWN";
 }
 
 } // namespace iso3166_1
@@ -952,7 +952,7 @@ type find( char const *lang ) {
 char const* str( type t ) {
   DEF_LENGTH( string_of );
   int const i = static_cast<int>( t );
-  return i >= 0 && i < length ? string_of[ i ] : "UNKNOWN";
+  return i >= 0 && i < static_cast<int>(length) ? string_of[ i ] : "UNKNOWN";
 }
 
 } // namespace iso639_1
@@ -1096,7 +1096,7 @@ type find( char const *lang ) {
 char const* str( type t ) {
   DEF_LENGTH( string_of );
   int const i = static_cast<int>( t );
-  return i >= 0 && i < length ? string_of[ i ] : "UNKNOWN";
+  return i >= 0 && i < static_cast<int>(length) ? string_of[ i ] : "UNKNOWN";
 }
 
 } // namespace iso639_2

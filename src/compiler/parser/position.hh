@@ -31,12 +31,12 @@
 // version 2.2 of Bison.
 
 /**
- ** \file /home/vagrant/zorba/build/src/compiler/parser/position.hh
+ ** \file /home/federico/zorba/build/src/compiler/parser/position.hh
  ** Define the zorba::position class.
  */
 
-#ifndef YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_POSITION_HH_INCLUDED
-# define YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_POSITION_HH_INCLUDED
+#ifndef YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_POSITION_HH_INCLUDED
+# define YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_POSITION_HH_INCLUDED
 
 # include <algorithm> // std::max
 # include <iostream>
@@ -52,7 +52,7 @@
 
 
 namespace zorba {
-#line 56 "/home/vagrant/zorba/build/src/compiler/parser/position.hh" // location.cc:291
+#line 56 "/home/federico/zorba/build/src/compiler/parser/position.hh" // location.cc:291
   /// Abstract a position.
   class position
   {
@@ -176,5 +176,5 @@ namespace zorba {
 
 
 } // zorba
-#line 180 "/home/vagrant/zorba/build/src/compiler/parser/position.hh" // location.cc:291
-#endif // !YY_ZORBA_HOME_VAGRANT_ZORBA_BUILD_SRC_COMPILER_PARSER_POSITION_HH_INCLUDED
+#line 180 "/home/federico/zorba/build/src/compiler/parser/position.hh" // location.cc:291
+#endif // !YY_ZORBA_HOME_FEDERICO_ZORBA_BUILD_SRC_COMPILER_PARSER_POSITION_HH_INCLUDED
