@@ -2,7 +2,7 @@
 http://zorba.28.io/
 
 ##Docker Container
-A container with the zorba binary is available at https://registry.hub.docker.com/u/wcandillon/zorba/
+A container with the zorba binary is available at https://registry.hub.docker.com/u/fcavalieri/zorba/
 
 ##Documentation
 http://zorba.28.io/documentation/latest
