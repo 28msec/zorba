@@ -10,7 +10,7 @@ Below are examples of Zorba executed via Docker:
 docker run zorba -q 1+1
 ```
 
-You can also mount a local folder that contains your queries. The image exposes a volume at /queries:
+You can also mount a local folder that contains your queries. The image exposes a volume at `/queries`:
 
 ```bash
 docker run -v /home/fcavalieri/myqueries:/queries zorba -q foo.xq -f
