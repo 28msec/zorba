@@ -11,6 +11,5 @@ RUN apt-get install zorba.* -y
 ENTRYPOINT ["zorba"]
 CMD ["-h"]
 
-#RUN mkdir /queries
 VOLUME /queries
 WORKDIR /queries
