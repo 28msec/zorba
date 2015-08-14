@@ -12,6 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+IF(COMMAND cmake_policy)
+  IF(CMAKE_VERSION VERSION_GREATER 3.0.0 OR CMAKE_VERSION VERSION_EQUAL 3.0.0)
+    cmake_policy(SET CMP0011 OLD)
+    cmake_policy(SET CMP0026 OLD)
+    cmake_policy(SET CMP0046 OLD)
+  ENDIF(CMAKE_VERSION VERSION_GREATER 3.0.0 OR CMAKE_VERSION VERSION_EQUAL 3.0.0)  
+ENDIF(COMMAND cmake_policy)
+
 # Utility macro to parse CMake-style argument lists
 MACRO(PARSE_ARGUMENTS prefix arg_names onearg_names option_names)
   SET(DEFAULT_ARGS)
