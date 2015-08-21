@@ -1,5 +1,11 @@
 jsoniq version "1.0";
-let $do-not-evaluate := error(QName("local:EVALUATED"), "evaluated")
+
+declare function local:x()
+{
+  (current-dateTime())
+};
+
+let $do-not-evaluate := local:x() (:current-dateTime():) (:"x":) (:error(QName("local:EVALUATED"), "evaluated"):)
 return
-    for $inner in ("a", "b")[$$ eq "c"]
+    for $inner in ("a", "b", "b")[$$ eq "c"]
     return $do-not-evaluate

@@ -30,6 +30,7 @@
 #include "store/api/item_factory.h"
 
 #include <zorba/internal/unique_ptr.h>
+#include <zorba/util/debug.h>
 
 namespace zorba
 {
@@ -39,6 +40,7 @@ CurrentDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  DEBUG_SS("---------------EVALUATING--------------");
 
   result = planState.theLocalDynCtx->get_current_date_time();
   if (result != NULL)

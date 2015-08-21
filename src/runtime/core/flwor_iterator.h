@@ -80,7 +80,7 @@ class ForLetClause : public ::zorba::serialization::SerializeBaseClass
   friend class FlworState;
   friend class PrinterVisitor;
 
-protected:
+public:
   enum ForLetType { FOR, LET };
 
   zstring                    theVarName;

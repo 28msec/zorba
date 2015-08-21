@@ -36,7 +36,7 @@
 #include "store/api/pul.h"
 #include "store/api/item_factory.h"
 #include <zorba/internal/unique_ptr.h>
-
+#include <zorba/util/debug.h>
 
 #ifndef WIN32
 #include <sys/time.h>
@@ -752,8 +752,13 @@ void FlworState::init(
 
     if (flc.theType == ForLetClause::LET && !flc.theSingleItemLETVar)
     {
+    	if (flc.lazyEval())
+    		DEBUG_SS("Creating LAZY temp sequence for:  " << flc.getVarName())
+		else
+			DEBUG_SS("Creating EAGER temp sequence for:  " << flc.getVarName())
+
       (*domiter) = new PlanIteratorWrapper(flc.theInput, planState);
-      (*seqiter) = GENV_STORE.createTempSeq(flc.lazyEval());
+      (*seqiter) = GENV_STORE.createTempSeq(/*flc.lazyEval()*/ true);
     }
   }
 
@@ -1217,19 +1222,30 @@ bool FLWORIterator::bindVariable(
   // it to all the variable references.
   case ForLetClause::FOR :
   {
-    store::Item_t item;
+	DEBUG_SS(flc.theVarName << ": FORbinding START");
+
+	/*
+	 * ORIGINAL
+	 */
+	store::Item_t item;
     if (!consumeNext(item, flc.theInput, planState))
     {
+    	DEBUG_SS(flc.theVarName << ": iterator end");
+       //GENV_ITEMFACTORY->createInteger(item, xs_integer(bindingState));
       return false;
     }
+    else
+    {
+    	DEBUG_SS(flc.theVarName << ": fetched " << item->show());
+    }
 
-    // We increase the position counter
     ++bindingState;
 
     std::vector<PlanIter_t>::const_iterator ite = flc.theVarRefs.begin();
     std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
     for (; ite != end; ++ite)
     {
+    	DEBUG_SS(flc.theVarName << ": value bound to " << static_cast<ForVarIterator*>((*ite).getp())->getVarName()->show());
       static_cast<ForVarIterator*>((*ite).getp())->bind(item.getp(), planState);
     }
 
@@ -1246,11 +1262,14 @@ bool FLWORIterator::bindVariable(
       }
     }
 
+
+    DEBUG_SS(flc.theVarName << ": FORbinding END");
     return true;
   }
   case ForLetClause::LET :
   {      
-    // If the var is already bound, there is no next value for it, so return false.
+	  DEBUG_SS(flc.theVarName << ": LETbinding START");
+	// If the var is already bound, there is no next value for it, so return false.
     if (bindingState == 1)
     {
       return false;
@@ -1289,6 +1308,7 @@ bool FLWORIterator::bindVariable(
     }
 
     bindingState = 1;
+    DEBUG_SS(flc.theVarName << ": LETbinding END");
     return true;
   }
   default:

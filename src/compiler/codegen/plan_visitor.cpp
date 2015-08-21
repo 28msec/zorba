@@ -116,6 +116,8 @@
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
 
+#include <zorba/util/debug.h>
+
 
 //#define XQUF_STATIC_TYPING_STRICT 1
 #define XQUF_STATIC_TYPING_SAFE 1
@@ -1262,9 +1264,15 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
     clauseVarMap->theVarRebinds.push_back(varRebind);
 
     if (domType->get_quantifier() == SequenceType::QUANT_ONE)
-      varRebind->theIsFakeLetVar = true;
+    {
+      //std::cout << "Setting isfakeletvar for " << varRebind->theInputVar->getNameAsString() << std::endl;
+      //varRebind->theIsFakeLetVar = true;
+    }
     else if (domType->get_quantifier() == SequenceType::QUANT_QUESTION)
+    {
+    	//std::cout << "Setting issingleitemletvar for " << varRebind->theInputVar->getNameAsString() << std::endl;
       varRebind->theIsSingleItemLetVar = true;
+    }
 
     break;
   }
@@ -1484,6 +1492,7 @@ bool nativeColumnSort(expr* colExpr)
 
 PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 {
+	//std::cout << "GFLWOR" <<std::endl;
 #define PREV_ITER gflwor_codegen(flworExpr, currentClause - 1)
 
   static_context* sctx = flworExpr.get_sctx();
@@ -1805,6 +1814,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
 void flwor_codegen(const flwor_expr& flworExpr)
 {
+  //std::cout << "FLWOR" <<std::endl;
+
   flwor::FLWORIterator* flworIter;
   PlanIter_t returnIter;
   std::unique_ptr<flwor::OrderByClause> orderClause;
@@ -1985,6 +1996,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
       {
         ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() == 1);
 
+        DEBUG_SS("Creating variable (1) " << var->get_name()->show());
         forletClauses.push_back(flwor::ForLetClause(var->get_name(),
                                                     varRefs,
                                                     domainIter));
@@ -2007,17 +2019,27 @@ void flwor_codegen(const flwor_expr& flworExpr)
       PlanIter_t domainIter = pop_itstack();
 
       std::vector<PlanIter_t>& varRefs =
-      clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
+    		  clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
 
       if (clauseVarMap->theVarRebinds[0]->theIsFakeLetVar)
       {
-        forletClauses.push_back(flwor::ForLetClause(var->get_name(),
-                                                    varRefs,
-                                                    domainIter));
+    	//std::cout << "Creating variable (2 BAD) " << var->get_name()->show() << std::endl;
+
+    	flwor::ForLetClause clause(var->get_name(),varRefs,domainIter);
+    	//clause.theType = flwor::ForLetClause::LET;
+    	forletClauses.push_back(clause);
+/*
+    	forletClauses.push_back(flwor::ForLetClause(var->get_name(),
+    	                                                    varRefs,
+    	                                                    domainIter,
+    	                                                    true,
+    	                                                    true)); // materialize
+*/
       }
       else
       {
-        forletClauses.push_back(flwor::ForLetClause(var->get_name(),
+    	  //std::cout << "Creating variable (3 GOOD) " << var->get_name()->show() << std::endl;
+    	  forletClauses.push_back(flwor::ForLetClause(var->get_name(),
                                                     varRefs,
                                                     domainIter,
                                                     lc->lazyEval(),
