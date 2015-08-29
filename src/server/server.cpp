@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fcgio.h>
 
+#include "debug/quick-debug.h"
 #include "request-handler.h"
 
 #include "server.h"
@@ -38,12 +39,10 @@ int main(void)
     catch(const std::exception& e)
     {
       handleException(e.what());
-      return 1;
     }
     catch(...)
     {
       handleException("Caught unknown exception");
-      return 2;
     }
   }
 
@@ -140,20 +139,23 @@ void configureSignalHandlers()
 
 void handleConnectionAborted(int aSignal, siginfo_t *aSignalInfo, void *aContext)
 {
-
+  DEBUG_SS("Connection aborted");
 }
 
 void handleShtudown(int aSignal, siginfo_t *aSignalInfo, void *aContext)
 {
-
+  DEBUG_SS("Shutting down");
 }
 
 void handleInternalError(int aSignal, siginfo_t *aSignalInfo, void *aContext)
 {
-
+  DEBUG_SS("Caught signal " << aSignal);
+  exit(aSignal);
 }
 
 void handleException(const std::string& aException)
 {
-
+  DEBUG_SS("Caught exception " << aException);
+  sleep(20);
+  exit(2);
 }
