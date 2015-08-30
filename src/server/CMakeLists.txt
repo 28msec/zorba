@@ -24,7 +24,19 @@ INCLUDE("${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateExe.cmake")
 SET (SERVER_SRCS
      server.cpp
      request-handler.cpp
-     io/request.cpp     
+     
+     api/evaluation.cpp
+     api/projects.cpp
+     api/users.cpp
+     
+     io/request.cpp
+     io/response.cpp
+     io/response-iterator.cpp
+     
+     exceptions/formatter.cpp     
+     exceptions/server-exceptions.cpp
+     
+     utils/JSONObject.cpp
   )
 
 #

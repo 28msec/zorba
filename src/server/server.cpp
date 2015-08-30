@@ -15,7 +15,8 @@ int main(void)
    */
   configureSignalHandlers();
 
-  zorba::server::RequestHandler lRequestHandler;
+  zorba::server::RequestHandler& lRequestHandler =
+      zorba::server::RequestHandler::getInstance();
 
   /*
    *  Backup the stdio streambufs

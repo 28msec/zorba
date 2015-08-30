@@ -1,8 +1,12 @@
-//#include "debug/quick-debug.h"
+#include "debug/quick-debug.h"
+
+#include <boost/algorithm/string.hpp>
 
 #include <cstring>
 #include <string>
 #include <sstream>
+
+#include "exceptions/server-exceptions.h"
 
 #include "request.h"
 
@@ -17,6 +21,19 @@ Request::Request(const FCGX_Request& aRequest):
     theBodyRead(false)
 {
   initEnvironment(aRequest);
+
+  const std::string* lRequestURI = getEnvironmentVariable("REQUEST_URI");
+  if (!lRequestURI)
+    throw new exceptions::ServerException("Invalid request, missing REQUEST_URI", 500);
+
+  const std::string* lRequestMethod = getEnvironmentVariable("REQUEST_METHOD");
+  if (!lRequestMethod)
+    throw new exceptions::ServerException("Invalid request, missing REQUEST_METHOD", 500);
+
+  theRequestURI = *lRequestURI;
+  std::string lTmpRequestURI = boost::algorithm::trim_copy_if(theRequestURI, boost::is_any_of("/"));
+  boost::algorithm::split(theRequestURISegments, lTmpRequestURI, boost::is_any_of("/"));
+  theRequestMethod = *lRequestMethod;
 }
 
 void Request::initEnvironment(const FCGX_Request& aRequest)
@@ -55,14 +72,19 @@ const std::string* Request::getEnvironmentVariable(const std::string& aName) con
   return NULL;
 }
 
-const std::string* Request::getRequestMethod() const
+const std::string& Request::getRequestMethod() const
 {
-  return getEnvironmentVariable("REQUEST_METHOD");
+  return theRequestMethod;
 }
 
-const std::string* Request::getRequestURI() const
+const std::string& Request::getRequestURI() const
 {
-  return getEnvironmentVariable("REQUEST_URI");
+  return theRequestURI;
+}
+
+const std::vector<std::string> Request::getRequestURISegments() const
+{
+  return theRequestURISegments;
 }
 
 std::ostream & operator<<(std::ostream &aOs, const Request& aRequest)
