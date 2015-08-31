@@ -1,0 +1,81 @@
+# POST /v1/evaluate?stream=true
+# Request headers:
+# body: body	query-body		The query source code
+#Content-Type	or text (xquery)
+#Content-Type: multipart/mixed;
+# first part is assumed to be the main query
+#
+#
+# Response
+# JSON-XML-hybrid serialization: the response content type depends on the first item of # the result. If it is an XML node the response content-type will be application/xml;charset=UTF-8, otherwise application/json;charset=UTF-8
+# JSON serialization: application/json;charset=UTF-8
+# XML serialization: application/xml;charset=UTF-8
+# Text serialization: text/plain;charset=UTF-8
+# HTML serialization: text/html;charset=UTF-8
+# XHTML serialization: application/xhtml+xml;charset=UTF-8
+#
+#
+# Decisions for later:
+# 
+# Accept header to get multipart response of the items.
+#
+# TODO: Content-Disposition for the filename of each request part 
+# TODO: Use the filename for the language detection.
+# TODO: All accept header 
+swagger: "2.0"
+info:
+  title: Zorba Query Evaluation API
+  description: This API enables you to directly evaluate queries from Zorba.
+  version: "1.0.0"
+host: portal.28.io
+schemes:
+  - http
+basePath: /v1/_queries
+produces:
+  - application/json;charset=utf-8
+  - application/xml;charset=utf-8
+  - text/plain;charset=utf-8
+  - text/html;charset=utf-8
+  - application/xhtml+xml;charset=utf-8
+paths:
+  /evaluate:
+    post:
+      summary: Evaluate a query with Zorba. 
+      description: | 
+        The request body must contain a main query.
+        Optional user-defined library modules can be sent as well.
+        By default the query is assumed to be XQuery.
+        JSONiq queries must contain their own version declaration using `jsoniq version "1.0";`.
+      operationId: evaluate
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: stream
+          in: query
+          description: | 
+            Stream the query response. Default is `false`.
+            If set to true and an error occurs after part of the response has already been sent to the client, the response status code will be 200.
+            In this case, the streaming of the HTTP response will stop and the following string will be sent `"\n\n\nAn error occurred during the processing of the request.\n` followed by the error description.
+          required: false
+          type: boolean
+          default: false
+        - name: query
+          in: formData
+          type: string
+          description: Query to evaluate.
+          required: true
+        - name: module
+          in: formData
+          type: array
+          items:
+            type: string
+          description: User-defined libary module.
+          collectionFormat: multi
+          required: false
+      responses:
+        201:
+          description: New user created
+          headers:
+            Location: 
+              description: New user id
+              type: string
