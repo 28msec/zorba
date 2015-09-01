@@ -29,7 +29,8 @@ paths:
           * XML node: `application/xml;charset=utf-8`
           * JSON object or array: `application/json;charset=utf-8`
           * Base64 or Hex binary: `binary/octet-stream`
-          * Atomic item: `text/plain;charset=utf-8`            * Empty sequence: no content type
+          * Atomic item: `text/plain;charset=utf-8`
+          * Empty sequence: no content type
       operationId: evaluate
       consumes:
         - application/x-www-form-urlencoded
