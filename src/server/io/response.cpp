@@ -18,6 +18,7 @@
 
 #include "exceptions/server_exceptions.h"
 #include "exceptions/formatter.h"
+#include "debug/quick-debug.h"
 #include "response.h"
 
 namespace zorba
@@ -128,6 +129,13 @@ const std::string& ContentTypes::getContentTypeForItem(const zorba::Item& aItem)
     return ContentTypes::XML_UTF8_CT;
   else
     return ContentTypes::BINARY_UTF8_CT;
+}
+
+bool ContentTypes::isX_WWW_FORM_URLENCODED(const std::string& aContentType)
+{
+  std::string lContentType(aContentType);
+  std::transform(lContentType.begin(), lContentType.end(), lContentType.begin(), ::tolower);
+  return lContentType.find("application/x-www-form-urlencoded") == 0;
 }
 
 Response::Response(std::ostream& aResponseStream):

@@ -16,6 +16,9 @@
 #ifndef ZORBA_SERVER_API_EVALUATION_H_
 #define ZORBA_SERVER_API_EVALUATION_H_
 
+#include <string>
+#include <map>
+
 #include "io/request.h"
 #include "io/response.h"
 
@@ -32,6 +35,23 @@ namespace api
 
     private:
     static void evaluate(const io::Request& aRequest, io::Response& aResponse);
+  };
+
+  class MapModuleURLResolver : public URLResolver
+  {
+    public:
+    Resource* resolveURL(
+          const String& aUrl,
+          EntityData const* aEntityData);
+
+    void addModule(const std::string& aSource);
+
+    static void releaseStream(std::istream* aStream);
+
+    private:
+    std::map<std::string, std::string> theModules;
+
+
   };
 }
 }

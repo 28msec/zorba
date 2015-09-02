@@ -35,11 +35,13 @@ namespace io
     Request(const FCGX_Request& aFCGIRequest);
 
     const std::string* getEnvironmentVariable(const std::string& aName) const;
-    const std::string* getQueryParameter(const std::string& aName) const;
+    const std::map<std::string, std::vector<std::string> >& getQueryParameters() const;
+    const std::vector<std::string>* getQueryParameter(const std::string& aName) const;
 
     const std::string& getRequestMethod() const;
     const std::string& getRequestURI() const;
     const std::vector<std::string> getRequestURISegments() const;
+    const std::string* getContentType() const;
 
     const std::string* getHeader(const std::string& aHeaderName) const;
 
@@ -48,17 +50,25 @@ namespace io
 
   private:
     void initEnvironment(const FCGX_Request& aRequest);
-    void initParameters();
-    std::map<std::string, std::string> theEnvironment;
-    std::map<std::string, std::string> theRequestParameters;
+    void initParameters() const;
+    void parseParameters(const std::string& aString) const;
+    void parseParameter(const std::string& aString, std::string::size_type lStart, std::string::size_type lEnd) const;
+    void addParameter(const std::string& aName, const std::string& aValue) const;
 
-    std::string theRequestURI;
-    std::vector<std::string> theRequestURISegments;
+
+    std::map<std::string, std::string> theEnvironment;
+
+    std::string theURI;
+    std::vector<std::string> theURISegments;
     std::string theQueryString;
 
     std::string theRequestMethod;
+
     mutable std::string theBody;
     mutable bool theBodyRead;
+
+    mutable std::map<std::string, std::vector<std::string> > theParameters;
+    mutable bool theParametersRead;
 
   };
 }

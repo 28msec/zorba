@@ -69,7 +69,7 @@ void RequestHandler::handleRequest(const FCGX_Request& aRequest) const
           "{\n" <<
           "  \"software\": \"Zorba Server\",\n" <<
           "  \"version\": \"" << Zorba::version() << "\"\n" <<
-          "}" << std::endl;
+          "}" << std::endl << lRequest << std::endl;
     }
     else
     {

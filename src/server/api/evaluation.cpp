@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <exceptions/server_exceptions.h>
-#include <io/response_iterator.h>
-#include <request_handler.h>
-#include <vector>
-#include <string>
+#include "zorba/module_info.h"
+
+#include "exceptions/server_exceptions.h"
+#include "debug/quick-debug.h"
+#include "io/response_iterator.h"
+#include "request_handler.h"
+#include "vector"
+#include "string"
 
 #include "evaluation.h"
 
@@ -47,8 +50,30 @@ void Evaluation::handleRequest(const io::Request& aRequest, io::Response& aRespo
 void Evaluation::evaluate(const io::Request& aRequest, io::Response& aResponse)
 {
   RequestHandler& lRequestHandler = RequestHandler::getInstance();
-  XQuery_t lQuery = lRequestHandler.getZorba().createQuery();
-  lQuery->compile(aRequest.getBody());
+  StaticContext_t lContext = lRequestHandler.getZorba().createStaticContext();
+  MapModuleURLResolver lResolver;
+  lContext->registerURLResolver(&lResolver);
+  std::string lSource;
+  if (aRequest.getContentType() && io::ContentTypes::isX_WWW_FORM_URLENCODED(*aRequest.getContentType()))
+  {
+    lSource = (*aRequest.getQueryParameter("query"))[0];
+    const std::vector<std::string>* lModules = aRequest.getQueryParameter("module");
+    if (lModules)
+    {
+      for (std::vector<std::string>::const_iterator lIt = lModules->begin();
+          lIt != lModules->end();
+          ++lIt)
+      {
+        lResolver.addModule(*lIt);
+      }
+    }
+    //DEBUG_SS(lSource);
+  }
+  else
+    lSource = aRequest.getBody();
+
+  XQuery_t lQuery = lRequestHandler.getZorba().compileQuery(lSource, lContext);
+
   io::ResponseIterator* lRespIterator = new io::ResponseIterator(lQuery);
   zorba::Iterator_t lZorbaIterator(lRespIterator);
 
@@ -64,6 +89,40 @@ void Evaluation::evaluate(const io::Request& aRequest, io::Response& aResponse)
     lRequestHandler.getSerializer()->serialize(lZorbaIterator, aResponse.getRawStream());
     if (!lRespIterator->isBinary())
       aResponse.getRawStream() << "\n";
+  }
+}
+
+void MapModuleURLResolver::addModule(const std::string& aSource)
+{
+  RequestHandler& lRequestHandler = RequestHandler::getInstance();
+  XQuery_t lQuery = lRequestHandler.getZorba().createQuery();
+  zorba::ModuleInfo_t lInfo;
+  std::istringstream lModuleStream(aSource);
+  lQuery->parse(lModuleStream, lInfo);
+  std::string lNamespace = lInfo->getTargetNamespace().c_str();
+  theModules[lNamespace] = aSource;
+}
+
+void MapModuleURLResolver::releaseStream(std::istream* aStream)
+{
+  delete aStream;
+}
+
+Resource* MapModuleURLResolver::resolveURL(
+    const String& aUrl,
+    EntityData const* aEntityData)
+{
+  if (aEntityData->getKind() != EntityData::MODULE)
+    return NULL;
+  std::map<std::string, std::string>::const_iterator lIt =
+      theModules.find(aUrl.str());
+  if (lIt != theModules.end())
+  {
+    std::unique_ptr<std::istream> lModule(new std::istringstream(lIt->second));
+    return StreamResource::create(lModule.release(), &releaseStream);
+  }
+  else {
+    return NULL;
   }
 }
 
