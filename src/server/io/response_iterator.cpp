@@ -26,22 +26,26 @@ namespace server
 {
 namespace io
 {
-  ResponseIterator::ResponseIterator(zorba::XQuery_t aQuery):
-      theIsOpen(false),
-      theWrappedIterator(aQuery->iterator()),
-      theIsInitialized(false),
-      theIsEmpty(false),
-      theIsBinary(false)
-  {
-  }
-
-  ResponseIterator::ResponseIterator(zorba::Iterator_t aIterator):
+  ResponseIterator::ResponseIterator(zorba::Iterator_t aIterator, bool aMaterialize):
         theIsOpen(false),
-        theWrappedIterator(aIterator),
         theIsInitialized(false),
-        theIsEmpty(false),
-        theIsBinary(false)
+        theIsEmpty(false)
   {
+    if (aMaterialize)
+    {
+      zorba::Item lItem;
+      aIterator->open();
+      while (aIterator->next(lItem))
+        theItemVector.push_back(lItem);
+      aIterator->close();
+
+      theItemSequence = std::auto_ptr<VectorItemSequence>(new VectorItemSequence(theItemVector));
+      theWrappedIterator = theItemSequence->getIterator();
+    }
+    else
+    {
+      theWrappedIterator = aIterator;
+    }
   }
 
   void ResponseIterator::initialize()
@@ -51,7 +55,11 @@ namespace io
     {
       theIsEmpty = false;
       theContentType = ContentTypes::getContentTypeForItem(theItem);
-      theIsBinary = false;
+      if (theItem.isAtomic())
+      {
+        theOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+      }
+      theSerializer = zorba::Serializer::createSerializer(theOptions);
     }
     else
       theIsEmpty = true;
@@ -67,12 +75,12 @@ namespace io
     return theIsEmpty;
   }
 
-  bool ResponseIterator::isBinary()
+  const zorba::Serializer_t ResponseIterator::getSerializer()
   {
     if (!theIsInitialized)
       initialize();
 
-    return theIsBinary;
+    return theSerializer;
   }
 
   const std::string& ResponseIterator::getContentType()

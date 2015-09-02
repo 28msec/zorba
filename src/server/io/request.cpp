@@ -188,6 +188,59 @@ const std::vector<std::string>* Request::getQueryParameter(const std::string& aN
   return NULL;
 }
 
+bool Request::getQueryParameterAsString(const std::string& aName, std::string& aValue, bool aMandatory) const
+{
+  const std::vector<std::string>* lValue = getQueryParameter(aName);
+  if (!lValue)
+    if (aMandatory)
+      throw exceptions::ServerException("Missing required parameter " + aName, 400);
+    else
+      return false;
+  else
+    if (lValue->size() == 0)
+      return true;
+    else if (lValue->size() > 1)
+      throw exceptions::ServerException("A single value is expected for parameter " + aName, 400);
+    else
+    {
+      aValue = (*lValue)[0];
+      return true;
+    }
+}
+
+bool Request::getQueryParameterAsBoolean(const std::string& aName, bool& aValue, bool aMandatory) const
+{
+  std::string lValue;
+  bool lHaveParameter = getQueryParameterAsString(aName, lValue, aMandatory);
+  if (lHaveParameter)
+  {
+    if (lValue.empty())
+      return true;
+    else
+    {
+      std::string lLowerCaseValue(lValue);
+      std::transform(lLowerCaseValue.begin(), lLowerCaseValue.end(), lLowerCaseValue.begin(), ::tolower);
+      if (lLowerCaseValue == "false")
+      {
+        aValue = false;
+        return true;
+      }
+      else if (lLowerCaseValue == "true")
+      {
+        aValue = true;
+        return true;
+      }
+      else
+      {
+        throw exceptions::ServerException("Allowed values for parameter " + aName + " are: <true>, <false>, <>.", 400);
+      }
+    }
+  }
+  else
+    return false;
+
+}
+
 const std::string* Request::getContentType() const
 {
   return getEnvironmentVariable("CONTENT_TYPE");

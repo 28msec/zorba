@@ -35,6 +35,7 @@ namespace api
 
     private:
     static void evaluate(const io::Request& aRequest, io::Response& aResponse);
+    static void doEvaluate(const std::string& aQuery, const std::vector<std::string>* aModules, bool aStream, io::Response& aResponse);
   };
 
   class MapModuleURLResolver : public URLResolver

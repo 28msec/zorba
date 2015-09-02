@@ -49,32 +49,46 @@ void Evaluation::handleRequest(const io::Request& aRequest, io::Response& aRespo
 
 void Evaluation::evaluate(const io::Request& aRequest, io::Response& aResponse)
 {
-  RequestHandler& lRequestHandler = RequestHandler::getInstance();
-  StaticContext_t lContext = lRequestHandler.getZorba().createStaticContext();
-  MapModuleURLResolver lResolver;
-  lContext->registerURLResolver(&lResolver);
-  std::string lSource;
+  bool lStream = false;
+  aRequest.getQueryParameterAsBoolean("stream", lStream, false);
+
   if (aRequest.getContentType() && io::ContentTypes::isX_WWW_FORM_URLENCODED(*aRequest.getContentType()))
   {
-    lSource = (*aRequest.getQueryParameter("query"))[0];
+    std::string lSource;
+    aRequest.getQueryParameterAsString("query", lSource, true);
     const std::vector<std::string>* lModules = aRequest.getQueryParameter("module");
-    if (lModules)
-    {
-      for (std::vector<std::string>::const_iterator lIt = lModules->begin();
-          lIt != lModules->end();
-          ++lIt)
-      {
-        lResolver.addModule(*lIt);
-      }
-    }
-    //DEBUG_SS(lSource);
+    doEvaluate(lSource, lModules, lStream, aResponse);
   }
   else
-    lSource = aRequest.getBody();
+  {
+    const std::string& lSource = aRequest.getBody();
+    doEvaluate(lSource, NULL, lStream, aResponse);
+  }
+}
 
-  XQuery_t lQuery = lRequestHandler.getZorba().compileQuery(lSource, lContext);
+void Evaluation::doEvaluate(const std::string& aQuery, const std::vector<std::string>* aModules, bool aStream, io::Response& aResponse)
+{
+  RequestHandler& lRequestHandler = RequestHandler::getInstance();
+  XQuery_t lQuery;
+  if (aModules == NULL || aModules->size() == 0)
+  {
+    lQuery = lRequestHandler.getZorba().compileQuery(aQuery);
+  }
+  else
+  {
+    StaticContext_t lContext = lRequestHandler.getZorba().createStaticContext();
+    MapModuleURLResolver lResolver;
+    lContext->registerURLResolver(&lResolver);
+    for (std::vector<std::string>::const_iterator lIt = aModules->begin();
+         lIt != aModules->end();
+         ++lIt)
+    {
+      lResolver.addModule(*lIt);
+    }
+    lQuery = lRequestHandler.getZorba().compileQuery(aQuery, lContext);
+  }
 
-  io::ResponseIterator* lRespIterator = new io::ResponseIterator(lQuery);
+  io::ResponseIterator* lRespIterator = new io::ResponseIterator(lQuery->iterator(), !aStream);
   zorba::Iterator_t lZorbaIterator(lRespIterator);
 
   if (lRespIterator->isEmpty())
@@ -86,9 +100,7 @@ void Evaluation::evaluate(const io::Request& aRequest, io::Response& aResponse)
   {
     aResponse.setContentType(lRespIterator->getContentType());
     aResponse.sendHeaders();
-    lRequestHandler.getSerializer()->serialize(lZorbaIterator, aResponse.getRawStream());
-    if (!lRespIterator->isBinary())
-      aResponse.getRawStream() << "\n";
+    lRespIterator->getSerializer()->serialize(lZorbaIterator, aResponse.getRawStream());
   }
 }
 

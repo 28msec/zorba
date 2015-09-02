@@ -38,6 +38,9 @@ namespace io
     const std::map<std::string, std::vector<std::string> >& getQueryParameters() const;
     const std::vector<std::string>* getQueryParameter(const std::string& aName) const;
 
+    bool getQueryParameterAsString(const std::string& aName, std::string& aValue, bool aMandatory) const;
+    bool getQueryParameterAsBoolean(const std::string& aName, bool& aValue, bool aMandatory) const;
+
     const std::string& getRequestMethod() const;
     const std::string& getRequestURI() const;
     const std::vector<std::string> getRequestURISegments() const;
