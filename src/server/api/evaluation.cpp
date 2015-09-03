@@ -16,7 +16,6 @@
 #include "zorba/module_info.h"
 
 #include "exceptions/server_exceptions.h"
-#include "debug/quick-debug.h"
 #include "io/response_iterator.h"
 #include "request_handler.h"
 #include "vector"

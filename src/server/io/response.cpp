@@ -18,7 +18,6 @@
 
 #include "exceptions/server_exceptions.h"
 #include "exceptions/formatter.h"
-#include "debug/quick-debug.h"
 #include "response.h"
 
 namespace zorba

@@ -77,7 +77,8 @@ IF (FCGI_FOUND AND MONGODRIVER_FOUND AND Boost_SYSTEM_FOUND AND Boost_FILESYSTEM
      
     exceptions/formatter.cpp
     exceptions/server_exceptions.cpp
-     
+    
+    utils/debug.cpp 
     utils/JSONItems.cpp
   )
 
