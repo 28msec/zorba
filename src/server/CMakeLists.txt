@@ -83,6 +83,7 @@ IF (FCGI_FOUND AND MONGODRIVER_FOUND AND Boost_SYSTEM_FOUND AND Boost_FILESYSTEM
   )
 
   ZORBA_GENERATE_EXE("zorba-server" "${SERVER_SRCS}" "${REQUIRED_LIBS}" "zorba-server" "bin")
+  ADD_SUBDIRECTORY("tests")
   
   MESSAGE(STATUS "") 
   MESSAGE(STATUS "-------------------------------------------------------------")

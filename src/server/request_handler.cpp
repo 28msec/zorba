@@ -90,14 +90,14 @@ void RequestHandler::throwInvalidMethod(const io::Request& aRequest, const std::
 {
   throw exceptions::ServerException(
       "Invalid method in request <" + aRequest.getRequestMethod() + " " + aRequest.getRequestURI() + ">. " +
-      "Supported methods for this endpoint are: " + aAllowedMethods + ".");
+      "Supported methods for this endpoint are: " + aAllowedMethods + ".", 405);
 }
 
 void RequestHandler::throwInvalidEndpoint(const io::Request& aRequest, const std::string& aErrorMessage)
 {
   throw exceptions::ServerException(
       "Invalid request <" + aRequest.getRequestMethod() + aRequest.getRequestURI() + ">. " +
-      aErrorMessage);
+      aErrorMessage, 400);
 }
 
 }

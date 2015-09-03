@@ -38,7 +38,10 @@ void Evaluation::handleRequest(const io::Request& aRequest, io::Response& aRespo
     /*
      * Request to /v1/evaluate
      */
-    evaluate(aRequest, aResponse);
+    if (aRequest.getRequestMethod() == "POST")
+      evaluate(aRequest, aResponse);
+    else
+      RequestHandler::throwInvalidMethod(aRequest, "POST");
   }
   else
   {

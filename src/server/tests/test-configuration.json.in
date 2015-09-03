@@ -1,0 +1,6 @@
+{
+  "testsDirectory": "@CMAKE_CURRENT_SOURCE_DIR@/tests",
+  "baseDirectory": "@CMAKE_CURRENT_SOURCE_DIR@",
+  "serverEndpoint" : "localhost",
+  "serverPort" : "81"  
+}
