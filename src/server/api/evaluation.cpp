@@ -66,7 +66,10 @@ void Evaluation::evaluate(const io::Request& aRequest, io::Response& aResponse)
   }
 }
 
-void Evaluation::doEvaluate(const std::string& aQuery, const std::vector<std::string>* aModules, bool aStream, io::Response& aResponse)
+void Evaluation::doEvaluate(const std::string& aQuery,
+                            const std::vector<std::string>* aModules,
+                            bool aStream,
+                            io::Response& aResponse)
 {
   RequestHandler& lRequestHandler = RequestHandler::getInstance();
   XQuery_t lQuery;
@@ -111,7 +114,14 @@ void MapModuleURLResolver::addModule(const std::string& aSource)
   zorba::ModuleInfo_t lInfo;
   std::istringstream lModuleStream(aSource);
   lQuery->parse(lModuleStream, lInfo);
-  std::string lNamespace = lInfo->getTargetNamespace().c_str();
+  std::string lNamespace = lInfo->getTargetNamespace().str();
+
+  std::map<std::string, std::string>::const_iterator lIt =
+        theModules.find(lNamespace);
+  if (lIt != theModules.end())
+  {
+    throw exceptions::ServerException("Received two modules with the URI <" + lNamespace + ">.", 400);
+  }
   theModules[lNamespace] = aSource;
 }
 
@@ -133,9 +143,8 @@ Resource* MapModuleURLResolver::resolveURL(
     std::unique_ptr<std::istream> lModule(new std::istringstream(lIt->second));
     return StreamResource::create(lModule.release(), &releaseStream);
   }
-  else {
+  else
     return NULL;
-  }
 }
 
 }
