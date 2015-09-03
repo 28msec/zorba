@@ -15,6 +15,7 @@
  */
 #include "zorba/module_info.h"
 
+#include "utils/debug.h"
 #include "exceptions/server_exceptions.h"
 #include "io/response_iterator.h"
 #include "request_handler.h"
@@ -96,6 +97,8 @@ void Evaluation::doEvaluate(const std::string& aQuery,
   io::ResponseIterator* lRespIterator = new io::ResponseIterator(lQuery->iterator(), !aStream);
   zorba::Iterator_t lZorbaIterator(lRespIterator);
 
+  //DEBUG_SS("Evaluating");
+  //sleep(20);
   if (lRespIterator->isEmpty())
   {
     aResponse.setStatus(204);
@@ -103,6 +106,8 @@ void Evaluation::doEvaluate(const std::string& aQuery,
   }
   else
   {
+    //DEBUG_SS("here");
+    //sleep(20);
     aResponse.setContentType(lRespIterator->getContentType());
     aResponse.sendHeaders();
     lRespIterator->getSerializer()->serialize(lZorbaIterator, aResponse.getRawStream());

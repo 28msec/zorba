@@ -17,6 +17,7 @@
 
 #include "exceptions/server_exceptions.h"
 #include "io/response.h"
+#include "utils/debug.h"
 
 #include "response_iterator.h"
 
@@ -54,7 +55,9 @@ namespace io
     if (theWrappedIterator->next(theItem))
     {
       theIsEmpty = false;
+      DEBUG_SS("First item is json: " << theItem.isJSONItem());
       theContentType = ContentTypes::getContentTypeForItem(theItem);
+      DEBUG_SS("Response Iterator want to send " << theContentType);
       if (theItem.isAtomic())
       {
         theOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
@@ -88,6 +91,7 @@ namespace io
     if (!theIsInitialized)
       initialize();
 
+    DEBUG_SS("Response Iterator thinks it is: " << theContentType);
     return theContentType;
   }
 

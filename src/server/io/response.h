@@ -18,6 +18,7 @@
 
 #include <map>
 
+#include "utils/debug.h"
 #include "zorba/item.h"
 
 namespace zorba
@@ -46,10 +47,10 @@ namespace io
 
   public:
 
-    static std::string JSON_UTF8_CT;
-    static std::string TEXT_UTF8_CT;
-    static std::string XML_UTF8_CT;
-    static std::string BINARY_UTF8_CT;
+    static const std::string JSON_UTF8_CT;
+    static const std::string TEXT_UTF8_CT;
+    static const std::string XML_UTF8_CT;
+    static const std::string BINARY_UTF8_CT;
   };
 
 
@@ -74,7 +75,7 @@ namespace io
   private:
     bool theHeadersSent;
     int theStatusCode;
-    std::string& theContentType;
+    std::string theContentType;
     std::ostream& theResponseStream;
     std::map<std::string, std::string> theHeaders;
   };

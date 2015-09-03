@@ -18,6 +18,7 @@
 
 #include <string>
 #include <sstream>
+#include <unistd.h>
 
 //#define DISABLE_DEBUG
 

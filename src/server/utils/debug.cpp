@@ -16,7 +16,7 @@
 #include <iomanip>
 #include <sys/time.h>
 #include <sys/types.h>
-#include <unistd.h>
+
 #include <fstream>
 
 #include "exceptions/server_exceptions.h"
