@@ -7,3 +7,5 @@ build
 *.swp
 doc/node_modules
 doc/site
+doc/modules
+doc/apis
