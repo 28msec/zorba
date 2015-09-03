@@ -5,3 +5,5 @@
 .DS_Store
 build
 *.swp
+doc/node_modules
+doc/site
