@@ -34,6 +34,8 @@ namespace utils
   typedef std::pair<zorba::Item, zorba::Item> ObjectPair;
   typedef std::vector<ObjectPair> ObjectPairs;
 
+  class JSONArray;
+
   class JSONObject
   {
     public:

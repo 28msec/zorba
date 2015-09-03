@@ -16,7 +16,7 @@
 #ifndef SERVER_EXCEPTIONS_FORMATTER_H
 #define SERVER_EXCEPTIONS_FORMATTER_H
 
-#include "utils/JSONObject.h"
+#include <utils/JSONItems.h>
 
 namespace zorba
 {
@@ -39,6 +39,15 @@ public:
   static void formatServerException(const exceptions::ServerException& aServerException,
                                     utils::JSONObject& aFormattedException,
                                     int& aStatusCode);
+
+private:
+  static void addStackTrace(const zorba::XQueryException& aXQueryException,
+                            utils::JSONObject& aFormattedException);
+
+  static void addStackTraceEntry(const XQueryStackTrace::Entry& aEntry,
+                                 utils::JSONArray& aStack);
+
+
 };
 
 }

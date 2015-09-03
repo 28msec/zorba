@@ -60,66 +60,81 @@ void Formatter::formatZorbaException(const zorba::ZorbaException& aZorbaExceptio
   switch (lDiag.kind())
   {
     case diagnostic::XQUERY_STATIC:
-      aFormattedException.addField("source", "Zorba (query static error)");
+      aFormattedException.addField("source", "Query (static error)");
       break;
     case diagnostic::XQUERY_DYNAMIC:
-      aFormattedException.addField("source", "Zorba (query dynamic error)");
+      aFormattedException.addField("source", "Query (dynamic error)");
       break;
     case diagnostic::XQUERY_TYPE:
-      aFormattedException.addField("source", "Zorba (query type error)");
+      aFormattedException.addField("source", "Query (type error)");
       break;
     default:
       if (dynamic_cast<const zorba::XQueryException*>(&aZorbaException))
-        aFormattedException.addField("source", "Zorba (query error)");
+        aFormattedException.addField("source", "Query");
       else
         aFormattedException.addField("source", "Zorba (engine error)");
   }
 
-  std::string lCode = (lDiag.qname().ns() == NULL ? "" : std::string(lDiag.qname().ns()) + ":") + lDiag.qname().localname();
+  std::string lCode = (lDiag.qname().ns() == NULL ?
+                         "" :
+                         std::string(lDiag.qname().ns()) + ":") + lDiag.qname().localname();
   aFormattedException.addField("code", lCode);
+  aFormattedException.addField("message", aZorbaException.what());
 
   const zorba::XQueryException* lXQueryException =
       dynamic_cast<const zorba::XQueryException*>(&aZorbaException);
   if (lXQueryException)
-  {
-    if (!lXQueryException->query_trace().empty())
-    {
-      utils::JSONArray lStack;
-      for(zorba::XQueryStackTrace::const_iterator lIt = lXQueryException->query_trace().begin();
-          lIt != lXQueryException->query_trace().end();
-          ++lIt)
-      {
-        utils::JSONObject lStackEntry;
-        lStackEntry.addField("module", lIt->getFileName());
-
-        lStackEntry.addField("functionNamespaceURI", lIt->getFnName().ns());
-        lStackEntry.addField("functionNamespacePrefix", lIt->getFnName().prefix());
-        lStackEntry.addField("functionLocalName", lIt->getFnName().localname());
-        lStackEntry.addField("functionArity", (long)lIt->getFnArity());
-        lStackEntry.addField("lineNumber", (long)lIt->getLine());
-        lStackEntry.addField("columnNumber", (long)lIt->getLineEnd());
-        lStackEntry.addField("lineNumberEnd", (long)lIt->getColumn());
-        lStackEntry.addField("columnNumberEnd", (long)lIt->getColumnEnd());
-        lStack.addMember(lStackEntry);
-      }
-      aFormattedException.addField("stackTrace", lStack);
-    }
-
-    if (lXQueryException->has_source())
-    {
-      utils::JSONObject lLocation;
-      lLocation.addField("module", lXQueryException->source_uri());
-      lLocation.addField("lineNumber", (long)lXQueryException->source_line());
-      lLocation.addField("columnNumber", (long)lXQueryException->source_column());
-      lLocation.addField("lineNumberEnd", (long)lXQueryException->source_line_end());
-      lLocation.addField("columnNumberEnd", (long)lXQueryException->source_column_end());
-      aFormattedException.addField("location", lLocation);
-    }
-  }
-
-  aFormattedException.addField("message", aZorbaException.what());
+    addStackTrace(*lXQueryException, aFormattedException);
 
   aStatusCode = 500;
+}
+
+void Formatter::addStackTrace(const zorba::XQueryException& aXQueryException,
+                              utils::JSONObject& aFormattedException)
+{
+  if (aXQueryException.has_source())
+  {
+    utils::JSONArray lStack;
+
+    utils::JSONObject lLocation;
+    lLocation.addField("module", aXQueryException.source_uri());
+    lLocation.addField("lineNumber", (long)aXQueryException.source_line());
+    lLocation.addField("columnNumber", (long)aXQueryException.source_column());
+    lLocation.addField("lineNumberEnd", (long)aXQueryException.source_line_end());
+    lLocation.addField("columnNumberEnd", (long)aXQueryException.source_column_end());
+    lStack.addMember(lLocation);
+
+    if (!aXQueryException.query_trace().empty())
+    {
+      for(zorba::XQueryStackTrace::const_iterator lIt = aXQueryException.query_trace().begin();
+          lIt != aXQueryException.query_trace().end();
+          ++lIt)
+      {
+        addStackTraceEntry(*lIt, lStack);
+      }
+    }
+    aFormattedException.addField("stackTrace", lStack);
+  }
+}
+
+void Formatter::addStackTraceEntry(const XQueryStackTrace::Entry& aEntry,
+                                   utils::JSONArray& aStack)
+{
+  utils::JSONObject lStackEntry;
+  lStackEntry.addField("module", aEntry.getFileName());
+  lStackEntry.addField("lineNumber", (long)aEntry.getLine());
+  lStackEntry.addField("columnNumber", (long)aEntry.getColumn());
+  lStackEntry.addField("lineNumberEnd", (long)aEntry.getLineEnd());
+  lStackEntry.addField("columnNumberEnd", (long)aEntry.getColumnEnd());
+
+  utils::JSONObject lFunction;
+  lFunction.addField("namespaceURI", aEntry.getFnName().ns());
+  lFunction.addField("namespacePrefix", aEntry.getFnName().prefix());
+  lFunction.addField("localName", aEntry.getFnName().localname());
+  lFunction.addField("arity", (long)aEntry.getFnArity());
+  lStackEntry.addField("function", lFunction);
+
+  aStack.addMember(lStackEntry);
 }
 
 void Formatter::formatServerException(const exceptions::ServerException& aServerException,

@@ -78,7 +78,7 @@ IF (FCGI_FOUND AND MONGODRIVER_FOUND AND Boost_SYSTEM_FOUND AND Boost_FILESYSTEM
     exceptions/formatter.cpp
     exceptions/server_exceptions.cpp
      
-    utils/JSONObject.cpp
+    utils/JSONItems.cpp
   )
 
   ZORBA_GENERATE_EXE("zorba-server" "${SERVER_SRCS}" "${REQUIRED_LIBS}" "zorba-server" "bin")
