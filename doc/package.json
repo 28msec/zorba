@@ -1,0 +1,32 @@
+{
+  "name": "zorba-documentation",
+  "version": "1.0.0",
+  "description": "Zorba Documentation",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:28msec/zorba.git"
+  },
+  "keywords": [
+    "zorba",
+    "xquery",
+    "jsoniq"
+  ],
+  "author": "28msec",
+  "license": "Apache 2",
+  "bugs": {
+    "url": "https://github.com/28msec/zorba/issues"
+  },
+  "homepage": "https://github.com/28msec/zorba",
+  "devDependencies": {
+    "final-fs": "^1.6.1",
+    "gitbook": "^2.3.0",
+    "gitbook-plugin-anchors": "^0.4.0",
+    "gulp": "^3.9.0",
+    "gulp-gh-pages": "^0.5.2",
+    "gulp-load-plugins": "^1.0.0-rc.1"
+  }
+}

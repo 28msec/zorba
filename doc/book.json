@@ -1,0 +1,6 @@
+{
+    "version": "2.x.x",
+    "input": "",
+    "output": "book",
+    "plugins": ["28msec", "anchors"]
+}
