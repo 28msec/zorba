@@ -18,7 +18,7 @@ machine:
     - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/flex_2.5.39-8_amd64.deb
     - sudo dpkg -i libfl-dev_2.5.39-8_amd64.deb flex_2.5.39-8_amd64.deb
 #Custom built packages
-    - sudo apt-get install libc-client2007e=8:2007e-1~dfsg-3.1ubuntu5zorba3 libc-client2007e-dev=8:2007e-1~dfsg-3.1ubuntu5zorba3
+    - sudo apt-get install libc-client2007e=8:2007e-1~dfsg-3.2ubuntu1zorba2 libc-client2007e-dev=8:2007e-1~dfsg-3.2ubuntu1zorba2
     - sudo apt-get install libboost-filesystem1.49-dev
     - sudo apt-get install xmlbeans 
     - sudo apt-get install uuid-dev libxerces-c-dev graphviz  libgeos++-dev imagemagick libmagick++-dev libmagickwand-dev libfop-java libpdfbox-java libtidy-dev libjempbox-java libfontbox-java libarchive-dev libmysqlclient-dev openjdk-6-jdk libaccess-bridge-java-jni libxslt-dev libcurl4-openssl-dev libxerces-c-dev doxygen libedit-dev libkvutils-dev
