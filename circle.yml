@@ -4,28 +4,51 @@ machine:
     - sudo add-apt-repository -y ppa:fcavalieri/zorba
     - sudo add-apt-repository -y ppa:fcavalieri/sausalito
     - sudo apt-get update -qq
-#    - sudo apt-get install -f
     - sudo apt-get purge "libmagick*"
     - sudo apt-get purge "libboost*"
     - sudo apt-get purge "texlive*"
     - sudo apt-get purge "flex"
     - sudo apt-get purge "libfl-dev"
-#Packages that are too old in the 12.04 repositories
+#Core
+    - sudo apt-get install build-essential cmake libxml2-dev libicu-dev  libxerces-c-dev libcurl4-openssl-dev uuid-dev libxslt-dev 
+#Parser
+    - sudo apt-get install m4
     - wget http://launchpadlibrarian.net/160037457/bison_3.0.2.dfsg-2_amd64.deb
     - wget http://launchpadlibrarian.net/160037458/libbison-dev_3.0.2.dfsg-2_amd64.deb
     - sudo dpkg -i libbison-dev_3.0.2.dfsg-2_amd64.deb bison_3.0.2.dfsg-2_amd64.deb
+#Lexer
     - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/libfl-dev_2.5.39-8_amd64.deb
     - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/flex_2.5.39-8_amd64.deb
     - sudo dpkg -i libfl-dev_2.5.39-8_amd64.deb flex_2.5.39-8_amd64.deb
-#Custom built packages
-    - sudo apt-get install libc-client2007e=8:2007e-1~dfsg-3.2ubuntu1zorba2 libc-client2007e-dev=8:2007e-1~dfsg-3.2ubuntu1zorba2
-    - sudo apt-get install libboost-filesystem1.49-dev
-    - sudo apt-get install xmlbeans 
-    - sudo apt-get install uuid-dev libxerces-c-dev graphviz  libgeos++-dev imagemagick libmagick++-dev libmagickwand-dev libfop-java libpdfbox-java libtidy-dev libjempbox-java libfontbox-java libarchive-dev libmysqlclient-dev openjdk-6-jdk libaccess-bridge-java-jni libxslt-dev libcurl4-openssl-dev libxerces-c-dev doxygen libedit-dev libkvutils-dev
+#Documentation
+    - sudo apt-get install doxygen texlive
+#Test Driver
+    - sudo apt-get install libboost-filesystem-dev
+#External modules extra repositories
+    - sudo apt-get install python-software-properties
+    - sudo add-apt-repository --yes ppa:fcavalieri/zorba
+    - sudo wget -O/etc/apt/sources.list.d/couchbase.list http://packages.couchbase.com/ubuntu/couchbase-ubuntu1204.list
+    - wget  http://packages.couchbase.com/ubuntu/couchbase.key
+    - sudo apt-key add couchbase.key
+    - sudo apt-get update
+#External modules dependencies
+    - sudo apt-get install libarchive-dev
+    - sudo apt-get install graphviz-dev
+    - sudo apt-get install openjdk-7-jdk
+    - wget http://download.oracle.com/otn-pub/otn_software/nosql-database/kv-c-driver_3.3.5-0_amd64.deb 
+    - sudo dpkg -i kv-c-driver_3.3.5-0_amd64.deb
+    - sudo apt-get install libfontbox-java libjempbox-java libpdfbox-java libcommons-logging-java
+    - sudo apt-get install libtidy-dev
+    - sudo apt-get install libc-client2007e-dev=8:2007e-1~dfsg-3.2ubuntu1zorba2
+    - sudo apt-get install libsqlite3-dev
+    - sudo apt-get install libcouchbase-dev
+    - sudo apt-get install libmagick++-dev
+    - sudo apt-get install libgeos++-dev
+    - sudo apt-get install xmlbeans
+    - sudo apt-get install libfop-java libcommons-logging-java
     - sudo locale-gen de_DE && sudo locale-gen de_DE.UTF-8 && sudo locale-gen fr_FR && sudo locale-gen fr_FR.UTF-8 && sudo update-locale
 #Zorba Server
     - sudo apt-get install nginx spawn-fcgi libfcgi-dev
-    - wget http://download.oracle.com/otn-pub/otn_software/nosql-database/kv-c-driver_3.3.5-0_amd64.deb && sudo dpkg -i kv-c-driver_3.3.5-0_amd64.deb && rm kv-c-driver_3.3.5-0_amd64.deb
 #DistCC
     - sudo apt-get install distcc lib64z1 lib64z1-dev
     - sudo sed -i.bak s/STARTDISTCC=\"false\"/STARTDISTCC=\"true\"/g /etc/default/distcc
