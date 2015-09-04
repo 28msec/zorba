@@ -10,17 +10,26 @@ machine:
     - sudo apt-get purge "texlive*"
     - sudo apt-get purge "flex"
     - sudo apt-get purge "libfl-dev"
-    - sudo apt-get install distcc lib64z1 lib64z1-dev uuid-dev libxerces-c-dev graphviz libboost-filesystem-dev libgeos++-dev imagemagick libmagick++-dev libmagickwand-dev libfop-java libpdfbox-java libtidy-dev libjempbox-java libfontbox-java libarchive-dev libmysqlclient-dev openjdk-6-jdk libaccess-bridge-java-jni libxslt-dev libcurl4-openssl-dev libxerces-c-dev doxygen libedit-dev libkvutils-dev
-    - sudo locale-gen de_DE && sudo locale-gen de_DE.UTF-8 && sudo locale-gen fr_FR && sudo locale-gen fr_FR.UTF-8 && sudo update-locale
+#Packages that are too old in the 12.04 repositories
     - wget http://launchpadlibrarian.net/160037457/bison_3.0.2.dfsg-2_amd64.deb
     - wget http://launchpadlibrarian.net/160037458/libbison-dev_3.0.2.dfsg-2_amd64.deb
     - sudo dpkg -i libbison-dev_3.0.2.dfsg-2_amd64.deb bison_3.0.2.dfsg-2_amd64.deb
-    - sudo sed -i.bak s/STARTDISTCC=\"false\"/STARTDISTCC=\"true\"/g /etc/default/distcc
-    - sudo /etc/init.d/distcc start
     - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/libfl-dev_2.5.39-8_amd64.deb
     - wget https://launchpad.net/ubuntu/+source/flex/2.5.39-8/+build/6118519/+files/flex_2.5.39-8_amd64.deb
     - sudo dpkg -i libfl-dev_2.5.39-8_amd64.deb flex_2.5.39-8_amd64.deb
+#Custom built packages
+    - sudo apt-get install libc-client2007e=8:2007e-1~dfsg-3.1ubuntu5zorba3 libc-client2007e-dev=8:2007e-1~dfsg-3.1ubuntu5zorba3
+    - sudo apt-get install libboost-filesystem1.49-dev
+    - sudo apt-get install xmlbeans 
+    - sudo apt-get install uuid-dev libxerces-c-dev graphviz  libgeos++-dev imagemagick libmagick++-dev libmagickwand-dev libfop-java libpdfbox-java libtidy-dev libjempbox-java libfontbox-java libarchive-dev libmysqlclient-dev openjdk-6-jdk libaccess-bridge-java-jni libxslt-dev libcurl4-openssl-dev libxerces-c-dev doxygen libedit-dev libkvutils-dev
+    - sudo locale-gen de_DE && sudo locale-gen de_DE.UTF-8 && sudo locale-gen fr_FR && sudo locale-gen fr_FR.UTF-8 && sudo update-locale
+#Zorba Server
     - sudo apt-get install nginx spawn-fcgi libfcgi-dev
+    - wget http://download.oracle.com/otn-pub/otn_software/nosql-database/kv-c-driver_3.3.5-0_amd64.deb && sudo dpkg -i kv-c-driver_3.3.5-0_amd64.deb && rm kv-c-driver_3.3.5-0_amd64.deb
+#DistCC
+    - sudo apt-get install distcc lib64z1 lib64z1-dev
+    - sudo sed -i.bak s/STARTDISTCC=\"false\"/STARTDISTCC=\"true\"/g /etc/default/distcc
+    - sudo /etc/init.d/distcc start
   environment:
     ZORBA_SRC_DIR: /home/ubuntu/zorba
     ZORBA_BUILD_DIR: /home/ubuntu/zorba/build
