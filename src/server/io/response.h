@@ -18,7 +18,6 @@
 
 #include <map>
 
-#include "utils/debug.h"
 #include "zorba/item.h"
 
 namespace zorba

@@ -16,7 +16,6 @@
 #include "zorba/item.h"
 #include "zorba/singleton_item_sequence.h"
 
-#include "utils/debug.h"
 #include "exceptions/server_exceptions.h"
 #include "exceptions/formatter.h"
 #include "response.h"
@@ -122,15 +121,9 @@ const std::string ContentTypes::BINARY_UTF8_CT = "application/octet-stream";
 const std::string& ContentTypes::getContentTypeForItem(const zorba::Item& aItem)
 {
   if (aItem.isAtomic())
-  {
-    DEBUG_SS("getContentTypeForItem thinks it is text " << ContentTypes::TEXT_UTF8_CT);
     return ContentTypes::TEXT_UTF8_CT;
-  }
   else if (aItem.isJSONItem()) //Object or Array
-  {
-    DEBUG_SS("getContentTypeForItem thinks it is json " << ContentTypes::JSON_UTF8_CT);
     return ContentTypes::JSON_UTF8_CT;
-  }
   else if (aItem.isNode())
     return ContentTypes::XML_UTF8_CT;
   else
@@ -168,7 +161,6 @@ void Response::setStatus(int aStatus)
 void Response::setContentType(const std::string& aContentType)
 {
   theContentType = aContentType;
-  DEBUG_SS("Setting: " << aContentType);
 }
 
 void Response::addHeader(const std::string& aName, const std::string& aValue)
@@ -181,8 +173,6 @@ void Response::sendHeaders()
   theResponseStream
       << "Status: " << theStatusCode << " " << HTTPStatusCodes::getCodeDescription(theStatusCode) << "\r\n"
       << "Content-Type: " << theContentType << "\r\n";
-
-  DEBUG_SS("Sending: " << theContentType);
 
   for (std::map<std::string, std::string>::const_iterator lIt = theHeaders.begin();
        lIt != theHeaders.end();
