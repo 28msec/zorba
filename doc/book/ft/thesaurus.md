@@ -1,97 +1,79 @@
 # Full Text Thesaurus
 
-\section ft_thesaurus_intro Introduction
+## Introduction
 
-The Zorba XQuery engine implements the
-<a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</a>
-specification that, among other things,
-adds the ability to use a thesaurus for text-matching
-via the <a href="http://www.w3.org/TR/xpath-full-text-10/#ftthesaurusoption">thesaurus option</a>.
-For example, the query:
+The Zorba XQuery engine implements the <a href="http://www.w3.org/TR/xpath-full-text-10/">XQuery and XPath Full Text 1.0</a> specification that, among other things, adds the ability to use a thesaurus for text-matching via the <a href="http://www.w3.org/TR/xpath-full-text-10/#ftthesaurusoption">thesaurus option</a>. For example, the query:
 
-\code
+```xquery
 let $x := <msg>affluent man</msg>
 return $x contains text "wealthy"
   using thesaurus default
-\endcode
+```
 
-returns \c true because \c $x contains "wealthy"
-that the thesaurus identified as a synonym of "affluent".
+returns `true` because `$x contains "wealthy"`
+that the thesaurus identified as a synonym of *"affluent"*.
 
-The initial implementation of the thesaurus option uses the
-<a href="http://wordnet.princeton.edu/">WordNet lexical database</a>,
-version 3.0.
+The initial implementation of the thesaurus option uses the <a href="http://wordnet.princeton.edu/">WordNet lexical database</a>, version 3.0.
 
 The stock WordNet database files are plain ASCII text files.
 In many ways this is very convenient
 for portability, grep-ability, vi-ability, etc.
-However, the sum total of the files is approximately 27MB
-(which is quite large)
-and accessing the database would be inefficient
-since the files would have to be parsed for every access.
+However, the sum total of the files is approximately 27MB (which is quite large) and accessing the database would be inefficient since the files would have to be parsed for every access.
 
-Instead, the database files are compiled into a single binary file
-that is 6MB and can be efficiently accessed from Zorba
-using <a href="http://en.wikipedia.org/wiki/Mmap">mmap(2)</a>
-with no parsing of the data.
-The only caveat of the binary format is that it is
-<a ref="http://en.wikipedia.org/wiki/Endianness">endian</a>-dependent,
-i.e., a binary file created on a computer having a little-endian CPU
-won't work on a computer having a big-endian CPU.
+Instead, the database files are compiled into a single binary file that is 6MB and can be efficiently accessed from Zorba using <a href="http://en.wikipedia.org/wiki/Mmap">mmap(2)</a> with no parsing of the data.
+The only caveat of the binary format is that it is <a ref="http://en.wikipedia.org/wiki/Endianness">endian</a>-dependent, i.e., a binary file created on a computer having a little-endian CPU won't work on a computer having a big-endian CPU.
 
-\section ft_thesaurus_download_install_wordnet Downloading & Installing the WordNet Database
+## Downloading & Installing the WordNet Database
 
 To download and install the WordNet database on a Unix-like system,
 follow these steps:
 
--# Download the WordNet database from
+* Download the WordNet database from
    <a href="http://wordnet.princeton.edu/wordnet/download/">here</a>.
    All you really need are just the database files
-   (<code>WNdb-3.0.tar.gz</code>).
--# Un-gzip and untar the files.
+   (`WNdb-3.0.tar.gz`).
+* Un-gzip and untar the files.
    This will result in a directory dict containing the database files.
--# Move the dict directory somewhere of your choosing,
-   e.g., <code>/usr/local/wordnet-3.0/dict</code>.
--# Compile the \c dict directory into a Zorba-compatible binary thesaurus
+* Move the dict directory somewhere of your choosing,
+   e.g., `/usr/local/wordnet-3.0/dict`.
+* Compile the `dict` directory into a Zorba-compatible binary thesaurus
    as described below.
 
 To compile the WordNet database files,
-use the \c zt-wn-compile script
-found in the \c scripts subdirectory of the Zorba distribution.
+use the `zt-wn-compile` script
+found in the `scripts` subdirectory of the Zorba distribution.
 (Note: this script is written in perl.)
 The usage message is:
 
-\code
+```bash
 zt-wn-compile [-v] wordnet_dict_dir [thesaurus_file]
-\endcode
+```
 
-- The \c -v option specifies verbose output.
-- The \e wordnet_dict_dir specifies the full path
+* The \c -v option specifies verbose output.
+* The \e wordnet_dict_dir specifies the full path
   of the WordNet \c dict directory.
-- The \e thesaurus_file specifies the name of the resulting binary file.
+* The \e thesaurus_file specifies the name of the resulting binary file.
   If none is given, it defaults to \c wordnet-en.zth
   ("en" for English and "zth" for "Zorba Thesaurus file").
 
 For example:
 
-\code
+```bash
 zt-wn-compile -v /usr/local/wordnet-3.0/dict
-\endcode
+```
 
-To install the \c wordnet-en.zth file,
-move it onto Zorba's <i>library path</i>:
+To install the `wordnet-en.zth` file,
+move it onto Zorba's *library path*:
 
-\code
+```bash
 LIB_PATH/edu/princeton/wordnet/wordnet-en.zth
-\endcode
+```
 
-\subsection ft_thesaurus_precompiled Downloading a Precompiled WordNet Database
+### Downloading a Precompiled WordNet Database
 
-Alternatively,
-you can download a precompiled, little-endian (Intel) CPU WordNet database from
-<a href="http://www.zorba.io/downloads/WordNet-3.0/wordnet-en.zip">here</a>.
+Alternatively, you can download a precompiled, little-endian (Intel) CPU WordNet database from <a href="http://www.zorba.io/downloads/WordNet-3.0/wordnet-en.zip">here</a>.
 
-\section ft_thesaurus_mappings Thesauri Mappings
+## Thesaurus Mappings
 
 In order to use thesauri,
 you need to specify what symbolic URI(s) <i>map</i>
@@ -102,39 +84,38 @@ A mapping is of the form:
 
 For example:
 
-\code
+```
 http://wordnet.princeton.edu:=wordnet://wordnet.princeton.edu
-\endcode
+```
 
-says that the symbolic URI \c http://wordnet.princeton.edu
+says that the symbolic URI `http://wordnet.princeton.edu`
 maps to the WordNet implementation
-having a database file at the given sub-path
-\c edu/princeton/wordnet
+having a database file at the given sub-path `edu/princeton/wordnet`
 on Zorba's library path.
 Once a mapping is established for a symbolic URI,
 it can be used in a query:
 
-\code
+```xquery
 let $x := <msg>affluent man</msg>
 return $x contains text "wealthy"
   using thesaurus at "http://wordnet.princeton.edu"
-\endcode
+```
 
 As a special-case,
-the \e from_uri can be \c default or \c ##default
+the `from_uri` can be `default` or `##default`
 to allow for specifying the default thesaurus
 as was done for the first example on this page.
 
-\section ft_thesaurus_mappings_to_zorba Specifying Thesauri Mappings to Zorba
+## Specifying Thesauri Mappings to Zorba
 
 To specify the location of the thesaurus to Zorba from the command-line,
 use one or more –thesaurus options:
 
-\code
+```bash
 zorba --thesaurus default:=wordnet://wordnet.princeton.edu ...
-\endcode
+```
 
-\section ft_thesaurus_rels Thesaurus Relationships
+## Thesaurus Relationships
 
 Using the WordNet database,
 Zorba supports all of the thesaurus relationships
@@ -143,7 +124,7 @@ and [ANSI/NISO Z39.19-2005]
 with the exceptions of "HN" (history note)
 and "X SN" (see scope note for).
 
-\subsection ft_thesaurus_iso_rels ISO 2788 and ANSI/NISO Z39.19-2005 Relationships
+### ISO 2788 and ANSI/NISO Z39.19-2005 Relationships
 
 These relationships are:
 
@@ -224,14 +205,14 @@ These relationships are:
 
 and can be used in a query like:
 
-\code
+```xquery
 let $x := <msg>breakfast of champions</msg>
 return $x contains text "meal"
   using thesaurus at "http://wordnet.princeton.edu"
   relationship "NT"
-\endcode
+```
 
-that returns \c true because \c $x contains "breakfast"
+that returns `true` because `$x contains "breakfast"`
 that the thesaurus identified as a "narrower term" (NT)
 of "meal."
 
@@ -241,19 +222,19 @@ or their meaning.
 Relationships are case-insensitive.
 The above query is equivalent to:
 
-\code
+```xquery
 let $x := <msg>breakfast of champions</msg>
 return $x contains text "meal"
   using thesaurus at "http://wordnet.princeton.edu"
   relationship "narrower term"
-\endcode
+```
 
 Since Zorba's thesaurus is implemented using WordNet,
 the [ISO 2788] relationships map to WordNet relationships
 that are shown in the "WordNet Rel." column.
 WordNet relationships are explained in the next section.
 
-\subsection ft_thesaurus_wordnet_rels WordNet Relationships
+### WordNet Relationships
 
 In addition to the [ISO 2788] and [ANSI/NISO Z39.19-2005] relationships,
 Zorba also supports all of the relationships offered by WordNet.
@@ -420,29 +401,24 @@ These relationships are:
   </table>
 </center>
 
-\subsection ft_thesaurus_wordnet_levels WordNet Levels
+### WordNet Levels
 
 If no levels are specified in a query,
 Zorba defaults the WordNet implementation to be 2 levels.
 (The rationale can be found
 <a href="http://www.w3.org/Bugs/Public/show_bug.cgi?id=11444">here</a>.)
 
-\section ft_thesaurus_providing Providing Your Own Thesaurus
+## Providing Your Own Thesaurus
 
 Using the Zorba C++ API,
 you can provide your own thesaurus
-by deriving from four classes:
-\c Thesaurus,
-\c Thesaurus::iterator,
-\c ThesaurusProvider,
-and
-\c URLResolver.
+by deriving from four classes: `Thesaurus`, `Thesaurus::iterator`, `ThesaurusProvider`, and `URLResolver`.
 
-\subsection ft_class_thesaurus The Thesaurus Class
+### The Thesaurus Class
 
-The \c Thesaurus class is:
+The `Thesaurus` class is:
 
-\code
+```cpp
 class Thesaurus {
 public:
   typedef /* implementation-defined */ ptr;
@@ -463,43 +439,29 @@ public:
 protected:
   virtual ~Thesaurus();
 };
-\endcode
+```
 
-For details about the \c ptr types,
-the \c destroy() functions,
-and why the destructors are \c protected,
-see the \ref memory_management document.
+For details about the `ptr` types,
+the `destroy()` functions,
+and why the destructors are `protected`,
+see the [memory management document](../memory_management.md).
 
-To implement the \c Thesaurus
-you need to implement the \c lookup() function where:
+To implement the `Thesaurus` you need to implement the `lookup()` function where:
 
-<table>
-  <tr>
-    <td>\c phrase</td>
-    <td>The phrase to be looked-up.</td>
-  </tr>
-  <tr>
-    <td>\c relationship</td>
-    <td>The relationship the results are to have to the phrase, if any.</td>
-  </tr>
-  <tr>
-    <td>\c at_least</td>
-    <td>The minimum number of levels within the thesaurus to be traversed.</td>
-  </tr>
-  <tr>
-    <td>\c at_most</td>
-    <td>The maximum number of levels within the thesaurus to be traversed.</td>
-  </tr>
-</table>
+| Name | Description |
+| ---- | ----------- |
+| `phrase` | The phrase to be looked-up. |
+| `relationship` | The relationship the results are to have to the phrase, if any. |
+| `at_least` | The minimum number of levels within the thesaurus to be traversed. |
+| `at_most` | The maximum number of levels within the thesaurus to be traversed. |
 
-The \c lookup() function returns a pointer to an \c iterator
+The `lookup()` function returns a pointer to an `iterator`
 that is used to iterate over the phrase's synonyms.
-You also need to implement an \c iterator.
-A very simple \c Thesaurus
-and its \c iterator
-can be implemented as:
+You also need to implement an `iterator`.
+A very simple `Thesaurus`
+and its `iterator` can be implemented as:
 
-\code
+```cpp
 class MyThesaurus : public Thesaurus {
 public:
   void destroy() const;
@@ -566,16 +528,15 @@ bool MyThesaurus::iterator::next( String *synonym ) {
   }
   return false;
 }
-\endcode
+```
 
-A real thesaurus would load a large number of synonyms,
-of course.
+A real thesaurus would load a large number of synonyms, of course.
 
-\subsection ft_class_thesaurus_provider The ThesaurusProvider Class
+### The ThesaurusProvider Class
 
-The \c ThesaurusProvider class is:
+The `ThesaurusProvider` class is:
 
-\code
+```cpp
 class ThesaurusProvider : public Resource {
 public:
   typedef /* implementation-defined */ ptr;
@@ -583,29 +544,20 @@ public:
   virtual bool getThesaurus( locale::iso639_1::type lang, Thesaurus::ptr *thesaurus = 0 ) const = 0;
   void destroy() const;                 // inherited from Resource
 };
-\endcode
+```
 
-To implement a \c ThesaurusProvider,
-you need to implement the \c getThesaurus() function where:
+To implement a `ThesaurusProvider`,
+you need to implement the `getThesaurus()` function where:
+| Name | Description |
+| ---- | ----------- |
+| `lang` | The desired language of the thesaurus. |
+| `thesaurus` | If not `null`, set to point to a thesaurus for `lang`. |
 
-<table>
-  <tr>
-    <td>\c lang</td>
-    <td>The desired language of the thesaurus.</td>
-  </tr>
-  <tr>
-    <td>\c thesaurus</td>
-    <td>If not \c null, set to point to a thesaurus for \c lang.</td>
-  </tr>
-</table>
 
-The \c getThesaurus() function returns \c true
-only if it can provide a thesaurus for the given language.
-Continuing with the example,
-a very simple \c ThesaurusProvider
-can be implemented as:
+The `getThesaurus()` function returns `true` only if it can provide a thesaurus for the given language.
+Continuing with the example, a very simple `ThesaurusProvider` can be implemented as:
 
-\code
+```cpp
 class MyThesaurusProvider : pulic ThesaurusProvider {
 public:
   void destroy() const;
@@ -626,20 +578,14 @@ bool MyThesaurusProvider::getThesaurus( iso639_1::type lang, Thesaurus::ptr *res
     result->reset( &thesaurus );
   return true;
 }
-\endcode
+```
 
-\subsection ft_class_thesaurus_resolver A Thesaurus URL Resolver Class
+### A Thesaurus URL Resolver Class
 
-In addition to a \c Thesaurus
-and \c ThesaurusProvider,
-you must also implement a "thesaurus resolver" class
-that,
-given a URI,
-provides a \c ThesaurusProvider for that URI.
-A simple \c ThesaurusURLResolver
-for our simple thesaurus can be implemented as:
+In addition to a `Thesaurus` and `ThesaurusProvider`, you must also implement a "thesaurus resolver" class that, given a URI, provides a `ThesaurusProvider` for that URI.
+A simple `ThesaurusURLResolver` for our simple thesaurus can be implemented as:
 
-\code
+```cpp
 class ThesaurusURLResolver : public URLResolver {
 public:
   ThesaurusURLResolver( String const &url ) : url_( url ) { }
@@ -656,29 +602,25 @@ Resource* ThesaurusURLResolver::resolveURL( String const &url, EntityData const 
   }
   return 0;
 }
-\endcode
+```
 
-For more on \c URLResolver, see
-\ref uriresolvers.
+For more on `URLResolver`, see [URI resolvers](../uriresolvers.md).
 
-\subsection ft_thesaurus_enable Using Your Thesaurus
+### Using Your Thesaurus
 
 To enable your thesaurus to be used,
 you need to add it to a static context:
 
-\code
+```cpp
 StaticContext_t sctx = zorba->createStaticContext();
 ThesaurusURLResolver resolver( "http://www.example.com" );
 sctx->registerURLResolver( &resolver );
-\endcode
+```
 
 You can then perform a query using your thesaurus:
 
-\code
+```xquery
 let $x := <msg>foobar</msg>
 return $x contains text "foo"
   using thesaurus at "http://www.example.com";
-\endcode
-
-*/
-/* vim:set et sw=2 ts=2: */
+```

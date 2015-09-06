@@ -8,7 +8,7 @@ specification that, among other things,
 <a ref="http://www.w3.org/TR/xpath-full-text-10/#TokenizationSec">tokenizes</a>
 a string into a sequence of tokens.
 
-\section ft_tokenizer_tokization Tokenization
+## Tokenization
 
 By default,
 Zorba uses the
@@ -20,19 +20,19 @@ considers only alpha-numeric sequences of characters to be part of a token;
 whitespace and punctuation characters are not
 and separate tokens.
 However, alpha-numeric sequences matching the regular expression
-<code>[0-9][.,][0-9]</code>
+`[0-9][.,][0-9]`
 are retained as part of a token, e.g.:
 "98.6" and "1,432.58" are tokens.
 
 Alternatively,
 you can implement your own tokenizer
-by deriving from the \c Tokenizer class.
+by deriving from the `Tokenizer` class.
 
-\section ft_class_tokenizer The Tokenizer Class
+## The Tokenizer Class
 
-The \c Tokenizer class is:
+The `Tokenizer` class is:
 
-\code
+```cpp
 class Tokenizer {
 public:
   typedef /* implementation-defined */ ptr;
@@ -88,93 +88,52 @@ protected:
   virtual void item( Item const&, bool entering );
   virtual void tokenize_node_impl( Item const&, locale::iso639_1::type, Callback&, bool tokenize_acp );
 };
-\endcode
+```
 
-For details about the \c ptr type,
-the \c destroy() function,
-and why the destructor is \c protected,
-see the \ref memory_management document.
+For details about the `ptr` type,
+the `destroy()` function,
+and why the destructor is `protected`,
+see the [memory management document](../memory_management.md).
 
-The \c State \c struct is created by Zorba
+The `State` struct is created by Zorba
 and passed to your constructor.
 It simply keeps track of the current
 token, sentence, and paragraph numbers.
 
-To implement a \c Tokenizer,
+To implement a `Tokenizer`,
 you need to implement the \c %tokenize_string() function where:
 
-<table>
-  <tr>
-    <td>\c utf8_s</td>
-    <td>
-      A pointer to the UTF-8 byte sequence
-      comprising the string to be tokenized.
-    </td>
-  </tr>
-  <tr>
-    <td>\c utf8_len</td>
-    <td>
-      The number of bytes in the string to be tokenized.
-    </td>
-  </tr>
-  <tr>
-    <td>\c lang</td>
-    <td>
-      The
-      <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
-      of the string.
-    </td>
-  </tr>
-  <tr>
-    <td>\c wildcards</td>
-    <td>
-      If \c true,
-      allows XQuery
-      <a href="http://www.w3.org/TR/xpath-full-text-10/#ftwildcardoption">wildcard syntax characters</a>
-      to be part of tokens.
-    </td>
-  </tr>
-  <tr>
-    <td>\c callback</td>
-    <td>
-      The \c Callback to call once per token.
-    </td>
-  </tr>
-  <tr>
-    <td>\c item</td>
-    <td>
-      The \c Item whence this token came.
-      If the token occurred within an element,
-      the \c Item is the text node.
-      If the token occurred within an attribute,
-      the \c Item is the attribute node.
-    </td>
-  </tr>
-</table>
+| Name | Description |
+| ---- | ----------- |
+| `utf8_s` | A pointer to the UTF-8 byte sequence comprising the string to be tokenized. |
+| `utf8_len` | The number of bytes in the string to be tokenized. |
+| `lang` | The <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> of the string. |
+| `wildcards` | If `true`, allows XQuery <a href="http://www.w3.org/TR/xpath-full-text-10/#ftwildcardoption">wildcard syntax characters</a> to be part of tokens. |
+| `callback` | The `Callback` to call once per token. |
+| `item` |  The `Item` whence this token came. If the token occurred within an element, the `Item` is the text node. If the token occurred within an attribute, the `Item` is the attribute node. |
 
-A complete implementation of \c %tokenize_string() is non-trivial
+A complete implementation of `tokenize_string()` is non-trivial
 and therefore an example is beyond the scope of this API documentation.
 However,
 the things a tokenizer should take into consideration include:
 
-- Detecting sentence termination ('.', '?', and '!' characters).
-- Handling floating-point numbers with possible thousands separators
+* Detecting sentence termination ('.', '?', and '!' characters).
+* Handling floating-point numbers with possible thousands separators
   in US and European formats, e.g. "98.7", "98,7", "10,000", etc.
-- Distinguishing '.' used as a sentence terminator
+* Distinguishing '.' used as a sentence terminator
   from '.' used as a decimal point.
-- Handling apostrophies, e.g., "men's".
-- Handling acronyms, e.g., "AT&T".
+* Handling apostrophies, e.g., "men's".
+* Handling acronyms, e.g., "AT&T".
 
 The task of iterating over an XML element's child nodes
-is done by \c tokenize_node_impl().
+is done by `tokenize_node_impl()`.
 Its default implementation
 treats XML elements, comments, and processing instructions
 as token separators.
-(See \ref ft_tokenizer_properties.)
 If you want to change that,
-you need to override \c tokenize_node_impl().
+you need to override `tokenize_node_impl()`.
 
-\subsection ft_tokenizer_paragraphs Paragraphs
+### Paragraphs
 
 By default,
 Zorba increments the current paragraph number once
@@ -182,21 +141,19 @@ for each XML element encountered.
 However,
 this doesn't work well for mixed content.
 For example, in the XHTML:
-\code
-<p>The <em>best</em> thing ever!</p>
-\endcode
+`<p>The <em>best</em> thing ever!</p>`
 all the tokens are both in the same sentence and paragraph,
 but Zorba will consider that 3 paragraphs by default.
 
 Your tokenizer can take control over when the paragraph number is incremented
-by overriding the \c item() function.
-The \c item() function is passed the \c Item of the current XML element
+by overriding the `item()` function.
+The `item()` function is passed the `Item` of the current XML element
 and whether the item is being entered or exited.
 
 For example,
-the \c item() function for tokenizing XHTML
+the `item()` function for tokenizing XHTML
 would be along the lines of:
-\code
+```cpp
 void MyTokenizer::item( Item const &item, bool entering ) {
   if ( entering && item.isNode() && item.getNodeKind() == store::StoreConsts::elementNode ) {
     Item qname;
@@ -204,99 +161,49 @@ void MyTokenizer::item( Item const &item, bool entering ) {
     if ( /* qname matches an XHTML block-level element's name */ )
       ++state().para;
 }
-\endcode
+```
 
-\subsection ft_tokenizer_properties Properties
+### Properties
 
-To implement a \c Tokenizer,
-you need also to implement the \c %properties() function
+To implement a `Tokenizer`,
+you need also to implement the `properties()` function
 that fills in the \c Properties struct where:
 
-<table>
-  <tr>
-    <td>\c comments_separate_tokens</td>
-    <td>
-      If \c true, XML comments separate tokens.  For example,
-      <code>net&lt;!-- --&gt;work</code> would be 2 tokens instead of 1.
-    </td>
-  </tr>
-  <tr>
-    <td>\c elements_separate_tokens</td>
-    <td>
-      If \c true, XML elements separate tokens.  For example,
-      <code>&lt;b&gt;B&lt;/b&gt;old</code> would be 2 tokens instead of 1.
-    </td>
-  </tr>
-  <tr>
-    <td>\c processing_instructions_separate_tokens</td>
-    <td>
-      If \c true, XML processing instructions separate tokens.  For example,
-      <code>net&lt;?PI pi?&gt;work</code> would be 2 tokens instead of 1.
-    </td>
-  </tr>
-  <tr>
-    <td>\c languages</td>
-    <td>
-      The list of
-      <a href="http://www.w3.org/TR/xmlschema-2/#language">languages</a>
-      supported by the tokenizer.
-    </td>
-  </tr>
-  <tr>
-    <td>\c uri</td>
-    <td>
-      The URI that uniquely identifies the %Tokenizer.
-    </td>
-  </tr>
-</table>
+| Name | Description |
+| ---- | ----------- |
+| `comments_separate_tokens` | If `true`, XML comments separate tokens. For example, `net&lt;!-- --&gt;work` would be 2 tokens instead of 1. |
+| `elements_separate_tokens` | If `true`, XML elements separate tokens.  For example, `&lt;b&gt;B&lt;/b&gt;old` would be 2 tokens instead of 1. |
+| `processing_instructions_separate_tokens` | If `true`, XML processing instructions separate tokens.  For example, `net&lt;?PI pi?&gt;work` would be 2 tokens instead of 1. |
+| `languages` | The list of <a href="http://www.w3.org/TR/xmlschema-2/#language">languages</a> supported by the tokenizer. |
+| `uri` | The URI that uniquely identifies the `Tokenizer`. | 
 
-\section ft_class_tokenizer_provider The TokenizerProviderClass
+## The TokenizerProviderClass
 
-In addition to a \c Tokenizer,
-you must also implement a \c TokenizerProvider
+In addition to a `Tokenizer`,
+you must also implement a `TokenizerProvider`
 that,
 given a <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>,
-provides a \c Tokenizer for that language:
+provides a `Tokenizer` for that language:
 
-\code
+```cpp
 class TokenizerProvider {
 public:
   virtual ~TokenizerProvider();
   virtual bool getTokenizer( locale::iso639_1::type lang, Tokenizer::State *state = 0, Tokenizer::ptr* = 0 ) const = 0;
 };
-\endcode
+```
 
 Specifically, you need to implement the \c getTokenizer() function where:
 
-<table>
-  <tr>
-    <td>\c lang</td>
-    <td>
-      The
-      <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a>
-      to tokenize.
-    </td>
-  </tr>
-  <tr>
-    <td>\c state</td>
-    <td>
-      The \c State to use.
-      If \c null,
-      \a t is not set.
-    </td>
-  </tr>
-  <tr>
-    <td>\c t</td>
-    <td>
-      If not \c null,
-      set to point to a Tokenizer for \a lang.
-    </td>
-  </tr>
-</table>
+| Name | Description |
+| ---- | ----------- |
+| `lang` | The <a href="http://www.w3.org/TR/xmlschema-2/#language">language</a> to tokenize. |
+| `state` | The `State` to use. If `null`, `t` is not set. |
+| `t` | If not `null`, set to point to a Tokenizer for `lang`. |
 
-A simple \c TokenizerProvider for our tokenizer can be implemented as:
+A simple `TokenizerProvider` for our tokenizer can be implemented as:
 
-\code
+```cpp
 class MyTokenizerProvider : public TokenizerProvider {
 public:
   getTokenizer( locale::iso639_1::type lang, Tokenizer::State* = 0, Tokenizer::ptr* = 0 ) const;
@@ -312,20 +219,17 @@ bool MyTokenizerProvider::getTokenizer( locale::iso639_1::type lang, Tokenizer::
       return false;
   }
 }
-\endcode
+```
 
-\section ft_tokenizer_enable Using Your Tokenizer
+## Using Your Tokenizer
 
 To enable your tokenizer to be used,
 you need to register it with the \c XmlDataManager:
 
-\code
+```cpp
 void *const store = StoreManager::getStore();
 Zorba *const zorba = Zorba::getInstance( store );
 
 MyTokenizerProvider provider;
 zorba->getXmlDataManager()->registerTokenizerProvider( &provider );
-\endcode
-
-*/
-/* vim:set et sw=2 ts=2: */
+```
