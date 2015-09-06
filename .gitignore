@@ -6,6 +6,6 @@
 build
 *.swp
 doc/node_modules
-doc/site
 doc/book/modules
 doc/book/apis
+doc/book/_book

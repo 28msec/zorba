@@ -55,7 +55,7 @@ gulp.task('gitbook:generate', ['gitbook:install'], function(){
 gulp.task('gitbook:deploy', function(){
     var isOnMaster = false;
     if(isOnMaster) {
-        return gulp.src('site/**/*')
+        return gulp.src('book/_book/**/*')
             .pipe($.ghPages());
     }
 });

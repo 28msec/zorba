@@ -1,16 +1,12 @@
-/** \page xml_json XQuery & JSONiq (XML & JSON)
+# XQuery & JSONiq (XML & JSON)
 
-\section two_syntaxes One VM, two syntaxes
+## One VM, two syntaxes
 
-In Zorba 2.6, we introduced JSON support with the new <a href="http://www.jsoniq.org/">JSONiq</a> language. <a href="http://www.jsoniq.org/">JSONiq</a> extends
-XQuery with JSON support while leaving its XML functionality (almost) intact. This came at
-the cost of either circumvoluted syntax for JSON (like empty objects, or object lookup),
-or for breaking some XML corner-case functionality (like true, false and null that are
-recognized as literals rather than as XPath name tests).
+In Zorba 2.6, we introduced JSON support with the new [JSONiq](http://jsoniq.org) language.
+JSONiq extends XQuery with JSON support while leaving its XML functionality (almost) intact.
+This came at the cost of either circumvoluted syntax for JSON (like empty objects, or object lookup), or for breaking some XML corner-case functionality (like true, false and null that are recognized as literals rather than as XPath name tests).
 
-We have received a lot of feedback since then, and realized that, for those of you who
-would like to work primarily with JSON, it made sense to let the <a href="http://www.jsoniq.org/">JSONiq</a> syntax live its
-own life.
+We have received a lot of feedback since then, and realized that, for those of you who would like to work primarily with JSON, it made sense to let the JSONiq syntax live its own life.
 
 Concretely, this means that:
 1. The "virtual machine" (abstract query language, compiler and runtime) stays the same
@@ -18,73 +14,73 @@ and fully support both XML and JSON.
 2. But Zorba supports two syntaxes for it: XQuery and <a href="http://www.jsoniq.org/">JSONiq</a>, which are each tailored to
 the aesthetics preferences of each community.
 
-\section share What they share
+## What they share
 
-XQuery and <a href="http://www.jsoniq.org/">JSONiq</a> share:
-- the same type system: values are sequences of items, which can be XML nodes, JSON objects
+XQuery and JSONiq share:
+* The same type system: values are sequences of items, which can be XML nodes, JSON objects
 or arrays, atomic items or functions.
-- the same operations on atomic types.
-- the same semantics of core expressions such that if-then-else expressions, FLWOR expressions.
-- the same abstract navigation mechanism for both XML (XPath) and JSON (object and array lookup).
+* The same operations on atomic types.
+* The same semantics of core expressions such that if-then-else expressions, FLWOR expressions.
+* The same abstract navigation mechanism for both XML (XPath) and JSON (object and array lookup).
 
-\section two_faces Two faces of the same language
-To put it boldly, in terms of syntax, XQuery and <a href="http://www.jsoniq.org/">JSONiq</a> can be seen as two faces of the same
+## Two faces of the same language
+To put it boldly, in terms of syntax, XQuery and JSONiq can be seen as two faces of the same
 language.
 
 The XQuery syntax provides first-class XML support (full W3C conformance), as well as
-second-class JSON support ("JSONiq extension to XQuery" : everything <a href="http://www.jsoniq.org/">JSONiq</a> that does not
+second-class JSON support ("JSONiq extension to XQuery" : everything JSONiq that does not
 collide with XQuery).
 
-The <a href="http://www.jsoniq.org/">JSONiq</a> syntax provides first-class JSON support (nice JavaScript-like dot-based object lookup,
+The JSONiq syntax provides first-class JSON support (nice JavaScript-like dot-based object lookup,
 full JSON copy-and-paste support, etc) and second-class XML support ("XQuery extension to JSONiq" :
-everything XQuery that does not collide with <a href="http://www.jsoniq.org/">JSONiq</a>).
+everything XQuery that does not collide with JSONiq).
 
-\section contentious_points Syntactic contentious points
+## Syntactic contentious points
 
-\image html xquery_jsoniq_venn.png
+![schema](xquery_jsoniq_venn.png "Logo Title Text 1")
 
 Here is a more detailed description of the collisions between XML and JSON support.
 
-A. <b>Dots in NCNames vs. Dot-based object lookup.</b>
+A. **Dots in NCNames vs. Dot-based object lookup.**
 XML names can contain dots, but dots are also used for object lookup. In particular,
 $var.key can be interpreted as a variable named "var.key" or as a lookup in the object
 $var for the key "key".
 
-B. <b>Context item syntax.</b>
+B. **Context item syntax.**
 XQuery uses dots for the context item syntax. But combined with object lookup, it becomes
 hard to read: ..key for looking up the key "key" in the context item.
 
-C. <b>String literals.</b>
+C. **String literals.**
 XQuery supports both single-quoted and double-quoted literals. JSON only supports double-quoted
 literals. 
 
-D. <b>Character escaping.</b>
+D. **Character escaping.**
 XML uses apersand-based escaping, like &#a; or &amp;.
 JSON uses backslash-based escaping, like \u0010 or \\.
 
-E. <b>Object keys.</b>
+E. **Object keys.**
 In some JSON languages, simple object keys (containing no spaces, etc) may be unquoted. This collides
 with XPath name tests.
 
-F. <b>true, false and null literals vs. XPath name tests.</b>
+F. **true, false and null literals vs. XPath name tests.**
 In XQuery, booleans can be constructed with the functions true() and false(), because true and false
 would be recognized as name tests. In JSON data, true and false appear as literals.
 
-G. <b>Empty object vs. empty block syntax.</b>
+G. **Empty object vs. empty block syntax.**
 In JSON, the empty object is denoted {}.
 In Zorba's scripting extension to XQuery, {} is used for the empty block.
 
-H. <b>Type syntax.</b>
+H. **Type syntax.**
 XQuery supports user-defined atomic types. To avoid collisions, XML node types use parentheses: node(),
 element(), etc as well as namespaces: xs:integer, xs:string, etc.
 <a href="http://www.jsoniq.org/">JSONiq</a> aims at a simpler syntax, with no parentheses: integer, string, object, array.
 
-I. <b>Update syntax.</b>
+I. **Update syntax.**
 The XQuery update syntax collides with the JSON update syntax (insert, delete, replace, rename).
 
-\section xquery_syntax The XQuery Syntax
+## The XQuery Syntax
 
-This syntax is fully conformant and backwards compatible with <a href="http://www.w3.org/TR/xquery-30/">XQuery 3.0</a>.
+This syntax is fully conformant and backwards compatible with [XQuery 3.0](http://www.w3.org/TR/xquery-30/).
 
 It is a superset of XQuery.
 It is not a superset of JSON.
@@ -127,38 +123,35 @@ foo:bar, you must use $$/foo:bar.
 
 G. {} is for empty objects. Use {;} for empty blocks.
 
-\section how_to_specify How to specify which syntax your query is using
+## How to specify which syntax your query is using
 
 In order to pick a parser, you can add a version declaration on top of your module:
 
-\code
+``xquery
 xquery version "3.0";
-\endcode
+``
 
 will pick the XQuery parser.
 
-\code
+``xquery
 jsoniq version "1.0";
-\endcode
+``
 
-will pick the <a href="http://www.jsoniq.org/">JSONiq</a> parser.
+will pick the JSONiq parser.
 
 In the absence of any version declaration, the XQuery parser is taken by default.
 
-\section interlanguage Interlanguage Module Imports
+## Interlanguage Module Imports
 
 It is possible for a module written in XQuery syntax (xquery version declaration or no version
 declaration), to import another module written in <a href="http://www.jsoniq.org/">JSONiq</a> syntax (jsoniq version declaration), and
 vice-versa.
 
-\section legacy_jsoniq Legacy JSONiq queries can still be parsed with the XQuery parser. 
+## JSONiq queries can still be parsed with the XQuery parser. 
 
-If you wrote <a href="http://www.jsoniq.org/">JSONiq</a> queries with a preceding version of Zorba, they should work with the
+If you wrote JSONiq queries with a preceding version of Zorba, they should work with the
 XQuery parser. Since it is the default, you do not need to add any version declaration.
 In order to restore full W3C conformance though, true/false/null literals are deprecated
 in the XQuery parser. While they will still work in Zorba 2.9, a warning will be issued.
 They will be obsolete in Zorba 3.0 and considered XPath name tests again. Of course,
-the <a href="http://www.jsoniq.org/">JSONiq</a> syntax still fully supports these literals.
-
-*/
-
+the JSONiq syntax still fully supports these literals.
