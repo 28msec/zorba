@@ -1,0 +1,18 @@
+/** \page build Zorba Build Instructions
+
+The following pages describe how to build Zorba from source.
+
+- \ref build_prerequisites
+- \ref build_prepare
+- \ref configure_zorba
+- \ref build_and_install
+
+In addition, some platform-specific notes regarding building Zorba are
+available on the following pages. Please refer to them for
+clarifications and hints regarding the build process on your platform.
+
+- \ref build_ubuntu
+- \ref build_windows
+- \ref build_macos
+
+*/

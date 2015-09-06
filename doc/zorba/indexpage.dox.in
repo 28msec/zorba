@@ -1,5 +1,15 @@
 /*! \mainpage Zorba ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER} Documentation
 
+\section xml_json XQuery & JSONiq (XML & JSON)
+  - \ref two_syntaxes
+  - \ref share
+  - \ref two_faces
+  - \ref contentious_points
+  - \ref xquery_syntax
+  - \ref jsoniq_syntax
+  - \ref how_to_specify
+  - \ref interlanguage
+  - \ref legacy_jsoniq
 
 \section build_section Building Zorba
   - \ref build

@@ -1,0 +1,129 @@
+/** \page build_prerequisites Prerequisites for Building Zorba
+
+The following tools and libraries are utilized by Zorba.
+
+\section cmake Configuration System
+
+In order to build Zorba, you need the cross-platform build system
+CMake, version 2.6 or later (except CMake 2.6.3 that has a serious bug
+preventing Zorba from building).  CMake's homepage is
+http://www.cmake.org/ and this is the best source for the Windows
+CMake installer. It is also available packaged for most Linux
+distributions, as well as in Macports for MacOS builds.
+
+\section compilers Compilers
+
+Zorba is tested with the following compilers:
+- GNU Compiler: GCC 3.4.x (32-bit & 64-bit) and GCC 4.x.x
+- Microsoft Compiler: MS VC++ 2008, and MS VC++ 2010 (including Express)
+
+\section third_party_libs Library Dependencies
+
+Zorba uses a number of libraries from third parties. A few of these
+are required for all Zorba installations, but we have tried to keep
+this number as low as possible. Several others are required to enable
+certain Zorba features.
+
+\note The following descriptions sometimes reference "CMake
+configuration parameters". These are passed to CMake during the
+configuration step; see \ref configure_zorba.
+
+\subsection required_core_zorba Required for Core Zorba
+The following packages are mandatory to build the core part of Zorba.
+
+- Libxml2 2.2.16 or later (http://xmlsoft.org/)
+- Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)
+- libUUID (non-Mac, non-Windows only; http://linux.die.net/man/3/libuuid)
+
+\subsection recommended_core_zorba Recommended for Core Zorba
+
+The following packages are necessary to enable certain features in
+Zorba. These features are normally desired, so you will need to
+explicitly disable them in order to build without these libraries.
+
+- Xerces-C 2.8.0, 3.0.0 or later
+    (http://xerces.apache.org/xerces-c/). This package is required to
+    enable XML schema support. This feature is enabled by default. In
+    order to disable XML schema support, you need to provide the CMake
+    configuration parameter <b>ZORBA_NO_XMLSCHEMA=ON</b>. Note that the Zorba
+    team tests with Xerces-C 3.1.1. Xerces-C 2.8.0 in particular is known
+    to cause a few bugs with schema handling.
+
+- ICU4C 3.6 or later (http://www.icu-project.org/). This package is
+  required to enable Unicode support as well as some other
+  internationalization features. This feature is enabled by
+  default. To build without ICU, you need to provide the CMake
+  configuration parameter <b>ZORBA_NO_ICU=ON</b>.
+
+\subsection optional_core_zorba Optional for Core Zorba
+
+The following packages are also necessary to enable certain features
+in Zorba. These features will automatically be disabled (or are not
+enabled by default) if the corresponding dependencies are not detected
+by CMake.
+
+- CURL (libcurl) 7.12 or later (http://curl.haxx.se/). This package is
+    required if <a href="/modules/latest/zorba.io/modules/http-client">Zorba's built-in
+    HTTP module</a> should be available.  Zorba will automatically be
+    built with this module if the curl packages are installed.
+    \note Please note that other modules depend on the http-client module
+    (i.e., import it). Hence, those dependent modules will not work if
+    the http module is not available. Please see our <a
+    href="/images/doxygen/modules.svg">module
+    dependency graph</a> for the module inter-dependencies.
+    \note Also note that Zorba internally uses this module when resolving
+    http: URIs in queries, module/schema imports, and so on. If this
+    module is not installed, Zorba will be unable to download such
+    URIs from the web.
+    \note If you happen to have libcurl installed but would like to build
+    Zorba without HTTP support, you may set the CMake configuration
+    parameter <b>ZORBA_SUPPRESS_CURL=ON</b>.
+
+- LibXslt version 1.1.24 or later (http://xmlsoft.org/XSLT/). The
+    LibXslt package is required for XQueryX support. This feature is
+    not enabled by default.  To enable XQueryX support, you need to
+    provide the CMake configuration parameter <b>ZORBA_XQUERYX=ON</b>.
+
+- Flex 2.5.33 or later (http://flex.sourceforge.net/) and
+    Bison 2.6 or later (http://www.gnu.org/software/bison/) are
+    used to generate the XQuery scanner and XQuery parser. The Zorba
+    source includes pre-generated versions of these, so Flex and Bison
+    are only required if you are developing Zorba itself and need to
+    modify the scanner or parser.
+
+\subsection noncore_requirements Non-core Module Requirements
+For many of the non-core modules, you need additional libraries.
+All such modules are not built if the library (and development headers) they require are not available.
+Here is a list of the libraries required by the current non-core modules packages:
+
+- data-converters (HTML module)
+  - Tidy (http://tidy.sourceforge.net)
+- data-formatting (XSL-FO)
+  - Java (http://java.sun.com/javase/downloads/index.jsp)
+  - Apache FOP (http://xmlgraphics.apache.org/fop/download.html)
+- email (SMTP module)
+  - IMAP CClient (http://www.washington.edu/imap/)
+- geo (GEO module)
+  - GEOS version 3.2.2 or later (http://trac.osgeo.org/geos/)
+- EXPath http-client
+  - CURL 7.12 or later (http://curl.haxx.se/)
+- image
+  - ImageMagick (http://www.imagemagick.org)
+- languages (XSLT)
+  - LibXslt version 1.1.24 or later (http://xmlsoft.org/XSLT/)
+
+For a more up to date list please see section "External C++ Library dependencies"
+in the <a href="/images/doxygen/modules.svg">module dependency graph</a>.
+
+In many cases you can find binary packages for these dependencies, which 
+will be the quickest and easiest way to meet the requirements. We have
+provided links or instructions for downloading binary packages for some
+libraries on the "Build Notes" pages for various platforms; see \ref build.
+
+
+\section prereq_next What's Next?
+
+Once you have obtained all the prerequisite tools and libraries for
+your installation, move on to \ref build_prepare.
+
+*/
