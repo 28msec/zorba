@@ -12,35 +12,35 @@ XSD 1.1 for the vast majority of the features with a few exceptions. Check out
  <a href="http://www.w3.org/TR/xmlschema11-1/#changes">the full list</a>.
 
 
-\section immport How to import a schema
+## How to import a schema
 In order to use XMLSchema type information in a query a schema file needs to be imported.
 Note the URI must match the target namespace of schema file.
 
-\code
+```xquery
 import schema namespace r = "http://example" at "example.xsd";
-\endcode
+```
 
-For a full example see the \ref example1 below.
+For a full example see the example below.
 
 Note: for simplicity, the examples on this page make use of the "at <filename>" 
-clause of <tt>import schema</tt> to explicitly load a specific schema file.
+clause of `import schema` to explicitly load a specific schema file.
 However, when developing applications, it is usually better to omit this
  clause, and make use of Zorba's extensive URI-resolution mechanisms to load
- schema documents by URI. For details on this, see \ref uriresolvers.
+ schema documents by URI. For details on this, see [URI resolvers](uriresolvers.md).
 
-\section validateExpr Validate expression
+## Validate expression
 Use validate expression to validate an untyped document against an XMLSchema.
 
-\code
+```xquery
 validate {$untypeDoc}
-\endcode
+```
 
-For a full example see the \ref example1 below.
+For a full example see the example below.
 
-\section example1 Example 1
+## Example 1
 
-The script <tt>example.xq</tt>:
-\code
+The script *example.xq*:
+```xquery
 import schema namespace r = "http://example" at "example.xsd";
 
 import module namespace file = "http://expath.org/ns/file";
@@ -49,11 +49,11 @@ let $untypeDoc := fn:parse-xml(file:read-text("example.xml"))
 let $validatedDoc := validate {$untypeDoc}
 return
   $validatedDoc
-\endcode
+```
 
 Assuming there is an <tt>example.xsd</tt> file with this content:
 
-\code
+```xml
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
   targetNamespace="http://example" 
   xmlns="http://example"
@@ -68,33 +68,32 @@ Assuming there is an <tt>example.xsd</tt> file with this content:
   </xs:complexType>
 
 </xs:schema>
-\endcode
+```
 
-And this <tt>example.xml</tt> instance XML document:
+And this *example.xml* instance XML document:
 
-\code
+```xml
 <a xmlns="http://example">
   <b>Hello world!</b>
 </a>
-\endcode
+```
 
 Zorba can execute the query to get the result:
-\code
+```bash
 $ zorba --trailing-nl -i -f -q example.xq 
 <?xml version="1.0" encoding="UTF-8"?>
 <a xmlns="http://example">
   <b>Hello world!</b>
 </a>
-\endcode
+```
 
-\section schema-type Schema type name
+## Schema type name
 
 Using the <a href="/modules/latest/www.zorba-xquery.com/modules/schema">schema module</a>
 it is possible to find out the QName of a certain schema type.
 
-
-\ref example1 can be adapted to the following:
-\code
+The example can be adapted to the following:
+```xquery
 import schema namespace r = "http://example" at "example.xsd";
 
 import module namespace file = "http://expath.org/ns/file";
@@ -111,34 +110,32 @@ return
       fn:local-name-from-QName($qname),
       fn:namespace-uri-from-QName($qname)
     )
-\endcode
+```
 
 Output:
-\code
+```bash
 $ zorba --trailing-nl -i -f -q example.xq 
 <?xml version="1.0" encoding="UTF-8"?>
 TypeA http://example
-\endcode
+```
 
-
-\section validateApi Validate using the C++ Zorba API
+## Validate using the C++ Zorba API
 The C++ Zorba API can be used by an application to validate a document and 
 later passed as a valid input into another query.
 
-In the \ref example2 first loadProlog method on the static context was used to import the required
- schema file and than validate method was called to get the new validated item.
+In the example below the loadProlog method on the static context was used to import the required schema file and than validate method was called to get the new validated item.
 
-\code
+```cpp
   sc->loadProlog("import schema namespace s='http://test.org' at 'schema.xsd';", hints);
-\endcode
+```
 
-\code
+```cpp
   sc->validate(lChild, vItem);
-\endcode
+```
 
 
-\section example2 Example 2
-\code
+## Example 2
+```cpp
 #include <iostream>
 #include <sstream>
 
@@ -247,10 +244,10 @@ int main(int argc, char **argv)
   std::cout << "Done!" << std::endl; std::cout.flush();
   return 0;
 }
-\endcode
+```
 
 Output:
-\code
+```bash
 Start
 executing example 12
   node a   -type xs:anyType
@@ -265,6 +262,4 @@ Validate:
       @attr=1   -type xs:int
     node b   -type __AnonC3
       @attr=2   -type xs:int
-\endcode
-
-*/
+```
