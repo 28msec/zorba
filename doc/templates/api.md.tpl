@@ -1,4 +1,6 @@
 # ${info.title}
+*Version ${info.version}*
+
 ${info.description}
 
 <%
@@ -12,11 +14,15 @@ ${op.summary}
 ${op.description}
 
 #### Parameters
-| Name | Located in | Description | Default | Required | Type |
-| ---- | ---------- | ----------- | ------- | -------- | ---- |<% _.forEach(op.parameters, function(param){ %>
-| ${param.name} | ${param.in} | ${param.description.replace("\n", " ")} | `<% param.default %>` | `${param.required}` | `${param.type}` |<%}); %>
+| Name | Located in | Description | Required | Type |
+| ---- | ---------- | ----------- | -------- | ---- |<% _.forEach(op.parameters, function(param){ %>
+| **${param.name}** | `${param.in}` | <% print(param.description.replace(/\n/g, ' ')) %> | `${param.required}` | `${param.type}` |<%}); %>
 
 #### Responses
+| Name | Description |
+| ---- | ----------- |<% _.forEach(op.responses, function(resp, code){ %>
+| **${code}** | ${resp.description} |<% }); %>
+
         <%
     });
 });
