@@ -176,6 +176,9 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
      */
     parseContent();
 
+    theHandler.endResponse();
+    theHandler.end();
+
     return lCurlCode;
   }
 
@@ -220,57 +223,42 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
 
   void HttpResponseParser::parseMultipart(std::unique_ptr<std::istream>& aStream)
   {
-    Item lBody = createTextItem(aStream.release());
-
-    if (lBody.isNull())
+    if (theInsideRead)
     {
-      std::string empty;
-      theHandler.any(lBody, empty);
+      std::string lLine;
+      std::stringstream lBody;
+
+      parseStartBoundary(*aStream, theBoundary);
+
+      while (aStream->good())
+      {
+        parseHeaders(*aStream);
+        if (parseBody(*aStream, theBoundary))
+        {
+          theHandler.endMultipart();
+          return;
+        }
+      }
     }
     else
-      parseMultipartBody(lBody, theBoundary);
-
-    theHandler.endMultipart();
-    theHandler.endResponse();
-    theHandler.end();
+      theHandler.endMultipart();
   }
 
   void HttpResponseParser::parseNonMultipart(std::unique_ptr<std::istream>& aStream)
   {
-    Item lItem;
-    if (isTextualBody())
-      lItem = createTextItem(aStream.release());
-    else
-      lItem = createBase64Item(*aStream.get());
-
-    if (!lItem.isNull() && theInsideRead)
+    if (theInsideRead)
     {
+      Item lItem;
+      if (isTextualBody())
+        lItem = createTextItem(aStream.release());
+      else
+        lItem = createBase64Item(*aStream.get());
+
       std::string lCharset;
       theHandler.any(lItem, lCharset);
       theHandler.endBody();
     }
-    theHandler.endResponse();
-    theHandler.end();
   }
-
-    void HttpResponseParser::parseMultipartBody(Item& aItem, const std::string& aBoundary)
-    {
-      std::istream& lStream = aItem.getStream();
-
-      std::string lLine;
-      std::stringstream lBody;
-
-      parseStartBoundary(lStream, aBoundary);
-
-      while (lStream.good())
-      {
-        parseHeaders(lStream);
-        if (parseBody(lStream, aBoundary))
-          return;
-      }
-  }
-
-
 
   void HttpResponseParser::parseStartBoundary(std::istream& aStream, const std::string& aBoundary)
   {

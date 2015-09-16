@@ -70,7 +70,6 @@ namespace http_client
     void parseContent();
     void parseMultipart(std::unique_ptr<std::istream>& aStream);
 
-    void parseMultipartBody(Item& aItem, const std::string& aBoundary);
     void parseStartBoundary(std::istream& aStream, const std::string& aBoundary);
     void parseHeaders(std::istream& aStream);
     void parseHeader(const std::string& aHeader);
