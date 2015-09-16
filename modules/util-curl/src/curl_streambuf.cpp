@@ -134,7 +134,6 @@ streambuf::~streambuf() {
 #ifdef WIN32
   closesocket( dummy_socket_ );
 #endif /* WIN32 */
-  std::cout << "Listener owner: " << listener_owner_ << std::endl;
   if ( listener_owner_ )
     delete listener_;
 }
