@@ -153,26 +153,38 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     theStreamBuffer->set_listener(this);
     theHandler.begin();
     CURLcode lCurlCode = theStreamBuffer->curl_multi_info_read(false);
+
     if (lCurlCode)
       return lCurlCode;
 
-    if (theStatusOnly)
+    if (!theInsideRead)
     {
-      if (!theInsideRead)
+      /*
+       * The curl read callback has never been invoked, thus we must send headers
+       * and status manually.
+       */
+      theHandler.beginResponse(theStatus, theMessage);
+      for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
+          i != theHeaders.end(); ++i)
       {
-        theHandler.beginResponse(theStatus, theMessage);
-
-        for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
-             i != theHeaders.end(); ++i)
-        {
-           theHandler.header(i->first, i->second);
-        }
+        theHandler.header(i->first, i->second);
       }
-
-      theHandler.endResponse();
-      theHandler.end();
     }
-    else
+
+    /*
+     * Parse the response body (either multipart or not)
+     */
+    parseContent();
+
+    theHandler.endResponse();
+    theHandler.end();
+
+    return lCurlCode;
+  }
+
+  void HttpResponseParser::parseContent()
+  {
+    if (!theStatusOnly)
     {
       if (!theOverridenContentType.empty())
       {
@@ -207,52 +219,59 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       else
         parseNonMultipart(lStream);
     }
-    return lCurlCode;
   }
 
   void HttpResponseParser::parseMultipart(std::unique_ptr<std::istream>& aStream)
   {
-    Item lBody = createTextItem(aStream.release());
-
-    if (lBody.isNull())
+    if (theInsideRead)
     {
-      std::string empty;
-      theHandler.any(lBody, empty);
-    }
-    else
-      parseMultipartBody(lBody, theBoundary);
-
-    theHandler.endMultipart();
-    theHandler.endResponse();
-    theHandler.end();
-  }
-
-    void HttpResponseParser::parseMultipartBody(Item& aItem, const std::string& aBoundary)
-    {
-      std::istream& lStream = aItem.getStream();
-
       std::string lLine;
       std::stringstream lBody;
 
-      parseStartBoundary(lStream, aBoundary);
+      parseStartBoundary(*aStream, theBoundary);
 
-      while (lStream.good())
+      while (aStream->good())
       {
-        parseHeaders(lStream);
-        if (parseBody(lStream, aBoundary))
+        parseHeaders(*aStream);
+        if (parseBody(*aStream, theBoundary))
+        {
+          theHandler.endMultipart();
           return;
+        }
       }
+    }
+    else
+      theHandler.endMultipart();
+  }
+
+  void HttpResponseParser::parseNonMultipart(std::unique_ptr<std::istream>& aStream)
+  {
+    if (theInsideRead)
+    {
+      Item lItem;
+      if (isTextualBody())
+        lItem = createTextItem(aStream.release());
+      else
+        lItem = createBase64Item(*aStream.get());
+
+      std::string lCharset;
+      theHandler.any(lItem, lCharset);
+      theHandler.endBody();
+    }
   }
 
   void HttpResponseParser::parseStartBoundary(std::istream& aStream, const std::string& aBoundary)
   {
     std::string lLine;
-    getline(aStream, lLine);
-    if (lLine.compare("--" + aBoundary + "\r") != 0 &&
-        lLine.compare("--" + aBoundary) != 0)
+    /*
+     * We need to skip the multipart preamble, as dictated by http://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
+     */
+    while (aStream.good())
     {
-      theErrorThrower.raiseException("HTTP", "An HTTP error occurred. The returned multipart response "
-                                             "is malformed, invalid start boundary.");
+      std::getline(aStream, lLine);
+      if (lLine.compare("--" + aBoundary + "\r") == 0 ||
+          lLine.compare("--" + aBoundary) == 0)
+        return;
     }
   }
 
@@ -354,45 +373,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
            );
   }
 
-  void HttpResponseParser::parseNonMultipart(std::unique_ptr<std::istream>& aStream)
-  {
-    bool lStatusAndMesssageParsed = false;
 
-    Item lItem;
-    if (isTextualBody())
-      lItem = createTextItem(aStream.release());
-    else
-      lItem = createBase64Item(*aStream.get());
-
-    if (!lItem.isNull())
-    {
-      std::string empty;
-      theHandler.any(lItem, empty);
-    }
-
-    if (!theInsideRead)
-    {
-      theHandler.beginResponse(theStatus, theMessage);
-      lStatusAndMesssageParsed = true;
-    }
-    else
-      theHandler.endBody();
-
-
-  if (!theInsideRead)
-  {
-    if (!lStatusAndMesssageParsed)
-      theHandler.beginResponse(theStatus, theMessage);
-
-    for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
-        i != theHeaders.end(); ++i) {
-      theHandler.header(i->first, i->second);
-    }
-  }
-
-  theHandler.endResponse();
-  theHandler.end();
-  }
 
   void HttpResponseParser::curl_read(void*,size_t)
   {
