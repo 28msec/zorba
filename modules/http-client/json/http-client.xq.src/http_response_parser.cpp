@@ -167,7 +167,6 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
           i != theHeaders.end(); ++i)
       {
-        //std::cout << "::parse() Reading header: " << i->first << std::endl;
         theHandler.header(i->first, i->second);
       }
     }
@@ -179,6 +178,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
 
     return lCurlCode;
   }
+
   void HttpResponseParser::parseContent()
   {
     if (!theStatusOnly)
