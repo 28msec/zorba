@@ -396,7 +396,6 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     theHandler.beginResponse(theStatus, theMessage);
     for ( headers_type::const_iterator
           lIter = theHeaders.begin(); lIter != theHeaders.end(); ++lIter) {
-      //std::cout << "::curl_read() Reading header: " << lIter->first << std::endl;
       theHandler.header(lIter->first, lIter->second);
     }
 
@@ -472,13 +471,11 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     }
     lParser->theHeaders.push_back(
       std::pair<std::string, std::string>(lName, lValue));
-    //std::cout << "headerHandler: " << lName << ":" << lValue << std::endl;
     return lResult;
   }
 
   void HttpResponseParser::parseStatusAndMessage(std::string const &aHeader)
   {
-    //std::cout << "Parsing status and message " << std::endl;
     std::string::size_type lPos = aHeader.find(' ');
     assert(lPos != std::string::npos);
     std::string lStatus = aHeader.substr(lPos, aHeader.find(' ', lPos + 1));
