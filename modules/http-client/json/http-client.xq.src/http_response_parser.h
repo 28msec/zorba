@@ -67,6 +67,7 @@ namespace http_client
       bool aStatusOnly = false);
     virtual ~HttpResponseParser();
     CURLcode parse();
+    void parseContent();
     void parseMultipart(std::unique_ptr<std::istream>& aStream);
 
     void parseMultipartBody(Item& aItem, const std::string& aBoundary);

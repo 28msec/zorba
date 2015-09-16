@@ -106,6 +106,8 @@ namespace zorba { namespace http_client {
   theIsInsideMultipart(false),
   theDeleteResponse(true)
   {
+    if (aFactory == NULL)
+      std::cout << "NO FACTORY" << std::endl;
     theUntypedQName = theFactory->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
   }
 

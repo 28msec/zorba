@@ -153,26 +153,35 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     theStreamBuffer->set_listener(this);
     theHandler.begin();
     CURLcode lCurlCode = theStreamBuffer->curl_multi_info_read(false);
+
     if (lCurlCode)
       return lCurlCode;
 
-    if (theStatusOnly)
+    if (!theInsideRead)
     {
-      if (!theInsideRead)
+      /*
+       * The curl read callback has never been invoked, thus we must send headers
+       * and status manually.
+       */
+      theHandler.beginResponse(theStatus, theMessage);
+      for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
+          i != theHeaders.end(); ++i)
       {
-        theHandler.beginResponse(theStatus, theMessage);
-
-        for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
-             i != theHeaders.end(); ++i)
-        {
-           theHandler.header(i->first, i->second);
-        }
+        //std::cout << "::parse() Reading header: " << i->first << std::endl;
+        theHandler.header(i->first, i->second);
       }
-
-      theHandler.endResponse();
-      theHandler.end();
     }
-    else
+
+    /*
+     * Parse the response body (either multipart or not)
+     */
+    parseContent();
+
+    return lCurlCode;
+  }
+  void HttpResponseParser::parseContent()
+  {
+    if (!theStatusOnly)
     {
       if (!theOverridenContentType.empty())
       {
@@ -207,7 +216,6 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       else
         parseNonMultipart(lStream);
     }
-    return lCurlCode;
   }
 
   void HttpResponseParser::parseMultipart(std::unique_ptr<std::istream>& aStream)
@@ -223,6 +231,24 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       parseMultipartBody(lBody, theBoundary);
 
     theHandler.endMultipart();
+    theHandler.endResponse();
+    theHandler.end();
+  }
+
+  void HttpResponseParser::parseNonMultipart(std::unique_ptr<std::istream>& aStream)
+  {
+    Item lItem;
+    if (isTextualBody())
+      lItem = createTextItem(aStream.release());
+    else
+      lItem = createBase64Item(*aStream.get());
+
+    if (!lItem.isNull() && theInsideRead)
+    {
+      std::string lCharset;
+      theHandler.any(lItem, lCharset);
+      theHandler.endBody();
+    }
     theHandler.endResponse();
     theHandler.end();
   }
@@ -244,15 +270,20 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
       }
   }
 
+
+
   void HttpResponseParser::parseStartBoundary(std::istream& aStream, const std::string& aBoundary)
   {
     std::string lLine;
-    getline(aStream, lLine);
-    if (lLine.compare("--" + aBoundary + "\r") != 0 &&
-        lLine.compare("--" + aBoundary) != 0)
+    /*
+     * We need to skip the multipart preamble, as dictated by http://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
+     */
+    while (aStream.good())
     {
-      theErrorThrower.raiseException("HTTP", "An HTTP error occurred. The returned multipart response "
-                                             "is malformed, invalid start boundary.");
+      std::getline(aStream, lLine);
+      if (lLine.compare("--" + aBoundary + "\r") == 0 ||
+          lLine.compare("--" + aBoundary) == 0)
+        return;
     }
   }
 
@@ -354,45 +385,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
            );
   }
 
-  void HttpResponseParser::parseNonMultipart(std::unique_ptr<std::istream>& aStream)
-  {
-    bool lStatusAndMesssageParsed = false;
 
-    Item lItem;
-    if (isTextualBody())
-      lItem = createTextItem(aStream.release());
-    else
-      lItem = createBase64Item(*aStream.get());
-
-    if (!lItem.isNull())
-    {
-      std::string empty;
-      theHandler.any(lItem, empty);
-    }
-
-    if (!theInsideRead)
-    {
-      theHandler.beginResponse(theStatus, theMessage);
-      lStatusAndMesssageParsed = true;
-    }
-    else
-      theHandler.endBody();
-
-
-  if (!theInsideRead)
-  {
-    if (!lStatusAndMesssageParsed)
-      theHandler.beginResponse(theStatus, theMessage);
-
-    for (std::vector<std::pair<std::string, std::string> >::iterator i = theHeaders.begin();
-        i != theHeaders.end(); ++i) {
-      theHandler.header(i->first, i->second);
-    }
-  }
-
-  theHandler.endResponse();
-  theHandler.end();
-  }
 
   void HttpResponseParser::curl_read(void*,size_t)
   {
@@ -403,6 +396,7 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     theHandler.beginResponse(theStatus, theMessage);
     for ( headers_type::const_iterator
           lIter = theHeaders.begin(); lIter != theHeaders.end(); ++lIter) {
+      //std::cout << "::curl_read() Reading header: " << lIter->first << std::endl;
       theHandler.header(lIter->first, lIter->second);
     }
 
@@ -478,11 +472,13 @@ void parse_content_type( std::string const &media_type, std::string *mime_type,
     }
     lParser->theHeaders.push_back(
       std::pair<std::string, std::string>(lName, lValue));
+    //std::cout << "headerHandler: " << lName << ":" << lValue << std::endl;
     return lResult;
   }
 
   void HttpResponseParser::parseStatusAndMessage(std::string const &aHeader)
   {
+    //std::cout << "Parsing status and message " << std::endl;
     std::string::size_type lPos = aHeader.find(' ');
     assert(lPos != std::string::npos);
     std::string lStatus = aHeader.substr(lPos, aHeader.find(' ', lPos + 1));
