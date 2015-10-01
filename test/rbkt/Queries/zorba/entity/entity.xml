@@ -4,12 +4,4 @@
 
 	<!ENTITY ExternalEntity SYSTEM "external_entity.xml">
 ]>
-<root_tag>
-	<tag1 xmlns="http://zorba-xquery/ns1">
-		&ExternalEntity;
-		&greeting1;
-	</tag1>
-	<tag2 xmlns="http://zorba-xquery/ns2">
-		&ExternalEntity;
-	</tag2>
-</root_tag>
+<root_tag><tag1 xmlns="http://zorba-xquery/ns1">&ExternalEntity;&greeting1;</tag1><tag2 xmlns="http://zorba-xquery/ns2">&ExternalEntity;</tag2></root_tag>
