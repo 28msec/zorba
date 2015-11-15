@@ -1,0 +1,9 @@
+.git
+
+.buildpath
+.project
+!.project
+!.buildpath
+.DS_Store
+build
+*.swp
