@@ -5,4 +5,4 @@ mkdir -p /zorba/build
 cd /zorba/build
 cmake ..
 make -j4
-./zorba -q 1
+./bin/zorba $@
