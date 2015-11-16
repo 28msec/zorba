@@ -17,4 +17,4 @@ RUN dpkg -i libfl-dev_2.5.39-8_amd64.deb flex_2.5.39-8_amd64.deb
 
 VOLUME /zorba
 
-ENTRYPOINT ["./zorba/docker_entrypoint.sh"]
+ENTRYPOINT ["./zorba/docker-dev/entrypoint.sh"]
