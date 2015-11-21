@@ -30,34 +30,7 @@ ELSE(FCGI_FOUND)
   MESSAGE(STATUS "Fcgi libraries: NOT FOUND. Server will not be built.")
 ENDIF(FCGI_FOUND)
 
-MESSAGE (STATUS "Looking for MongoDriver...")
-FIND_PACKAGE(MongoDriver)
-IF(MONGODRIVER_FOUND)
-  SET (REQUIRED_LIBS ${REQUIRED_LIBS} ${MONGODRIVER_LIBRARY})
-  MESSAGE(STATUS "MongoDriver library: FOUND.")
-ELSE(MONGODRIVER_FOUND)
-  MESSAGE(STATUS "MongoDriver library: NOT FOUND. Server will not be built.")
-ENDIF(MONGODRIVER_FOUND)
-
-MESSAGE (STATUS "Looking for Boost system component...")
-FIND_PACKAGE(Boost COMPONENTS system)
-IF (Boost_SYSTEM_FOUND)
-  SET (REQUIRED_LIBS ${REQUIRED_LIBS} ${Boost_LIBRARIES})  
-  MESSAGE(STATUS "Boost system component: FOUND.")
-ELSE (Boost_SYSTEM_FOUND)
-  MESSAGE(STATUS "Boost system component: NOT FOUND. Server will not be built.")
-ENDIF (Boost_SYSTEM_FOUND)
-
-MESSAGE (STATUS "Looking for Boost filesystem component...")
-FIND_PACKAGE(Boost COMPONENTS filesystem)
-IF (Boost_FILESYSTEM_FOUND)
-  SET (REQUIRED_LIBS ${REQUIRED_LIBS} ${Boost_LIBRARIES})
-  MESSAGE(STATUS "Boost filesystem component: FOUND.")
-ELSE (Boost_FILESYSTEM_FOUND)
-  MESSAGE(STATUS "Boost filesystem component: NOT FOUND. Server will not be built.")
-ENDIF (Boost_FILESYSTEM_FOUND)
-
-IF (FCGI_FOUND AND Boost_SYSTEM_FOUND AND Boost_FILESYSTEM_FOUND)
+IF (FCGI_FOUND)
   MESSAGE(STATUS "All required libraries have been found. Building server...")
 
   INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
@@ -77,11 +50,13 @@ IF (FCGI_FOUND AND Boost_SYSTEM_FOUND AND Boost_FILESYSTEM_FOUND)
      
     exceptions/formatter.cpp
     exceptions/server_exceptions.cpp
-     
-    utils/JSONObject.cpp
+    
+    utils/debug.cpp 
+    utils/JSONItems.cpp
   )
 
   ZORBA_GENERATE_EXE("zorba-server" "${SERVER_SRCS}" "${REQUIRED_LIBS}" "zorba-server" "bin")
+  ADD_SUBDIRECTORY("tests")
   
   MESSAGE(STATUS "") 
   MESSAGE(STATUS "-------------------------------------------------------------")
@@ -89,7 +64,7 @@ IF (FCGI_FOUND AND Boost_SYSTEM_FOUND AND Boost_FILESYSTEM_FOUND)
   MESSAGE(STATUS "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
   MESSAGE(STATUS "") 
 
-ELSE (FCGI_FOUND AND Boost_SYSTEM_FOUND AND Boost_FILESYSTEM_FOUND)
+ELSE (FCGI_FOUND)
   MESSAGE(STATUS "Some required libraries were not found. Server will not be built.")
   
   MESSAGE(STATUS "")
@@ -98,4 +73,4 @@ ELSE (FCGI_FOUND AND Boost_SYSTEM_FOUND AND Boost_FILESYSTEM_FOUND)
   MESSAGE(STATUS "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
   MESSAGE(STATUS "")
   
-ENDIF (FCGI_FOUND AND Boost_SYSTEM_FOUND AND Boost_FILESYSTEM_FOUND)
+ENDIF (FCGI_FOUND)

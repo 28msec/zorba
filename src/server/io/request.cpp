@@ -18,7 +18,9 @@
 #include <sstream>
 #include <boost/algorithm/string.hpp>
 
+#include "io/response.h"
 #include "exceptions/server_exceptions.h"
+#include "util/uri_util.h"
 
 #include "request.h"
 
@@ -30,14 +32,15 @@ namespace io
 {
 
 Request::Request(const FCGX_Request& aRequest):
-    theBodyRead(false)
+    theBodyRead(false),
+    theParametersRead(false)
 {
   initEnvironment(aRequest);
 
   const std::string* lRequestURI = getEnvironmentVariable("SCRIPT_NAME");
   if (!lRequestURI)
     throw new exceptions::ServerException("Invalid request, missing REQUEST_URI", 500);
-  theRequestURI = *lRequestURI;
+  theURI = *lRequestURI;
 
   const std::string* lRequestMethod = getEnvironmentVariable("REQUEST_METHOD");
   if (!lRequestMethod)
@@ -49,11 +52,8 @@ Request::Request(const FCGX_Request& aRequest):
     throw new exceptions::ServerException("Invalid request, missing QUERY_STRING", 500);
   theQueryString = *lQueryString;
 
-  initParameters();
-
-  std::string lTmpRequestURI = boost::algorithm::trim_copy_if(theRequestURI, boost::is_any_of("/"));
-  boost::algorithm::split(theRequestURISegments, lTmpRequestURI, boost::is_any_of("/"));
-
+  std::string lTmpRequestURI = boost::algorithm::trim_copy_if(theURI, boost::is_any_of("/"));
+  boost::algorithm::split(theURISegments, lTmpRequestURI, boost::is_any_of("/"));
 }
 
 void Request::initEnvironment(const FCGX_Request& aRequest)
@@ -68,28 +68,89 @@ void Request::initEnvironment(const FCGX_Request& aRequest)
   }
 }
 
-void Request::initParameters()
+void Request::initParameters() const
 {
-  std::vector<std::string> lParameters;
-  boost::algorithm::split(lParameters, theQueryString, boost::is_any_of("&"));
-  for (std::vector<std::string>::const_iterator lIt = lParameters.begin();
-       lIt != lParameters.end();
-       ++lIt)
+  parseParameters(theQueryString);
+
+  if (theRequestMethod == "POST" || theRequestMethod == "PUT" || theRequestMethod == "PATCH")
   {
-    std::vector<std::string> lParameter;
-    boost::algorithm::split(lParameter, *lIt, boost::is_any_of("="));
-    if (lParameter.size())
+    const std::string* lContentType = getEnvironmentVariable("CONTENT_TYPE");
+    if (lContentType && ContentTypes::isX_WWW_FORM_URLENCODED(*lContentType))
     {
-      if (lParameter[0] == "")
-        continue;
-      if (lParameter.size() == 2)
-        theRequestParameters[lParameter[0]] = lParameter[1];
-      else if (lParameter.size() == 1)
-        theRequestParameters[lParameter[0]] = "";
+      parseParameters(getBody());
     }
-
   }
+  theParametersRead = true;
+}
 
+void Request::parseParameters(const std::string& aString) const
+{
+  if (aString.length() == 0)
+    return;
+
+  std::string::size_type lNextTokenStart = 0;
+  std::string::size_type lSepPos = 0;
+  while (lNextTokenStart <= aString.length())
+  {
+    if (lNextTokenStart == aString.length())
+    {
+      //Empty parameter
+      addParameter("", "");
+      break;
+    }
+    lSepPos = aString.find('&', lNextTokenStart);
+
+    if (lSepPos == lNextTokenStart)
+      addParameter("", "");
+    else if (lSepPos < std::string::npos)
+      parseParameter(aString, lNextTokenStart, lSepPos);
+    else
+    {
+      parseParameter(aString, lNextTokenStart, aString.length());
+      break;
+    }
+    lNextTokenStart = lSepPos + 1;
+  }
+}
+
+void Request::parseParameter(const std::string& aString, std::string::size_type lStart, std::string::size_type lEnd) const
+{
+  std::string::size_type lEqualPos = aString.find('=', lStart);
+  if (lEqualPos >= lEnd)
+  {
+    std::string lName(aString, lStart, lEnd - lStart);
+    uri::decode(lName);
+    addParameter(lName, "");
+  }
+  else if (lEqualPos == (lEnd - 1))
+  {
+    std::string lName(aString, lStart, lEqualPos - lStart);
+    uri::decode(lName);
+    addParameter(lName, "");
+  }
+  else
+  {
+    std::string lName(aString, lStart, lEqualPos - lStart);
+    uri::decode(lName);
+    std::string lValue(aString, lEqualPos + 1, lEnd - (lEqualPos +1));
+    uri::decode(lValue);
+    addParameter(lName, lValue);
+  }
+}
+
+void Request::addParameter(const std::string& aName, const std::string& aValue) const
+{
+  std::map<std::string, std::vector<std::string> >::iterator lIt =
+      theParameters.find(aName);
+
+  if (lIt != theParameters.end())
+    lIt->second.push_back(aValue);
+  else
+  {
+    std::vector<std::string> lValue;
+    lValue.push_back(aValue);
+    theParameters[aName] = lValue;
+  }
 }
 
 const std::string& Request::getBody() const
@@ -116,12 +177,73 @@ const std::string* Request::getEnvironmentVariable(const std::string& aName) con
   return NULL;
 }
 
-const std::string* Request::getQueryParameter(const std::string& aName) const
+const std::vector<std::string>* Request::getQueryParameter(const std::string& aName) const
 {
-  std::map<std::string, std::string>::const_iterator lIt = theRequestParameters.find(aName);
-  if (lIt != theRequestParameters.end())
+  if (!theParametersRead)
+    initParameters();
+
+  std::map<std::string, std::vector<std::string> >::const_iterator lIt = theParameters.find(aName);
+  if (lIt != theParameters.end())
     return &(lIt->second);
   return NULL;
+}
+
+bool Request::getQueryParameterAsString(const std::string& aName, std::string& aValue, bool aMandatory) const
+{
+  const std::vector<std::string>* lValue = getQueryParameter(aName);
+  if (!lValue)
+    if (aMandatory)
+      throw exceptions::ServerException("Missing required parameter " + aName, 400);
+    else
+      return false;
+  else
+    if (lValue->size() == 0)
+      return true;
+    else if (lValue->size() > 1)
+      throw exceptions::ServerException("A single value is expected for parameter " + aName, 400);
+    else
+    {
+      aValue = (*lValue)[0];
+      return true;
+    }
+}
+
+bool Request::getQueryParameterAsBoolean(const std::string& aName, bool& aValue, bool aMandatory) const
+{
+  std::string lValue;
+  bool lHaveParameter = getQueryParameterAsString(aName, lValue, aMandatory);
+  if (lHaveParameter)
+  {
+    if (lValue.empty())
+      return true;
+    else
+    {
+      std::string lLowerCaseValue(lValue);
+      std::transform(lLowerCaseValue.begin(), lLowerCaseValue.end(), lLowerCaseValue.begin(), ::tolower);
+      if (lLowerCaseValue == "false")
+      {
+        aValue = false;
+        return true;
+      }
+      else if (lLowerCaseValue == "true")
+      {
+        aValue = true;
+        return true;
+      }
+      else
+      {
+        throw exceptions::ServerException("Allowed values for parameter " + aName + " are: <true>, <false>, <>.", 400);
+      }
+    }
+  }
+  else
+    return false;
+
+}
+
+const std::string* Request::getContentType() const
+{
+  return getEnvironmentVariable("CONTENT_TYPE");
 }
 
 const std::string& Request::getRequestMethod() const
@@ -131,12 +253,18 @@ const std::string& Request::getRequestMethod() const
 
 const std::string& Request::getRequestURI() const
 {
-  return theRequestURI;
+  return theURI;
 }
 
 const std::vector<std::string> Request::getRequestURISegments() const
 {
-  return theRequestURISegments;
+  return theURISegments;
+}
+
+const std::map<std::string, std::vector<std::string> >& Request::getQueryParameters() const
+{
+  initParameters();
+  return theParameters;
 }
 
 std::ostream & operator<<(std::ostream &aOs, const Request& aRequest)
@@ -148,12 +276,14 @@ std::ostream & operator<<(std::ostream &aOs, const Request& aRequest)
   {
     aOs << lIt->first << "=" << lIt->second << std::endl;
   }
+
+  const std::map<std::string, std::vector<std::string> >& lParameters = aRequest.getQueryParameters();
   aOs << std::endl << "===Query Parameters===" << std::endl;
-  for (std::map<std::string, std::string>::const_iterator lIt = aRequest.theRequestParameters.begin();
-      lIt != aRequest.theRequestParameters.end();
+  for (std::map<std::string, std::vector<std::string> >::const_iterator lIt = lParameters.begin();
+      lIt != lParameters.end();
       ++lIt)
   {
-    aOs << lIt->first << "=" << lIt->second << std::endl;
+    aOs << "<" << lIt->first << ">=<" << boost::algorithm::join(lIt->second, ", ") << ">" << std::endl;
   }
   aOs << std::endl << "===Body===" << std::endl;
   aOs << aRequest.getBody();

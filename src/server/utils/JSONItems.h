@@ -34,6 +34,8 @@ namespace utils
   typedef std::pair<zorba::Item, zorba::Item> ObjectPair;
   typedef std::vector<ObjectPair> ObjectPairs;
 
+  class JSONArray;
+
   class JSONObject
   {
     public:
@@ -43,12 +45,31 @@ namespace utils
     void addField(const std::string& aFieldName, long aFieldValue);
     void addField(const std::string& aFieldName, double aFieldValue);
     void addField(const std::string& aFieldName, utils::JSONObject& aFieldValue);
+    void addField(const std::string& aFieldName, utils::JSONArray& aFieldValue);
 
     zorba::Item getAsItem();
 
     private:
     zorba::ItemFactory& theItemFactory;
     ObjectPairs thePairs;
+  };
+
+  class JSONArray
+  {
+  public:
+    JSONArray();
+
+    void addMember(const std::string& aFieldValue);
+    void addMember(long aFieldValue);
+    void addMember(double aFieldValue);
+    void addMember(utils::JSONObject& aFieldValue);
+    void addMember(utils::JSONArray& aFieldValue);
+
+    zorba::Item getAsItem();
+
+  private:
+    zorba::ItemFactory& theItemFactory;
+    std::vector<zorba::Item> theItems;
   };
 }
 }

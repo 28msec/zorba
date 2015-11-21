@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <utils/JSONItems.h>
 #include "zorba/zorba_string.h"
 
-#include "JSONObject.h"
 
 namespace zorba
 {
@@ -57,10 +57,60 @@ namespace utils
     thePairs.push_back(std::pair<zorba::Item, zorba::Item>(lName, lValue));
   }
 
+  void JSONObject::addField(const std::string& aFieldName, utils::JSONArray& aFieldValue)
+  {
+    zorba::Item lName = theItemFactory.createString(aFieldName);
+    zorba::Item lValue = aFieldValue.getAsItem();
+    thePairs.push_back(std::pair<zorba::Item, zorba::Item>(lName, lValue));
+  }
+
   zorba::Item JSONObject::getAsItem()
   {
     return theItemFactory.createJSONObject(thePairs);
   }
+
+
+
+  JSONArray::JSONArray() :
+    theItemFactory(RequestHandler::getInstance().getItemFactory())
+  {
+  }
+
+  void JSONArray::addMember(const std::string& aFieldValue)
+  {
+    zorba::Item lValue = theItemFactory.createString(zorba::String(aFieldValue));
+    theItems.push_back(lValue);
+  }
+
+  void JSONArray::addMember(long aFieldValue)
+  {
+    zorba::Item lValue = theItemFactory.createInteger(aFieldValue);
+    theItems.push_back(lValue);
+  }
+
+  void JSONArray::addMember(double aFieldValue)
+  {
+    zorba::Item lValue = theItemFactory.createDouble(aFieldValue);
+    theItems.push_back(lValue);
+  }
+
+  void JSONArray::addMember(utils::JSONObject& aFieldValue)
+  {
+    zorba::Item lValue = aFieldValue.getAsItem();
+    theItems.push_back(lValue);
+  }
+
+  void JSONArray::addMember(utils::JSONArray& aFieldValue)
+  {
+    zorba::Item lValue = aFieldValue.getAsItem();
+    theItems.push_back(lValue);
+  }
+
+  zorba::Item JSONArray::getAsItem()
+  {
+    return theItemFactory.createJSONArray(theItems);
+  }
+
 
 }
 }

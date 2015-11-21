@@ -17,6 +17,7 @@
 #define ZORBA_SERVER_REQUEST_HANDLER_H_
 
 #include <fcgio.h>
+#include <utils/JSONItems.h>
 
 #include "zorba/zorba.h"
 #include "zorba/serializer.h"
@@ -25,7 +26,6 @@
 #include "io/request.h"
 #include "io/response.h"
 
-#include "utils/JSONObject.h"
 
 namespace zorba
 {

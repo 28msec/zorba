@@ -113,10 +113,10 @@ void HTTPStatusCodes::init()
 std::map<int, std::string> HTTPStatusCodes::theStatusMap;
 std::string HTTPStatusCodes::theEmptyDescription;
 
-std::string ContentTypes::JSON_UTF8_CT = "application/json;charset=UTF-8";
-std::string ContentTypes::TEXT_UTF8_CT = "text/plain;charset=UTF-8";
-std::string ContentTypes::XML_UTF8_CT = "application/xml;charset=UTF-8";
-std::string ContentTypes::BINARY_UTF8_CT = "application/octet-stream";
+const std::string ContentTypes::JSON_UTF8_CT = "application/json;charset=UTF-8";
+const std::string ContentTypes::TEXT_UTF8_CT = "text/plain;charset=UTF-8";
+const std::string ContentTypes::XML_UTF8_CT = "application/xml;charset=UTF-8";
+const std::string ContentTypes::BINARY_UTF8_CT = "application/octet-stream";
 
 const std::string& ContentTypes::getContentTypeForItem(const zorba::Item& aItem)
 {
@@ -128,6 +128,13 @@ const std::string& ContentTypes::getContentTypeForItem(const zorba::Item& aItem)
     return ContentTypes::XML_UTF8_CT;
   else
     return ContentTypes::BINARY_UTF8_CT;
+}
+
+bool ContentTypes::isX_WWW_FORM_URLENCODED(const std::string& aContentType)
+{
+  std::string lContentType(aContentType);
+  std::transform(lContentType.begin(), lContentType.end(), lContentType.begin(), ::tolower);
+  return lContentType.find("application/x-www-form-urlencoded") == 0;
 }
 
 Response::Response(std::ostream& aResponseStream):

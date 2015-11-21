@@ -91,8 +91,8 @@ FileizeURIMapper::mapURI(
   // If anything changed, return new URI and the original.
   if (lChanged) {
     lUri.set_path(lPath);
-    oUris.push_back(lUri.toString());
     oUris.push_back(aUri);
+    oUris.push_back(lUri.toString());
   }
 }
 

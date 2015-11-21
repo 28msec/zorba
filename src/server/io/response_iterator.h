@@ -16,10 +16,13 @@
 #ifndef ZORBA_SERVER_IO_RESPONSE_ITERATOR_H_
 #define ZORBA_SERVER_IO_RESPONSE_ITERATOR_H_
 
+#include <memory>
 #include <string>
 
 #include "zorba/item.h"
 #include "zorba/iterator.h"
+#include "zorba/serializer.h"
+#include "zorba/vector_item_sequence.h"
 
 namespace zorba
 {
@@ -30,12 +33,11 @@ namespace io
   class ResponseIterator : public zorba::Iterator
   {
   public:
-    ResponseIterator(zorba::XQuery_t aQuery);
-    ResponseIterator(zorba::Iterator_t aIterator);
+    ResponseIterator(zorba::Iterator_t aIterator, bool aMaterialize);
 
     bool isEmpty();
-    bool isBinary();
     const std::string& getContentType();
+    const zorba::Serializer_t getSerializer();
 
     /*
      * zorba::Iterator functions
@@ -55,9 +57,12 @@ namespace io
 
     bool theIsInitialized;
     zorba::Item theItem;
+    std::vector<zorba::Item> theItemVector;
+    std::auto_ptr<zorba::VectorItemSequence> theItemSequence;
     bool theIsEmpty;
-    bool theIsBinary;
     std::string theContentType;
+    Zorba_SerializerOptions_t theOptions;
+    Serializer_t theSerializer;
   };
 }
 }

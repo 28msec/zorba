@@ -42,10 +42,14 @@ namespace io
   public:
     static const std::string& getContentTypeForItem(const zorba::Item& aItem);
 
-    static std::string JSON_UTF8_CT;
-    static std::string TEXT_UTF8_CT;
-    static std::string XML_UTF8_CT;
-    static std::string BINARY_UTF8_CT;
+    static bool isX_WWW_FORM_URLENCODED(const std::string& aContentType);
+
+  public:
+
+    static const std::string JSON_UTF8_CT;
+    static const std::string TEXT_UTF8_CT;
+    static const std::string XML_UTF8_CT;
+    static const std::string BINARY_UTF8_CT;
   };
 
 
@@ -70,7 +74,7 @@ namespace io
   private:
     bool theHeadersSent;
     int theStatusCode;
-    std::string& theContentType;
+    std::string theContentType;
     std::ostream& theResponseStream;
     std::map<std::string, std::string> theHeaders;
   };
