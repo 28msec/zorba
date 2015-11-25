@@ -59,4 +59,6 @@ RUN apt-get install -y nginx spawn-fcgi libfcgi-dev
 
 VOLUME /zorba
 
+EXPOSE 81
+
 ENTRYPOINT ["./zorba/docker-dev/entrypoint.sh"]
