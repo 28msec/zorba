@@ -1,0 +1,115 @@
+# TODO: Use accept header for multipart responses (one part per item)
+#            Queries can set their own serialization parameters using [XQuery 3.0 serialization options](http://www.w3.org/TR/xquery-30/#id-serialization).
+swagger: "2.0"
+info:
+  title: Zorba Query Evaluation API
+  description: This API enables you to directly evaluate queries from Zorba.
+  version: "1.0.0"
+host: localhost
+schemes:
+  - http
+basePath: /v1
+consumes:
+  - application/x-www-form-urlencoded
+produces:
+  - application/json;charset=utf-8
+  - application/xml;charset=utf-8
+  - text/plain;charset=utf-8
+  - binary/octet-stream
+paths:
+  /evaluate:
+    post:
+      summary: Evaluate a query with Zorba. 
+      description: | 
+        The request body must contain a main query.
+        Optional user-defined library modules can be sent as well.
+        By default the query is assumed to be XQuery.
+        JSONiq queries must contain their own version declaration using `jsoniq version "1.0";`.
+        The response content type depends on the first item of the result.
+          * XML node: `application/xml;charset=utf-8`
+          * JSON object or array: `application/json;charset=utf-8`
+          * Base64 or Hex binary: `binary/octet-stream`
+          * Atomic item: `text/plain;charset=utf-8`
+          * Empty sequence: no content type
+      operationId: evaluate
+      consumes:
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: stream
+          in: query
+          description: | 
+            Stream the query response. Default is `false`.
+            If set to true and an error occurs after part of the response has already been sent to the client, the response status code will be 200.
+            In this case, the streaming of the HTTP response will stop and the following string will be sent `"\n\n\nAn error occurred during the processing of the request.\n` followed by the error description.
+          required: false
+          type: boolean
+          default: false
+        - name: query
+          in: formData
+          type: string
+          description: Main module to evaluate.
+          required: true
+        - name: module
+          in: formData
+          type: array
+          items:
+            type: string
+          description: User-defined libary modules.
+          collectionFormat: multi
+          required: false
+      responses:
+        200:
+          description: Query evaluated successfully
+#          examples:
+#            application/json: 2
+#            application/xml: <foo />
+        204:
+          description: Empty sequence
+        500:
+          description: An error occured
+          schema:
+            $ref: "#/definitions/ErrorModel"
+          examples:
+            application/json:
+              code: FOAR0001
+              message: division by zero
+              location:
+                fileName: Main.xq
+                lineStart: 1
+                columnStart: 1
+                lineEnd: 1
+                columnEnd: 5
+definitions:
+  ErrorModel:
+    type: object
+    required:
+      - source
+      - code
+      - message
+      - location
+    properties:
+      source:
+        type: string
+      code:
+        type: string
+      message:
+        type: string
+      location:
+        type: object
+        required:
+          - module
+          - lineNumber
+          - columnNumber
+          - lineNumberEnd
+          - columnNumberEnd
+        properties:
+          module:
+            type: string
+          lineNumber:
+            type: number
+          columnNumber:
+            type: number
+          lineNumberEnd:
+            type: number
+          columnNumberEnd:
+            type: number
