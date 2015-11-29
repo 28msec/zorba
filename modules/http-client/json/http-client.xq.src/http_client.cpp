@@ -23,6 +23,7 @@
 
 #include <curl/curl.h>
 #include <map>
+#include <algorithm>
 #include <zorba/serializer.h>
 #include <zorba/external_module.h>
 #include <zorba/empty_sequence.h>

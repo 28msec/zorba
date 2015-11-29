@@ -19,6 +19,7 @@
 
 // standard
 #include <stdexcept>
+#include <ostream>
 
 // Zorba
 #include <zorba/config.h>
@@ -140,6 +141,10 @@ private:
   static std::string build_msg( std::string const &value,
                                 std::string const &specs );
 };
+
+#ifdef WIN32
+std::ostream& operator<<( std::ostream &os, const zorba::time::invalid_value &i );
+#endif
 
 /**
  * This exception is thrown when a literal character in the \a buf parameter of

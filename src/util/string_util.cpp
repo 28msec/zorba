@@ -18,6 +18,10 @@
 #include <cerrno>
 #include <cstdlib>
 
+#ifdef WIN32
+#include <stdlib.h>
+#endif
+
 #include <zorba/internal/cxx_util.h>
 
 #include "ascii_util.h"
@@ -87,14 +91,23 @@ double atod( char const *buf, char const **last ) {
 
 float atof( char const *buf, char const **last ) {
   aton_context const ctx( last );
+#ifdef WIN32
+  float const result = static_cast<float>(std::strtod( buf, (char**)last ));
+#else
   float const result = std::strtof( buf, (char**)last );
+#endif
+
   check_parse_number( buf, *last, ctx.check_trailing_chars() );
   return result;
 }
 
 long long atoll( char const *buf, char const **last ) {
   aton_context const ctx( last );
+#ifdef WIN32
+  long long const result = _strtoi64( buf, (char**)last, 10 );
+#else
   long long const result = std::strtoll( buf, (char**)last, 10 );
+#endif
   check_errno( buf, *last );
   check_parse_number( buf, *last, ctx.check_trailing_chars() );
   return result;
@@ -107,8 +120,11 @@ unsigned long long atoull( char const *buf, char const **last ) {
   //
   buf = ascii::trim_start_space( buf );
   bool const minus = *buf == '-';
-
+#ifdef WIN32
+  unsigned long long const result = _strtoui64( buf, (char**)last, 10 );
+#else
   unsigned long long const result = std::strtoull( buf, (char**)last, 10 );
+#endif
   check_errno( buf, *last );
   check_parse_number( buf, *last, ctx.check_trailing_chars() );
 
