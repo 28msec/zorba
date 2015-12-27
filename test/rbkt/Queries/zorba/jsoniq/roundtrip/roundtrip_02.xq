@@ -1,9 +1,6 @@
-import module namespace f = "http://expath.org/ns/file";
 import module namespace r = "http://zorba.io/modules/random";
 
 import schema namespace o = "http://www.w3.org/2010/xslt-xquery-serialization";
-
-variable $filename := r:uuid() || ".json";
 
 variable $obj := {
               "nan" : xs:double("NaN"),
@@ -13,10 +10,8 @@ variable $obj := {
               "EQName" : fn:QName("http://jsoniq.org/roundtrip", "value")
             };
 variable $enc := jn:encode-for-roundtrip($obj);
-f:write-text($filename, serialize($enc, <o:serialization-parameters><o:method value="json"/></o:serialization-parameters>));
-variable $read := f:read-text($filename);
-variable $dec := jn:decode-from-roundtrip(jn:parse-json($read));
-f:delete($filename);
+variable $serialized := serialize($enc, <o:serialization-parameters><o:method value="json"/></o:serialization-parameters>);
+variable $dec := jn:decode-from-roundtrip(jn:parse-json($serialized));
 
 (
   $dec("nan") instance of xs:double and xs:string($dec("nan")) eq "NaN",
