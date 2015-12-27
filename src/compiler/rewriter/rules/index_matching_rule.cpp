@@ -743,9 +743,8 @@ bool IndexMatchingRule::matchKeyExprsForRangeIndex(
     expr* keyExpr = (*keyIte)->get_expr();
 
     std::vector<PredInfo>::iterator qpredIte = theUnmatchedQPreds.begin();
-    std::vector<PredInfo>::iterator qpredEnd = theUnmatchedQPreds.end();
-
-    for (; qpredIte != qpredEnd; ++qpredIte)
+    
+    for (; qpredIte != theUnmatchedQPreds.end(); ++qpredIte)
     {
       PredInfo& qpred = *qpredIte;
 
@@ -828,8 +827,10 @@ bool IndexMatchingRule::matchKeyExprsForRangeIndex(
         if (matched == 2)
         {
           theMatchedQPreds.push_back(qpred);
-          theUnmatchedQPreds.erase(qpredIte);
-          --qpredIte;
+          qpredIte = theUnmatchedQPreds.erase(qpredIte);
+		  
+		  if (!theUnmatchedQPreds.empty() && qpredIte != theUnmatchedQPreds.begin())
+            --qpredIte;
 
           if (qpred.theClausePos > lastMatchedWHEREpos)
             lastMatchedWHEREpos = qpred.theClausePos;
