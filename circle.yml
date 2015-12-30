@@ -14,7 +14,7 @@ dependencies:
 test:
   pre:
     - case $CIRCLE_NODE_INDEX in 0) docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-precise" "cmake" && docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-precise" "make" && docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-precise" "enable-extra-tests" ;; 1) docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-trusty" "cmake" && docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-trusty" "make" && docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-trusty" "enable-extra-tests" ;;  2) docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-vivid" "cmake" && docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-vivid" "make" && docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-vivid" "enable-extra-tests" ;;  3) docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-wily" "cmake" && docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-wily" "make" && docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-wily" "enable-extra-tests" ;; esac:
-      parallel: true
+        parallel: true
   override:
     - case $CIRCLE_NODE_INDEX in 0) docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-precise" "ctest" "-E" "${EXCLUDE_MODULES}" ;; 1) docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-trusty" "ctest" "-E" "${EXCLUDE_MODULES}" ;; 2) docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-vivd" "ctest" "-E" "${EXCLUDE_MODULES}" ;; 3) docker run -v "/home/ubuntu:/zorba" "fcavalieri/zorba-test-wily" "ctest" "-E" "${EXCLUDE_MODULES}" ;; esac:
         parallel: true
