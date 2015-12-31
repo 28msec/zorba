@@ -3,7 +3,7 @@ machine:
     ZORBA_SRC_DIR: /home/ubuntu/zorba
     ZORBA_BUILD_DIR: /home/ubuntu/build
     ZORBA_MODULE_DIR: /home/ubuntu/zorba_modules
-    EXCLUDE_MODULES: "^zorba_info-extraction_module|conversion/currency-convert|zorba_couchbase_module|zorba_read-pdf_module|zorba_image_module|zorba_data-formatting_module"
+    EXCLUDE_MODULES: "^zorba_info-extraction_module|conversion/currency-convert|zorba_couchbase_module|zorba_read-pdf_module|zorba_image_module|zorba_data-formatting_module|zorba_nosqldb_module"
   services:
     - docker
 dependencies:
