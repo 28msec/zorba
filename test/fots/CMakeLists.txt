@@ -97,6 +97,32 @@ MACRO (expected_fots_failure)
     ${test_case} ${bugid} "${_notrun}" "${_finalStatus}" "${_disputed}")
 ENDMACRO (expected_fots_failure)
 
+##
+## LibXML2 failures
+##
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-001 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-002 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-003 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-004 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-005 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-006 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-007 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-008 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-009 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-010 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-011 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-012 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-013 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-014 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-015 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-016 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-017 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-018 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-019 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-020 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-021 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-022 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment fn-parse-xml-fragment-023 libxml2)
 
 ##
 ## Place all known failing FOTS tests here!
