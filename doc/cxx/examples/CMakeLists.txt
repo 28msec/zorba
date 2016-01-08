@@ -65,6 +65,11 @@ FOREACH (test ${TestsToRun})
   ZORBA_ADD_TEST(${TName} examples ${NAME_WITHOUT_EXT})
 ENDFOREACH(test)
 
+##
+## LibXML2
+##
+EXPECTED_FAILURE (doc/cxx/examples/xmldatamanager.cpp libxml2)
+
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Makefile.cmake ${CMAKE_CURRENT_BINARY_DIR}/Makefile.zorba)
 MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/Makefile.cmake ${CMAKE_CURRENT_BINARY_DIR}/Makefile.zorba") 
 

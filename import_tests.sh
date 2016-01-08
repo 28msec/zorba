@@ -1,3 +1,5 @@
+ZORBA_SRC_DIR=/home/federico/zorba/zorba
+ZORBA_BUILD_DIR=/home/federico/zorba/build
 "${ZORBA_SRC_DIR}/test/rbkt/Scripts/w3c/import_w3c_testsuite.sh" --builddir "${ZORBA_BUILD_DIR}" "${ZORBA_SRC_DIR}" &
 "${ZORBA_SRC_DIR}/test/rbkt/Scripts/w3c/import_w3c_full_text_testsuite.sh" --builddir "${ZORBA_BUILD_DIR}" "${ZORBA_SRC_DIR}" &
 "${ZORBA_SRC_DIR}/test/update/Scripts/import_w3c_update_testsuite.sh" --builddir "${ZORBA_BUILD_DIR}" "${ZORBA_SRC_DIR}" &
