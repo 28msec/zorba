@@ -97,6 +97,19 @@ MACRO (expected_fots_failure)
     ${test_case} ${bugid} "${_notrun}" "${_finalStatus}" "${_disputed}")
 ENDMACRO (expected_fots_failure)
 
+##
+## LibXML2 failures
+##
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-001 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-004 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-007 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-009 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-010 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-013 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-014 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-015 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-018 libxml2)
+EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-019 libxml2)
 
 ##
 ## Place all known failing FOTS tests here!
@@ -161,8 +174,13 @@ EXPECTED_FOTS_FAILURE (fn-normalize-space fn-normalize-space-23 1187802)
 EXPECTED_FOTS_FAILURE (fn-normalize-space fn-normalize-space-25 1187802)
 EXPECTED_FOTS_FAILURE (fn-parse-xml parse-xml-010 1189927)
 EXPECTED_FOTS_FAILURE (fn-parse-xml parse-xml-011 1188260)
-EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-016 1188269)
-EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-017 1188269)
+
+##
+## Libxml2
+##
+#EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-016 1188269)
+#EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-017 1188269)
+
 EXPECTED_FOTS_FAILURE (fn-parse-xml-fragment parse-xml-fragment-020 1188269)
 EXPECTED_FOTS_FAILURE (fn-resolve-uri fn-resolve-uri-26 1188088)
 EXPECTED_FOTS_FAILURE (fn-resolve-uri fn-resolve-uri-28 1188088)
