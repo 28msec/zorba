@@ -9,13 +9,13 @@ A container with the zorba binary is available at https://registry.hub.docker.co
 Below are examples of Zorba executed via Docker:
 
 ```bash
-docker run zorba -q 1+1
+docker run --rm zorba -q 1+1
 ```
 
 You can also mount a local folder that contains your queries. The image exposes a volume at `/queries`:
 
 ```bash
-docker run -v /home/fcavalieri/myqueries:/queries zorba -q foo.xq -f
+docker run --rm -v /home/fcavalieri/myqueries:/queries zorba -q foo.xq -f
 ```
 
 ##Documentation
