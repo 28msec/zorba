@@ -15,7 +15,7 @@ docker run zorba -q 1+1
 You can also mount a local folder that contains your queries. The image exposes a volume at `/queries`:
 
 ```bash
-docker run -v /home/fcavalieri/myqueries:/queries fcavalieri/zorba -q foo.xq -f
+docker run -v /home/fcavalieri/queries:/queries fcavalieri/zorba -q foo.xq -f
 ```
 
 ##Documentation
