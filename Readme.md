@@ -2,8 +2,6 @@
 
 [![Circle CI](https://circleci.com/gh/28msec/zorba.svg?style=svg)](https://circleci.com/gh/28msec/zorba) 
 
-http://zorba.28.io/
-
 ## Docker Container
 A container with the zorba binary is available at https://registry.hub.docker.com/u/fcavalieri/zorba/
 
