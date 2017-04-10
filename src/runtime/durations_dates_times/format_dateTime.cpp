@@ -235,7 +235,7 @@ static void append_fractional_seconds( int n, modifier const &mod,
       if ( mod.min_width || mod.max_width ) {
         if ( mod.max_width ) {
           double const f = (double)n / DateTime::FRAC_SECONDS_UPPER_LIMIT;
-          double const p = ::pow( 10, mod.max_width );
+          double const p = ::pow( (double)10, (double)mod.max_width );
           n = (int)( f * p + 0.5 );
         } else
           n = (int)( n * 1000.0 / DateTime::FRAC_SECONDS_UPPER_LIMIT );

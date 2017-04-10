@@ -732,6 +732,7 @@ bool IndexMatchingRule::matchKeyExprsForRangeIndex(
   expr* falseExpr = ccb->theEM->create_const_expr(sctx, udf, QueryLoc::null, false);
 
   bool matchedFirstKey = false;
+  bool removed = false;
 
   std::vector<let_clause*>::const_iterator keyIte = theKeyClauses->begin();
   std::vector<let_clause*>::const_iterator keyEnd = theKeyClauses->end();
@@ -743,15 +744,15 @@ bool IndexMatchingRule::matchKeyExprsForRangeIndex(
     expr* keyExpr = (*keyIte)->get_expr();
 
     std::vector<PredInfo>::iterator qpredIte = theUnmatchedQPreds.begin();
-    std::vector<PredInfo>::iterator qpredEnd = theUnmatchedQPreds.end();
-
-    for (; qpredIte != qpredEnd; ++qpredIte)
+    
+    for (; qpredIte != theUnmatchedQPreds.end(); qpredIte += !removed)
     {
       PredInfo& qpred = *qpredIte;
+      removed = false;
 
       if (qpred.theExpr->get_expr_kind() != fo_expr_kind)
         continue;
-
+      
       fo_expr* qpredExpr = static_cast<fo_expr*>(qpred.theExpr);
       function* qpredFunc = qpredExpr->get_func();
 
@@ -759,7 +760,7 @@ bool IndexMatchingRule::matchKeyExprsForRangeIndex(
       {
         if (qpredExpr->get_arg(0)->get_expr_kind() != fo_expr_kind)
           continue;
-
+      
         qpredExpr = static_cast<fo_expr*>(qpredExpr->get_arg(0));
         qpredFunc = qpredExpr->get_func();
       }
@@ -828,9 +829,9 @@ bool IndexMatchingRule::matchKeyExprsForRangeIndex(
         if (matched == 2)
         {
           theMatchedQPreds.push_back(qpred);
-          theUnmatchedQPreds.erase(qpredIte);
-          --qpredIte;
-
+          qpredIte = theUnmatchedQPreds.erase(qpredIte);
+          removed = true;
+		  
           if (qpred.theClausePos > lastMatchedWHEREpos)
             lastMatchedWHEREpos = qpred.theClausePos;
         }

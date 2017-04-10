@@ -141,6 +141,13 @@ invalid_value::~invalid_value() throw() {
   // out-of-line since it's virtual
 }
 
+#ifdef WIN32
+std::ostream& operator<<( std::ostream &os, const zorba::time::invalid_value &i )
+{
+	return os << i.what();
+}
+#endif
+
 literal_mismatch::literal_mismatch( char expected, char got ) :
   exception(
     BUILD_STRING(

@@ -37,6 +37,7 @@ struct csv_parse_json_state {
   void set_data( char const *s, size_t size ) {
     buf_.set( const_cast<char*>( s ), size );
     iss_.seekg( 0 );
+	iss_.clear();
   }
 
 private:
