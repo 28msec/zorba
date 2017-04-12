@@ -1,0 +1,635 @@
+# URI Resolvers
+
+## Motivation
+
+In JSONiq or XQuery, many resources are named by URIs - most notably schemas and
+modules, but also documents, full-text stopwords lists and thesauri,
+and so on. URIs are by convention often given with the
+<tt>http:</tt> scheme and the domain name of the provider. However,
+in general it is not desirable to load the resource via HTTP, and in
+many cases the resource is not actually available at the named URI -
+in other words, they are <b>URIs</b> (Uniform Resource
+<b>Identifiers</b>), not <b>URLs</b> (Uniform Resource
+<b>Locators</b>).
+
+Zorba provides a built-in mechanism for mapping URIs to a local
+filesystem path. It can also load resources via HTTP in situations
+where that is in fact appropriate. These built-in mechanisms will
+solve a large number of resource-loading problems. However, it also
+offers a highly flexible API for extending the built-in mechanisms,
+which will allow you to resolve URIs from queries in almost any way
+imaginable to handle application-specific problems.
+
+## Zorba's Built-in URI Resolver
+
+JSONiq or XQuery itself offer an approach to locating resources via the "at"
+clause in <code>import module</code> and <code>import schema</code>
+statements. However, we recommend that you do not use this approach
+for most robust applications.
+
+For example, the following code snippet imports a library module with
+target namespace "http://www.example.com/modules/utils".
+
+```xquery
+   (: Evil import statement :)
+   import module namespace utils = "http://www.example.com/modules/utils"
+     at "/home/foo/xquery/utils.xq";
+```
+
+In this import statement, the user specifies that the file containing
+the module is physically located at "/home/foo/xquery/utils.xq".
+
+Having the physical location hard-coded isn't desirable for two
+reasons: First, the physical location of a module or schema may change
+during the development process; also, frequently the module will be
+located in a different directory after the application has been
+deployed. Second, the user may want to package and distribute the
+application without having other developers to perform code changes in
+order to have location hints which are valid on their system.
+
+Out of the box, Zorba will attempt to map URIs to local filesystem
+locations. It does so in two steps:
+
+<ol>
+
+<li>First, the URI is <i>transformed</i> to a <i>relative path</i> via
+the algorithm listed below.
+
+<li>Second, Zorba attempts to load the relative path within every
+directory listed on its <i>URI path</i>. (Through this documentation,
+a "path" is defines as "an ordered list of directories in the
+filesystem.)
+
+</ol>
+
+### URI Transformation
+
+Consider a library module with the namespace
+http://www.example.com/modules/utils. This namespace URI will be
+rewritten by the following steps:
+
+<ol>
+
+<li>The domain (authority) component of the URI is reversed, and then
+transformed into a relative filename separated by forward slashes:
+<code>www.example.com</code> => <code>com/example/www</code>
+
+<li>The path component of the URI is appended:
+<code>/modules/utils</code>
+
+<li>If the path component ends with a trailing slash, the word "index"
+will be appended
+
+<li>Finally, an appropriate filename extension will be added if it is
+not already present. For modules, the suffix is <code>.xq</code>, and
+for schemas, the suffix is <code>.xsd</code>.
+
+</ol>
+
+So, the final relative path in our example would be
+<code>com/example/www/modules/utils.xq</code>. A couple more examples
+(all are presumed to be module URIs):
+
+<ul>
+
+<li><code>http://www.example.com/modules/utils/</code> =>
+<code>com/example/www/modules/utils/index.xq</code>
+
+<li><code>http://www.example.com/modules/mylib.xq</code> =>
+<code>com/example/www/modules/mylib.xq</code>
+
+</ul>
+
+### Zorba's URI Path
+
+Zorba will now attempt to find the named file relative to each
+directory in the <i>URI Path</i>. By default, the only entry on the
+URI path is the directory
+<code>/usr/share/zorba/uris/</code> (on Unix and MacOS X) or
+<code>C:\\Program Files\\Zorba
+2.1.0\\share\\zorba\\uris</code> (on Windows). So, to
+complete this example, assuming Zorba is installed on a Unix system in
+the default location, Zorba will attempt to resolve the module
+namespace URI <code>http://www.example.com/modules/utils</code> to the
+file
+
+`/usr/share/zorba/modules/com/example/www/modules/utils.xq`
+
+If you have modules or schemas installed in other locations on your
+system, you may provide additional search directories either by
+passing the <code>--uri-path</code> command-line argument to Zorba, or
+by setting the <code>ZORBA_URI_PATH</code> environment variable. In
+both cases, the value is an ordered list of filesystem directories
+separated by ":" (on Unix/MacOS X) or ";" (on Windows). Zorba will
+search each directory on the URI path in the order specified, and the
+first match found will be used. So, for example, if you invoke Zorba
+as follows (example is for a Unix system):
+
+```bash
+   zorba --uri-path '/home/foo/xquery/uris:/opt/share/xquery/uris'
+     -q 'import module namespace utils="http://www.example.com/modules/utils"; 1'
+```
+
+Zorba will attempt to load the module from the following locations, in
+order:
+
+```bash
+   /home/foo/xquery/uris/com/example/www/modules/utils.xq
+   /opt/share/xquery/uris/com/example/www/modules/utils.xq
+   /usr/share/zorba/uris/com/example/www/modules/utils.xq
+```
+
+If, after searching all URI path directories, no match is found for
+a given URI, Zorba will by default fall back to interpretting the URI
+as a URL and loading the resource via HTTP / HTTPS / FTP (depending on
+the URI scheme). This behaviour can be defeated by disabling the
+<tt>http-uri-resolution</tt> Zorba option (see \ref options_features).
+
+## Library Path
+
+The above URI path mechanism is used for all URIs that are resolved by
+Zorba - most especially module and schema imports, but also full-text
+thesaurus and stop-word lists, documents, and so on.
+
+When considering modules in particular, however, there is another
+important path: the Library Path. Zorba will look on this path when it
+needs to load dynamic libraries containing the implementation of
+external functions for a module (ie, those functions implemented in
+C++; see \ref mod_author_cpp). This path is separate from the URI
+path because on certain systems - most notably Fedora, but also other
+Linux distributions - it is important that platform-dependent binary
+files (such as dynamic libraries) be installed in a separate directory
+structure from platform-independent files (such as <code>.xq</code>
+module files and <code>.xsd</code> schema files).
+
+The Library Path mechanism is exactly parallel to the URI Path
+mechanism.  The default, built-in entry on this path is
+<code>/usr/lib/zorba</code> (on Unix and MacOS X) and
+<code>C:\\Program Files\\Zorba 2.1.0\\lib\\zorba</code> (on
+Windows). You can add directories to this path using the
+<code>--lib-path</code> command-line argument, or by setting the
+<code>ZORBA_LIB_PATH</code> environment variable.
+
+## Internal (Core) Paths
+
+There is actually one additional built-in directory on Zorba's URI
+Path, and one additional built-in directory on Zorba's Library Path,
+in addition to the default values mentioned above. These directories
+hold Zorba's built-in "core" modules (see \ref core_modules). The
+directories are subdirectories of the default directory named
+"core/ZORBA_VERSION". So for example, for Zorba 2.1.0 on Unix, the
+default internal URI directory is
+<code>/usr/share/zorba/uris/core/2.1.0</code> and the default internal
+library directory is <code>/usr/lib/zorba/core/2.1.0</code>.
+
+These directories are separate to make it easier to upgrade Zorba, or
+support multiple installed versions of Zorba, while allowing non-core
+modules to be installed and versioned indepedently of the Zorba
+version. Normally you should not modify the contents of these
+directories.
+
+## Changing the Default Paths
+
+All four paths mentioned above - the core and non-core URI Path, and
+the core and non-core Library Path - have compiled-in default values
+as discussed. All four of these default values can be modified at
+Zorba build time to meet your environment's requirements. You can do
+this by specifying alternate values for the following CMake variables:
+
+\code
+ZORBA_NONCORE_URI_DIR
+ZORBA_CORE_URI_DIR
+ZORBA_NONCORE_LIB_DIR
+ZORBA_CORE_LIB_DIR
+\endcode
+
+Note that these are <i>relative</i> directories, and will be resolved
+relative to <code>CMAKE_INSTALL_PREFIX</code>.
+
+## Zorba's "Module Path"
+
+Earlier versions of Zorba had a single path for specifying where both
+platform-dependent library files and platform-independent module and
+schema files were located. This was somewhat inaccurately named the
+"module path". For backwards compatibility, Zorba still supports a
+<code>--module-path</code> command-line argument and a
+<code>ZORBA_MODULE_PATH</code> environment variable (and the C++ API
+has a <code>StaticContext::setModulePaths()</code> method).
+Specifying a set of directories as the "module path" using any of
+these mechanisms is exactly the same as specifying that set of
+directories as both the URI path and library path.
+
+The Module Path is deprecated, and these mechanisms may be removed in
+a future major version of Zorba. There is no "default module path".
+
+## C++ API for URI Resolving
+
+### Modifying the URI Path programmatically
+
+The simplest modification to Zorba's default behavior is setting the
+URI path programmatically. This allows you to have different URI
+paths per static context, if you wish.
+
+The <code>StaticContext</code> C++ API class provides the
+<code>setURIPath()</code> method for this purpose. It is passed a
+vector of <code>zorba::String</code> values, each being an absolute
+directory to add to the URI path.
+
+For example, the following code snippet creates a
+<code>StaticContext</code> object; adds two directories to the URI
+path component of this static context; and compiles and executes a
+query given the information that is present in this static context
+(passed as the second parameter to the <code>compileQuery()</code>
+method).
+
+```cpp
+   // Create a new static context
+   zorba::StaticContext_t staticCtx = zorba->createStaticContext();
+   
+   // Set the URI Path
+   std::vector<zorba::String> uriPath(2);
+   uriPath[0] = "/home/foo/xquery/uris";
+   uriPath[1] = "/opt/share/xquery/uris";
+   
+   staticCtx->setURIPath(uriPath);
+   
+   // Compile a query using the static context created above
+   zorba::XQuery_t query = zorba->compileQuery(
+       "import module namespace m='http://example.com/module'; m:foo()",
+       staticCtx);
+   
+   // execute the compiled query printing the result to standard out
+   std::cout << query << std::endl;
+```
+
+### Modifying the Library Path programmatically
+
+Similarly, <code>StaticContext</code> has a method named
+<code>setLibPath()</code> for specifying the Library Path to use.  In
+operation it behaves exactly like <code>setURIPath()</code>.
+
+### URI Mappers and URL Resolvers
+
+Now we will discuss more advanced techniques for manipulating Zorba's
+URI resolution mechanism. The built-in mechanisms described above are
+in fact implemented internally by using these same techniques.
+
+There are two types of class that you may implement to modify the URI
+resolution process:
+
+<ol>
+
+<li>A <i>URI Mapper</i> takes a URI and returns <i>one or more</i>
+"Candidate URIs", which are alternative URIs Zorba will attempt to
+resolve. This allows you to change the URI, or provide several
+different potential URIs, for Zorba to resolve.
+
+<li>A <i>URL Resolver</i> takes a URI (which is presumed to be a URL,
+that is, a URI which actually points to a resource) and returns a
+<code>Resource</code> object which Zorba will use to load the resource
+data.
+
+</ol>
+
+The general algorithm used by Zorba when resolving a URI is as follows:
+
+Zorba will start by passing the original URI to the first registered
+URI Mapper. If that Mapper returns any candidate URIs, then Zorba will
+pass <i>each</i> such URI to the next registered URI Mapper, and so
+on. If any Mapper does not return any candidate URIs for a given input
+URI, Zorba will simply pass the input URI unchanged to the next
+Mapper.
+
+After all Mappers have been invoked, Zorba will have a set of
+candidate URIs. It will then pass each candidate URI, in order, to
+each registered URL Resolver. The first time a URL Resolver returns a
+Resource object, Zorba will use that Resource as the final source of
+content for the URI. If no URL Resolver ever returns a Resource, then
+Zorba will raise an appropriate "resource not found" error.
+
+### URI Mappers
+
+Zorba includes a few built-in URI Mappers. For instance, the mechanism
+which iterates through the URI path and produces a set of filesystem
+files where the URI might be located is implemented as a URI Mapper.
+
+To implement your own URI Mapper, subclass the C++ API class
+<code>URIMapper</code> and implement the <code>mapURI()</code> method:
+
+```cpp
+   virtual void mapURI(const zorba::String aUri,
+     EntityData const* aEntityData, std::vector<zorba::String>& oUris);
+``
+
+and then register an instance of your subclass with the static context
+using the method <code>registerURIMapper()</code>:
+
+```cpp
+   StaticContext_t lContext = aZorba->createStaticContext();
+   MyURIMapperSubclass* lMapper = new MyURIMapperSubclass();
+   lContext->registerURIMapper(lMapper);
+```
+
+Note that the memory ownership of the <code>URIMapper</code> instance
+remains with the client program; it must de-allocate it appropriately
+when the static context is no longer used.
+
+In your <code>mapURI()</code> implementation, <code>aUri</code> is the
+input URI. <code>aEntityData</code> is a pointer to additional
+information about the URI being resolved. As of Zorba 2.0, the only
+method on <code>EntityData</code> is <code>getKind()</code>, which
+will return an enumerated value describing what kind of URI is being
+resolved: SCHEMA, MODULE, THESAURUS, STOP_WORDS, COLLECTION, or
+DOCUMENT.
+
+<code>oUris</code> is where you place any candidate URIs, by calling
+the method <code>push_back()</code>. (You should not look at any
+existing contents of the vector.) If you push any candidate URIs onto
+the vector, Zorba will <i>replace</i> the input URI with the set of
+candidate URIs you provide. That means that if you want Zorba to
+consider the original URI <i>in addition to</i> the alternative URIs
+you provide, you must push the original URI onto the vector as well.
+
+The <code>mapURI()</code> method should not throw any exceptions.
+
+As a limited but functional example, here is a full class which will
+change the URI of a specific schema to an alternative URI. You could
+use this, for example, if you have a large body of XQueries using a
+particular schema that you do want Zorba to download from the web
+(hence the built-in filesystem mapping mechanism is not appropriate),
+but the URI that the schema is available from has changed and you do
+not wish to modify all the <code>import schema</code> statements.
+
+```cpp
+   class MySchemaURIMapper : public URIMapper
+   {
+     public:
+   
+     virtual ~MySchemaURIMapper() {}
+   
+     virtual void mapURI(const zorba::String aUri,
+       EntityData const* aEntityData,
+       std::vector<zorba::String>& oUris)
+     {
+       if (aEntityData->getKind() != EntityData::SCHEMA) {
+         return;
+       }
+       if(aUri == "http://www.example.com/helloworld") {
+         oUris.push_back("http://example.com/schemas/helloworld.xsd");
+       }
+     }
+   };
+```
+
+Note that the first thing <code>mapURI()</code> does is check that the
+URI being resolved is in fact for a schema. This is generally good
+practice to prevent surprises in the off-chance that the same URI is
+also used to identify some other kind of resource.
+
+### URL Resolvers
+
+Zorba includes two built-in URL Resolvers: One which handles
+<code>file:</code> URLs, and one which handles <code>http:</code>,
+<code>https:</code>, and <code>ftp:</code> URLs. These are implemented
+by using Zorba's <code>file</code> and <code>http-client</code>
+modules, respectively.
+
+To implement your own URL Resolver, subclass the C++ API class
+<code>URLResolver</code> and implement the <code>resolveURL()</code>
+method:
+
+```cpp
+   virtual Resource* resolveURL(const zorba::String& aUrl,
+      EntityData const* aEntityData);
+```
+
+and then register an instance of your subclass with the static context
+using the method <code>registerURLResolver()</code>:
+
+```cpp
+   StaticContext_t lContext = aZorba->createStaticContext();
+   MyURLResolverSubclass* lResolver = new MyURLResolverSubclass();
+   lContext->registerURLResolver(lResolver);
+```
+
+You will note that this mechanism is exactly parallel to the URI
+Mapper mechanism. Also, as with URI Mappers, the memory ownership of
+the <code>URLResolver</code> instance remains with the client program;
+it must de-allocate it appropriately when the static context is no
+longer used.
+
+In your <code>resolveURL()</code> method, the <code>aUri</code> and
+<code>aEntityData</code> arguments have exactly the same meanings as
+they do for <code>mapURI()</code>.
+
+If your code recognizes the URL and wishes to return content for it,
+it must return a newly-allocated instance of some subclass of the
+abstract class <code>Resource</code>. In Zorba 2.0's public API, there
+is only one such subclass, <code>StreamResource</code>, which wraps
+around a <code>std::istream</code>.
+
+It is important that all URL Resolvers check the
+<code>EntityData</code>'s Kind and only return Resources for the
+appropriate kind of URIs, for two reasons:
+
+<ol>
+
+<li>They must return an appropriate subclass of <code>Resource</code>
+depending on the entity kind. Zorba is prepared to accept
+<code>StreamResource</code> for schemas, modules, stop-word lists,
+thesauri, and documents, but not for collections. In future, there
+will likely be additional resource subclasses and additional entity
+kinds, and returning an inappropriate resource subclass for a given
+entity type will have negative consequences.
+
+<li>They must return a resource which produces data appropriate for
+the kind of entity being resolved. For instance, when resolving a
+schema or document URI, Zorba expects the resource to produce
+well-formed XML. When resolving a module URI, Zorba expects the
+resource to produce an XQuery library module. Returning a resource
+which outputs incorrect data will result in errors.
+
+</ol>
+
+As a fairly silly but functional example, here is a URL Resolver that
+returns a small hard-coded module for a specific URL:
+
+```cpp
+   using namespace zorba;
+
+   static void streamReleaser(std::istream* aStream)
+   {
+     delete aStream;
+   }
+
+   class FoobarModuleURLResolver : public URLResolver
+   {
+     public:
+     virtual ~FoobarModuleURLResolver() {}
+   
+     virtual Resource* resolveURL(const String& aUrl,
+       EntityData const* aEntityData)
+     {
+       // we have only one module
+       if (aEntityData->getKind() == EntityData::MODULE &&
+         aUrl == "http://www.example.com/foobar") 
+       {
+         return StreamResource::create
+           (new std::istringstream
+             ("module namespace lm = 'http://www.example.com/foobar'; "
+              "declare function lm:foo() { 'foo' };"), &streamReleaser);
+       }
+       else {
+         return NULL;
+       }
+     }
+   };
+```
+
+A more realistic example would be a resolver that takes URLs (possibly
+with a non-standard scheme, such as <code>db:</code>) and loads the
+content for those URLs from a database. As long as the database API
+allows you to obtain the information as a <code>std::istream</code>,
+you may stream this data directly to Zorba.
+
+Two notes about memory management: First, when a user-defined
+<code>URLResolver</code> returns a <code>Resource</code>, Zorba will
+take memory ownership of the <code>Resource</code>, and will free it
+when it is no longer needed. Second, when user code creates a
+<code>StreamResource</code>, the <code>StreamResource</code> assumes
+memory ownership of the <code>std::istream</code> that is wrapped.
+However, Zorba cannot free the <code>std::istream</code> itself,
+because it was instantiated inside user code rather than inside
+Zorba's own library. On Windows, in some circumstances, if a DLL
+deletes an object that was not instantiated inside that DLL, the
+application will crash. Therefore, the <code>StreamResource</code>
+factory function <code>create()</code> also takes a
+<code>StreamReleaser</code>, which is a function pointer. Zorba will
+call this function pointer, passing the <code>std::istream</code>,
+when it is no longer needed; the function is expected to free the
+<code>std::istream</code>.
+
+Unlike <code>mapURI()</code>, it is acceptable for
+<code>resolveURL</code> to throw exceptions. A URL Resolver should
+throw an exception if it believes that it is canonical for the URL
+(that is, it "should be able" to resolve it) but had some error during
+the attempt to resolve it. However, because Zorba may be attempting to
+resolve a number of candidate URIs, any exceptions thrown from a URL
+Resolver will be caught and consumed by Zorba. It will never re-throw
+any of these exceptions. It will merely remember the message of the
+first exception (assuming that it extends
+<code>std::exception</code>). If and only if <i>no</i> URL Resolver
+ever returns a valid Resource, Zorba will then throw a new exception
+with the saved message from the first-thrown exception.
+
+### Component URI Mappers for modules
+
+In XQuery, it is possible for a particular module to actually be
+implemented as a set of more than one <code>.xq</code> files.  When a
+query imports the module's URI, the query processor is expected to
+provide some mechanism whereby multiple files will be loaded and
+combined to form the whole module definition.
+
+Zorba uses <i>Component URI Mappers</i> to allow for this. The API is
+the same <code>URIMapper</code> class, and they are registered with
+the static context using the same <code>registerURIMapper()</code>
+method.
+
+How does Zorba know which URI Mappers are intended to provide a set of
+URIs for the components of a module, and which are intended to provide
+a set of <i>possible</i> candidate URIs for other purposes? There is
+actually another method on the <code>URIMapper</code> class:
+<code>mapperKind()</code>. This method should return a value from the
+enumeration <code>URIMapper::Kind</code>. There are two possible
+values: COMPONENT and CANDIDATE. The default implementation of
+<code>URIMapper</code> returns CANDIDATE, so for normal URI Mappers
+there is no need to override this method.
+
+When Zorba needs to resolve a URI for a module import, it first
+invokes all registered component URI mappers to form a set of
+<i>component URIs</i>. Then, it resolves <i>each</i> of these
+component URIs using the full URI resoltuion mechanism documented
+above - calling all candidate URI mappers and URL resolvers in turn.
+Assuming that it successfully loads a Resource for <i>each</i>
+component URI, it then assembles all of these Resources into the
+final, loaded module.
+
+Here is an example of a component URI mapper, which tells Zorba to
+load two other URIs to form a complete module:
+
+```cpp
+   class MyModuleURIMapper : public URIMapper
+   {
+     public:
+   
+     virtual ~MyModuleURIMapper() {}
+   
+     virtual URIMapper::Kind mapperKind() throw() { return URIMapper::COMPONENT; }
+   
+     virtual void mapURI(const zorba::String aUri,
+       EntityData const* aEntityData,
+       std::vector<zorba::String>& oUris)
+     {
+       if (aEntityData->getKind() != EntityData::MODULE) {
+         return;
+       }
+       if(aUri == "http://www.example.com/mymodule") {
+         oUris.push_back("http://www.example.com/mymodule/mod1");
+         oUris.push_back("http://www.example.com/mymodule/mod2");
+       }
+     }
+   };
+```
+
+As mentioned, each of the component URIs will be treated to the full
+URI resolution mechanism, including Zorba's built-in mechanisms.  So,
+given the code above and a default Unix installation, Zorba will
+proceed to attempt to load the following files:
+
+```
+   /usr/share/zorba-2.0.0/modules/com/example/www/mymodule/mod1.xq
+   /usr/share/zorba-2.0.0/modules/com/example/www/mymodule/mod2.xq
+```
+
+If both are found, then the two together will be taken to form the
+complete definition for the module
+<code>http://www.example.com/mymodule</code>.
+
+### Disallowing URIs
+
+Sometimes, it might be required to forbid access to a certain URI. For
+example, a user might disallow access to the file module because she
+doesn’t want XQuery developers to access files stored locally on the
+machine that is running Zorba. (Remember that the built-in URL
+Resolver for <code>file:</code> URLs is implemented in terms of the
+file module, so doing this will effectively disable all file access -
+module and schema importing, loading documents, and so on.)
+
+Therefore, the static context also provides a mechanism for preventing
+developers from importing particular modules. This is also handled
+with a <code>URIMapper</code> in a simple way: If <i>any</i>
+registered URI Mapper (candidate or component) ever returns the value
+<code>URIMapper::DENY_ACCESS</code> in the <code>oUris</code> vector,
+Zorba will immediately throw a "URI access denied" exception.
+
+Here is an example URI Mapper which will suppress the loading of the
+file module:
+
+```cpp
+   class DenyFileAccessURIMapper : public URIMapper
+   {
+     public:
+   
+     virtual ~DenyFileAccessURIMapper() {}
+   
+     virtual void mapURI(const zorba::String aUri,
+       EntityData const* aEntityData,
+       std::vector<zorba::String>& oUris)
+     {
+       if(aEntityData->getKind() == EntityData::MODULE &&
+          aUri == "http://www.zorba-xquery.com/modules/file") {
+         oUris.push_back(URIMapper::DENY_ACCESS);
+       }
+     }
+   };
+```

@@ -5,3 +5,7 @@
 .DS_Store
 build
 *.swp
+doc/node_modules
+doc/book/modules
+doc/book/apis
+doc/book/_book
